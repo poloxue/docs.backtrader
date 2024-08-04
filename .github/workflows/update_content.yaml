@@ -1,0 +1,19 @@
+name: Trigger Blog Build
+
+on:
+  push:
+    branches:
+      - main # 或者你用于内容更新的分支
+
+jobs:
+  trigger-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Blog Repository Build
+        run: |
+          curl -X POST -H "Accept: application/vnd.github.v3+json" \
+          -H "Authorization: token ${{ secrets.PERSONAL_ACCESS_TOKEN }}" \
+          https://api.github.com/repos/poloxue/blog/dispatches \
+          -d '{"event_type": "content-update"}'
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

@@ -1,0 +1,6 @@
+github.com/alex-shpak/hugo-book v0.0.0-20240217175702-a111041867b1 h1:iNmSezHKNFBfUAqdhkYXPd7ozT9WaaME9iv7WNFJjXc=
+github.com/alex-shpak/hugo-book v0.0.0-20240217175702-a111041867b1/go.mod h1:L4NMyzbn15fpLIpmmtDg9ZFFyTZzw87/lk7M2bMQ7ds=
+github.com/poloxue/fyne-chinese v0.0.0-20240305103413-fa71c33e55a3 h1:E7ZgUPP4ejD/TP7yetSbE0NCRC2lH6gltiedcldKTc4=
+github.com/poloxue/fyne-chinese v0.0.0-20240305103413-fa71c33e55a3/go.mod h1:dK9y/qYLhYDXJlrUi+GxKXHcKHrcxy48b0JgSRXzL4Y=
+github.com/poloxue/fyne-chinese v0.0.0-20240305103953-4d042010d3ff h1:ohXvTWnQ9+asn3sBzox+4AyLqOQbFhfPl2GPy7HjHQ8=
+github.com/poloxue/fyne-chinese v0.0.0-20240305103953-4d042010d3ff/go.mod h1:dK9y/qYLhYDXJlrUi+GxKXHcKHrcxy48b0JgSRXzL4Y=
