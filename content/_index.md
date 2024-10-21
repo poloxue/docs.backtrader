@@ -3,8 +3,9 @@ title: "首页"
 disqus: true
 ---
 
-本文档是 backtrader 框架中文文档，查看英文原版请移步：[backtrader.com](https://www.backtrader.com/)。
+# 说明
 
+本文档是 backtrader 框架的中文翻译版，欲查看英文原版，请访问：[backtrader.com](https://www.backtrader.com/)。
 
-Backtrader 是一个功能丰富的用于回测和交易的 Python 框架，让你能够专注于编写可重用的交易策略、指标和分析器，而不必浪费时间在基础设施的构建上。
+Backtrader 是一个功能强大的量化交易框架，支持回测和实盘交易。它使您能够专注于编写可重用的交易策略、指标和分析器，而不必浪费时间构建基础设施。
 
