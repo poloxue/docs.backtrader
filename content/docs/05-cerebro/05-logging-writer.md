@@ -3,7 +3,7 @@ title: "日志 Logging - Writter"
 weight: 5
 ---
 
-### Writer
+# Writer
 
 Writer类负责将以下内容写入流：
 

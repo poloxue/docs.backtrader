@@ -3,7 +3,7 @@ title: "Cerebro"
 weight: 1
 ---
 
-### Cerebro
+# Cerebro
 
 这个类是backtrader的核心，因为它作为一个中心点用于：
 

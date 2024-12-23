@@ -1,9 +1,9 @@
 ---
-title: "Filters 参考文献"
+title: "参考文档"
 weight: 2
 ---
 
-### Filters 参考文献
+### Filters 参考文档
 
 #### SessionFilter
 **class backtrader.filters.SessionFilter(data)**  

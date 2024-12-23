@@ -5,11 +5,13 @@ weight: 1
 
 # 平台概念
 
-这是一些平台概念的集合，尝试收集有助于使用平台的信息片段。
+先介绍一些 `backtrader` 这个工具平台上的基础概念，希望能让你更好地了解和使用平台。
 
-## 开始之前
+---
 
-所有的小代码示例都假设以下导入是可用的：
+## **开始之前**
+
+先导入必要的模块：
 
 ```python
 import backtrader as bt
@@ -17,145 +19,15 @@ import backtrader.indicators as btind
 import backtrader.feeds as btfeeds
 ```
 
-**注意**
-
-访问子模块（如指标和数据源）的另一种语法：
+如下方法也可以访问子模块（如指标和数据源）：
 
 ```python
 import backtrader as bt
-```
 
-然后：
-
-```python
 thefeed = bt.feeds.OneOfTheFeeds(...)
 theind = bt.indicators.SimpleMovingAverage(...)
 ```
 
-#### 数据源 - 传递它们
-
-使用平台的基础工作将通过策略完成。这些策略将接收数据源。平台终端用户无需关心接收数据源：
-
-数据源以数组形式自动提供给策略的成员变量，并且有数组位置的快捷方式。
-
-快速预览一个从策略派生的类声明和运行平台：
-
-```python
-class MyStrategy(bt.Strategy):
-    params = dict(period=20)
-
-    def __init__(self):
-        sma = btind.SimpleMovingAverage(self.datas[0], period=self.params.period)
-
-    ...
-cerebro = bt.Cerebro()
-
-...
-
-data = btfeeds.MyFeed(...)
-cerebro.adddata(data)
-
-...
-
-cerebro.addstrategy(MyStrategy, period=30)
-...
-```
-
-注意以下几点：
-
-- 策略的 `__init__` 方法没有接收 `*args` 或 `**kwargs`（它们仍然可以使用）
-- 存在一个成员变量 `self.datas`，它是一个包含至少一个项目的数组/列表/可迭代对象（否则会引发异常）
-
-数据源添加到平台后，它们将按添加到系统的顺序出现在策略中。
-
-**注意**
-
-这也适用于指标，如果终端用户开发了自己的自定义指标或查看现有指标的源代码。
-
-#### 数据源的快捷方式
-
-`self.datas` 数组项可以通过额外的自动成员变量直接访问：
-
-- `self.data` 目标是 `self.datas[0]`
-- `self.dataX` 目标是 `self.datas[X]`
-
-示例：
-
-```python
-class MyStrategy(bt.Strategy):
-    params = dict(period=20)
-
-    def __init__(self):
-        sma = btind.SimpleMovingAverage(self.data, period=self.params.period)
-    ...
-```
-
-#### 省略数据源
-
-上面的示例可以进一步简化为：
-
-```python
-class MyStrategy(bt.Strategy):
-    params = dict(period=20)
-
-    def __init__(self):
-        sma = btind.SimpleMovingAverage(period=self.params.period)
-    ...
-```
-
-在调用 `SimpleMovingAverage` 时完全删除了 `self.data`。如果这样做，指标（在本例中为 `SimpleMovingAverage`）将接收正在创建的对象（策略）的第一个数据，即 `self.data`（也称为 `self.data0` 或 `self.datas[0]`）。
-
-#### 几乎所有东西都是数据源
-
-不仅数据源是数据并且可以传递。指标和操作结果也是数据。
-
-在前面的示例中，`SimpleMovingAverage` 接收 `self.datas[0]` 作为操作输入。一个带有操作和额外指标的示例：
-
-```python
-class MyStrategy(bt.Strategy):
-    params = dict(period1=20, period2=25, period3=10, period4)
-
-    def __init__(self):
-        sma1 = btind.SimpleMovingAverage(self.datas[0], period=self.p.period1)
-        sma2 = btind.SimpleMovingAverage(sma1, period=self.p.period2)
-        something = sma2 - sma1 + self.data.close
-        sma3 = btind.SimpleMovingAverage(something, period=self.p.period3)
-        greater = sma3 > sma1
-        sma3 = btind.SimpleMovingAverage(greater, period=self.p.period4)
-    ...
-```
-
-基本上，所有东西一旦被操作，它们都会被转换为可以作为数据源使用的对象。
-
-#### 参数
-
-平台中的大多数其他类都支持参数的概念。
-
-参数及其默认值作为类属性声明（元组的元组或类字典对象）。
-
-扫描匹配参数的关键字参数 `**kwargs`，如果找到则从 `**kwargs` 中删除并将值分配给相应的参数。
-
-参数可以通过访问成员变量 `self.params`（简写：`self.p`）在类实例中使用。
-
-前面的快速策略预览已经包含了参数示例，但为了冗余，重点仅放在参数上。使用元组：
-
-```python
-class MyStrategy(bt.Strategy):
-    params = (('period', 20),)
-
-    def __init__(self):
-        sma = btind.SimpleMovingAverage(self.data, period=self.p.period)
-```
-
-使用字典：
-
-```python
-class MyStrategy(bt.Strategy):
-    params = dict(period=20)
-
-    def __init__(self):
-        sma = btind.SimpleMovingAverage(self.data, period=self.p.period)
-```
 
 #### 线
 
