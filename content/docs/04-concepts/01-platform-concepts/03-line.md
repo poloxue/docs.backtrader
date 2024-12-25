@@ -130,9 +130,9 @@ class MyStrategy(bt.Strategy):
 
 ---
 
-## **线的继承**
+## **`Line` 的继承**
 
-`Backtrader` 支持线的继承，我们可以在子类中继承父类的线，且可以在子类中修改。
+`Backtrader` 支持 `Line` 的继承，我们可以在子类中继承父类的线，且可以在子类中修改。
 
 示例代码：
 
@@ -146,4 +146,35 @@ class MyIndicator(BaseIndicator):
 
 如果多个父类定义了相同名称的线，子类只会继承一个版本的线，因此要避免同名的线定义冲突。
 
+
+## **`Line` 耦合**
+
+`Backtrader` 允许你在多个时间框架下使用数据源，并支持将它们的线进行耦合。线耦合是指将不同时间周期的数据结合起来，以便在策略中进行跨时间框架的计算和分析。
+
+### **如何使用线耦合：**
+
+你可以在策略中同时使用多个数据源，每个数据源可能有不同的时间周期。例如，一个数据源是日线数据，另一个是周线数据：
+```python
+class MyStrategy(bt.Strategy):
+    def __init__(self):
+        self.sma_daily = btind.SimpleMovingAverage(self.data0, period=20)  # 日线数据
+        self.sma_weekly = btind.SimpleMovingAverage(self.data1, period=5)   # 周线数据
+```
+
+`Backtrader` 提供了 `()` 运算符来将不同时间框架的数据线耦合在一起。
+
+例如：
+
+```python
+class MyStrategy(bt.Strategy):
+    def __init__(self):
+        sma0 = btind.SMA(self.data0, period=15)  # 15 天的简单移动平均线
+        sma1 = btind.SMA(self.data1, period=5)   # 5 周的简单移动平均线
+
+        self.buysig = sma0 > sma1()  # 通过运算符将两个时间框架的线耦合
+```
+
+上面的例子中，`sma0` 和 `sma1` 分别是基于日线和周线数据计算的简单移动平均线。`sma1()` 用于将周线数据转换成日线数据的长度，从而进行跨时间框架的计算。
+
+`Line` 耦合使得我们能更灵活地在策略中使用多个时间框架的数据，进行更复杂的分析和决策。
 
