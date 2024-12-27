@@ -25,7 +25,7 @@ class MyStrategy(bt.Strategy):
        self.sell_sig = bt.And(close_over_sma, sma_dist_small)
 ```
 
-运算符不仅简化了策略代码，还增强了策略逻辑的可读性和可维护性。
+我们在 `Line` 对象上使用了常规的运算符，如加减乘除、大小比较等。这简化了策略代码，增强了策略逻辑的可读性和可维护性。
 
 注：`backtrader` 的指标计算是自有的体系，不是基于 `numpy` 和 `pandas`，所以要单独实现这些运算符。
 
