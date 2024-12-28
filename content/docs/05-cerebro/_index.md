@@ -1,5 +1,5 @@
 ---
-title: "控制中心 Cerebro"
+title: "Cerebro"
 weight: 5
 bookCollapseSection: true
 ---
