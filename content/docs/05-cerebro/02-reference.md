@@ -203,10 +203,12 @@ cerebro.optstrategy(MyStrategy, period=15)
 
 也可以使用参数`tz`完成。为策略添加全局时区。参数`tz`可以是：
 
-  - `None`：在这种情况下，策略显示的日期时间将是UTC，这一直是标准行为。
-  - `pytz`实例。将用作将UTC时间转换为所选时区。
-  - `字符串`。将尝试实例化`pytz`实例。
-  - `整数`。对于策略，使用`self.datas`可迭代对象中相应数据的相同时区（0将使用`data0`的时区）。
+可选项    | 描述
+--------- | ---------------------
+None      | 在这种情况下，策略显示的日期时间将是UTC，这一直是标准行为。
+pytz 实例 | 将用作将UTC时间转换为所选时区。
+字符串    | 将尝试实例化`pytz`实例。
+整数      | 对于策略，使用`self.datas`中相应数据的时区（0就用`data0`的时区）。
 
 - `add_timer(when, offset=datetime.timedelta(0), repeat=datetime.timedelta(0), weekdays=[], weekcarry=False, monthdays=[], monthcarry=True, allow=None, tzdata=None, strats=False, cheat=False, *args, **kwargs)`
 
