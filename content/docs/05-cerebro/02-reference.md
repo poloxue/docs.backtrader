@@ -214,39 +214,41 @@ pytz 实例 | 将用作将UTC时间转换为所选时区。
 
 安排一个计时器以调用`notify_timer`。参数：
 
-  - `when`：可以是`datetime.time`实例（见下文的`tzdata`），`bt.timer.SESSION_START`以参考会话开始，`bt.timer.SESSION_END`以参考会话结束。
-  - `offset`必须是`datetime.timedelta`实例，用于偏移值`when`。在与`SESSION_START`和`SESSION_END`组合使用时具有有意义的用途，以指示例如在会话开始后15分钟调用计时器。
-  - `repeat`必须是`datetime.timedelta`实例，表示在第一次调用后，是否在同一会话内按计划的重复增量安排进一步的调用。
-  - `weekdays`：一个排序的可迭代对象，包含表示计时器可以实际调用的天数（iso代码，周一是1，周日是7）。如果未指定，计时器将在所有天都有效。
-  - `weekcarry`（默认：False）：如果为True并且未看到工作日（例如：交易假期），计时器将在第二天执行（即使在新的一周内）。
-  - `monthdays`：一个排序的可迭代对象，包含表示每月应执行计时器的天数。例如总是在每月的15日。如果未指定，计时器将在所有天都有效。
-  - `monthcarry`（默认：True）：如果未看到该天（周末、交易假期），计时器将在下一个可用日执行。
-  - `allow`（默认：None）：一个回调，接收一个`datetime.date`实例，如果日期被允许用于计时器则返回True，否则返回False。
-  - `tzdata`可以是None（默认）、一个`pytz`实例或一个数据源实例。
-    - `None`：按面值解释`when`（这意味着将其处理为UTC，即使不是）。
-    - `pytz`实例：`when`将被解释为在所选时区本地时间指定。
-    - 数据源实例：`when`将被解释为在数据源实例的`tz`参数指定的本地时间。
-  **注意**
-  如果`when`是`SESSION_START`或`SESSION_END`并且`tzdata`为None，将使用系统中的第一个数据源（即`self.data0`）作为参考，以找出会话时间。
-  - `strats`（默认：False）：也调用策略的`notify_timer`。
-  - `cheat`（默认：False）：如果为True，将在经纪人有机会评估订单之前调用计时器。这打开了发布基于开盘价的订单的机会，例如在会话开始前。
-  - `*args`：将传递给`notify_timer`的任何额外args。
-  - `**kwargs`：将传递给`notify_timer`的任何额外kwargs。
-  - 返回值：创建的计时器。
-- `notify_timer(timer, when, *args, **kwargs)`：接收计时器通知，其中`timer`是由`add_timer
+参数        |
+----------- | -------------------
+`when`      | 可以是`datetime.time`实例（见下文的`tzdata`），`bt.timer.SESSION_START`以参考会话开始，`bt.timer.SESSION_END`以参考会话结束。
+`offset`    | 必须是`datetime.timedelta`实例，用于偏移值`when`。在与`SESSION_START`和`SESSION_END`组合使用时具有有意义的用途，以指示例如在会话开始后15分钟调用计时器。
+`repeat`    | 必须是`datetime.timedelta`实例，表示在第一次调用后，是否在同一会话内按计划的重复增量安排进一步的调用。
+`weekdays`  | 一个排序的可迭代对象，包含表示计时器可以实际调用的天数（iso代码，周一是1，周日是7）。如果未指定，计时器将在所有天都有效。
+`weekcarry` | 默认：False，如果为True并且未看到工作日（例如：交易假期），计时器将在第二天执行（即使在新的一周内）。
+`monthdays` | 一个排序的可迭代对象，包含表示每月应执行计时器的天数。例如总是在每月的15日。如果未指定，计时器将在所有天都有效。
+`monthcarry`| 默认：True，如果未看到该天（周末、交易假期），计时器将在下一个可用日执行。
+`allow`     | 默认：None，一个回调，接收一个`datetime.date`实例，如果日期被允许用于计时器则返回True，否则返回False。
+`tzdata`    | 可以是None（默认）、一个`pytz`实例或一个数据源实例。<ul><li> `None`：按面值解释`when`（这意味着将其处理为UTC，即使不是）。</li><li>- `pytz`实例：`when`将被解释为在所选时区本地时间指定。</li><li>数据源实例：`when`将被解释为在数据源实例的`tz`参数指定的本地时间。</li></ul>**注意**，如果`when`是`SESSION_START`或`SESSION_END`并且`tzdata`为None，将使用系统中的第一个数据源（即`self.data0`）作为参考，以找出会话时间。
+`strats`    | 默认：False，也调用策略的`notify_timer`。
+`cheat`     | 默认：False）如果为True，将在经纪人有机会评估订单之前调用计时器。这打开了发布基于开盘价的订单的机会，例如在会话开始前。
+`*args`     | 将传递给`notify_timer`的任何额外args。
+`**kwargs`  | 将传递给`notify_timer`的任何额外kwargs。返回值：创建的计时器。
 
-`返回的计时器，`when`是调用时间。`args`和`kwargs`是传递给`add_timer`的任何附加参数。实际的`when`时间可能稍后，但系统可能无法提前调用计时器。此值是计时器值，而不是系统时间。
-- `add_order_history(orders, notify=True)`：将订单历史直接添加到经纪人以进行性能评估。
+- `notify_timer(timer, when, *args, **kwargs)`
 
-`orders`：是一个可迭代对象（例如：列表、元组、迭代器、生成器），其中每个元素也是一个具有以下子元素（2种格式可能）的可迭代对象（具有长度）：
-  - `[datetime, size, price]`或`[datetime, size, price, data]`，**注意**，必须按日期时间升序排序（或生成排序的元素）。其中：
-  - `datetime`是Python的日期/日期时间实例或格式为`YYYY-MM-DD[THH:MM:SS[.us]]`的字符串，其中括号内的元素是可选的。
-  - `size`是一个整数（正数表示买入，负数表示卖出）。
-  - `price`是一个浮点数/整数。
-  - `data`如果存在，可以取以下任何值：
-    - `None` - 将使用第一个数据源作为目标。
-    - `integer` - 将使用该索引（在Cerebro中插入顺序）的数据。
-    - `string` - 将使用具有该名称的数据，例如使用`cerebro.adddata(data, name=value)`分配的名称。
+接收计时器通知，其中`timer`是由 `add_timer` 返回的计时器，`when`是调用时间。`args`和`kwargs`是传递给`add_timer`的任何附加参数。实际的`when`时间可能稍后，但系统可能无法提前调用计时器。此值是计时器值，而不是系统时间。
+
+- `add_order_history(orders, notify=True)`
+
+将订单历史直接添加到经纪人以进行性能评估。
+
+`orders`：是一个可迭代对象（例如：列表、元组、迭代器、生成器），其中每个元素也是一个具有以下子元素（2种格式可能）的可迭代对象（具有长度）：`[datetime, size, price]`或`[datetime, size, price, data]`，**注意**，必须按日期时间升序排序（或生成排序的元素）。
+
+具体说明如下：
+
+参数         | 描述
+------------ | ---------------
+`datetime`   | 是Python的日期/日期时间实例或格式为`YYYY-MM-DD[THH:MM:SS[.us]]`的字符串，其中括号内的元素是可选的。
+`size`       | 是一个整数（正数表示买入，负数表示卖出）。
+`price`      | 是一个浮点数/整数。
+`data`       | 如果存在，可以取以下任何值：<ul><li>`None` - 将使用第一个数据源作为目标。</li><li> `integer` - 将使用该索引（在Cerebro中插入顺序）的数据。</li><li>`string` - 将使用具有该名称的数据，例如使用`cerebro.adddata(data, name=value)`分配的名称。</li></ul>
+
 `notify`（默认：True）：如果为True，系统中插入的第一个策略将收到根据每个订单的信息创建的人工订单通知。 
 
 **注意**
