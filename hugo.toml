@@ -25,3 +25,9 @@ disableKinds = ['taxonomy']
   BookPortableLinks = true
   BookServiceWorker = true
 
+[markup]
+  defaultMarkdownHandler = "goldmark"
+	
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
