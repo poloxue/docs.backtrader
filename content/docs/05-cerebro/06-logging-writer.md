@@ -1,6 +1,6 @@
 ---
 title: "日志 Logging - Writter"
-weight: 5
+weight: 6
 ---
 
 # Writer
