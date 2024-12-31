@@ -1,5 +1,5 @@
 ---
-title: "分析器 Analyzer"
+title: "分析器"
 weight: 12
 bookCollapseSection: true
 ---

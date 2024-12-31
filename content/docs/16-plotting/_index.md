@@ -1,5 +1,5 @@
 ---
-title: "绘图 Plotting"
+title: "绘图"
 weight: 16
 bookCollapseSection: true
 ---

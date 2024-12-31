@@ -1,5 +1,5 @@
 ---
-title: "仓位管理"
+title: "仓位大小"
 weight: 14
 bookCollapseSection: true
 ---

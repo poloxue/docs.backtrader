@@ -1,5 +1,5 @@
 ---
-title: "指标"
+title: "Indicator"
 weight: 8
 bookCollapseSection: true
 ---

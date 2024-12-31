@@ -1,5 +1,5 @@
 ---
-title: "数据源 DataFeed"
+title: "DataFeed"
 weight: 6
 bookCollapseSection: true
 ---
