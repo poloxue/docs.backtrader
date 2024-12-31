@@ -1,5 +1,5 @@
 ---
-title: "仓位大小"
+title: "Sizer"
 weight: 14
 bookCollapseSection: true
 ---

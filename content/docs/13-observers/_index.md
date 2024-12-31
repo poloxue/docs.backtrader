@@ -1,5 +1,5 @@
 ---
-title: "观察器"
+title: "Observer"
 weight: 13
 bookCollapseSection: true
 ---
