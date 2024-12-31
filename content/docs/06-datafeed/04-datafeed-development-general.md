@@ -245,9 +245,7 @@ if __name__ == '__main__':
 
 ### VChartData 完整代码
 
-```
-
-python
+```python
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 

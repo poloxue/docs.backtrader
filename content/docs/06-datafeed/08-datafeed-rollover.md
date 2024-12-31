@@ -1,9 +1,9 @@
 ---
-title: "期货合约滚动"
+title: "滚动"
 weight: 8
 ---
 
-### 期货合约滚动
+# 滚动
 
 并非所有提供商都提供连续期货合约数据。有时提供的数据是仍在交易的到期合约的有效数据。
 
@@ -14,7 +14,7 @@ weight: 8
 - 没有一种最佳方法将不同到期日期的数据连接成一个连续的期货数据
 - 有些文献，比如SierraChart的文章：http://www.sierrachart.com/index.php?page=doc/ChangingFuturesContract.html
 
-#### 滚动数据源
+## 滚动数据源
 
 从backtrader 1.8.10.99开始，增加了将不同到期日期的期货数据连接成连续期货的功能：
 
