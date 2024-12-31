@@ -1,15 +1,16 @@
 ---
-title: "策略类 Strategy"
+title: "Strategy"
 weight: 1
 ---
 
-### 策略
+# Strategy
 
-在 backtrader 中，Cerebro 实例是整个系统的核心，而策略是平台用户的核心。
+在 backtrader 中，Cerebro 实例是整个系统的核心，而 Strategy 是用户的核心。
 
-#### 策略的生命周期方法
+## Strategy 的生命周期方法
 
 **注意**  
+
 策略可以在创建时通过抛出 `StrategySkipError` 异常来中断，该异常来自 `backtrader.errors` 模块。这将避免在回测期间处理该策略。请参阅“异常”部分。
 
 **构建：`__init__`**
@@ -70,7 +71,7 @@ class MyStrategy(bt.Strategy):
 - 在 `next` 中，指标的值与收盘价进行比较，以执行某些操作
 - 默认的空 `stop` 方法未被重写
 
-#### 策略事件通知
+### 策略事件通知
 
 策略将每个 `next` 周期收到通知：
 
@@ -80,7 +81,7 @@ class MyStrategy(bt.Strategy):
 - 通过 `notify_fund(cash, value, fundvalue, shares)` 接收经纪账户中的当前现金、投资组合、基金价值和份额
 - 通过 `notify_store(msg, *args, **kwargs)` 接收来自存储提供者的通知
 
-#### 如何买入/卖出/平仓
+### 如何买入/卖出/平仓
 
 `buy` 和 `sell` 方法生成订单。调用这些方法时，它们返回一个 Order（或其子类）实例，该实例可用作引用。此订单具有唯一的 `ref` 标识符，可用于比较。
 
@@ -113,7 +114,7 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 
 这将覆盖 `backtrader` 创建的设置，并生成一个 `LIMIT IF TOUCHED` 订单，触及价格为 9.8，限价为 10.0。
 
-### 策略信息：
+## 策略信息：
 
 - `env`：策略所属的 cerebro 实体
 - `datas`：传递给 cerebro 的数据源数组
@@ -125,7 +126,7 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 - `analyzers`：包含 cerebro 为此策略创建的分析器的列表/命名元组序列
 - `position`：获取 `data0` 的当前仓位的属性
 
-### 成员属性（用于统计/观察者/分析器）：
+## 成员属性（用于统计/观察者/分析器）：
 
 - `_orderspending`：将在调用 `next` 之前通知策略的订单列表
 - `_tradespending`：将在调用 `next` 之前通知策略的交易列表
@@ -135,12 +136,13 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 **注意**  
 `prenext`、`nextstart` 和 `next` 可以针对同一时间点多次调用（例如，当使用每日时间框架时，价格更新每日 bar 的 ticks）。
 
-### 策略参考
+## 策略参考
+
 `class backtrader.Strategy(*args, **kwargs)`
 
 基类，用于子类化用户定义的策略。
 
-#### 方法
+### 方法
 
 - `next()`：当所有数据/指标的最小周期满足时，将为所有剩余数据点调用此方法。
 - `nextstart()`：当所有数据/指标的最小周期满足时，将调用一次此方法。默认行为是调用 `next`。
@@ -155,14 +157,14 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 
 通知。
 
-#### 订单方法
+### 订单方法
 
 - `buy(...)`：创建买入订单并发送给经纪。
 - `sell(...)`：创建卖出（空头）订单并发送给经纪。
 - `close(...)`：关闭现有仓位。
 - `cancel(order)`：取消经纪中的订单。
 
-#### 其他方法
+### 其他方法
 
 - `buy_bracket(...)`：创建括号订单组（低侧 - 买入订单 - 高侧）。
 - `sell_bracket(...)`：创建括号订单组（低侧 - 卖出订单 - 高侧）。
