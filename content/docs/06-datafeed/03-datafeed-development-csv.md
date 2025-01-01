@@ -3,9 +3,9 @@ title: "开发 CSV 数据源"
 weight: 3
 --- 
 
-### CSV 数据源开发
+# CSV 数据源开发
 
-backtrader 已经提供了一些通用 CSV 数据源和特定的 CSV 数据源。总结如下：
+**Backtrader** 已经提供了一些通用 CSV 数据源和特定的 CSV 数据源。
 
 - GenericCSVData
 - VisualChartCSVData
@@ -17,15 +17,13 @@ backtrader 已经提供了一些通用 CSV 数据源和特定的 CSV 数据源�
 
 通常的格言是：“说起来容易做起来难”。实际上，结构旨在使其变得简单。
 
-#### 步骤：
+## 步骤
 
 1. 从 `backtrader.CSVDataBase` 继承
 2. 根据需要定义任何参数
 3. 在 `start` 方法中进行任何初始化
 4. 在 `stop` 方法中进行任何清理
-5. 定义一个 `_loadline` 方法，其中实际工作发生
-
-此方法接收一个参数：`linetokens`。
+5. 定义一个 `_loadline` 方法，其中实际工作发生。此方法接收一个参数：`linetokens`。
 
 顾名思义，这包含根据分隔符参数（从基类继承）拆分当前行后的标记。
 
@@ -102,7 +100,7 @@ class MyCSVData(bt.CSVDataBase):
 
 通过添加一些代码行来处理空值和日期格式解析，可以满足更复杂的需求。GenericCSVData 就是这样做的。
 
-### 警告
+## 警告
 
 使用现有的 GenericCSVData 和继承，可以实现很多格式支持。
 
@@ -128,7 +126,7 @@ class SierraChartCSVData(backtrader.feeds.GenericCSVData):
 
 参数定义只是重新定义了基类中的一个现有参数。在这种情况下，只需要更改日期格式字符串。
 
-### 完成
+## 完成
 
 Sierra Chart 的解析器已经完成。
 

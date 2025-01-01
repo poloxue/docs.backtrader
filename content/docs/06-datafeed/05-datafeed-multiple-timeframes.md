@@ -3,265 +3,176 @@ title: "多时间框架"
 weight: 5
 ---
 
-# 多时间框架
+# 多时间框架策略
 
-有时，投资决策需要使用不同的时间框架：
+在实际的交易中，我们常需要结合多个时间框架来制定投资决策，如在周级别评估趋势，而在日级别执行入场，或是基于 5 分钟与 60 分钟数据的对比执行交易。在 **Backtrader** 中要实现这个目标，需要将不同时间框架的数据组合在一起。
 
-- 每周评估趋势
-- 每日执行入场
-- 或5分钟与60分钟对比
+本节将介绍如何在 **Backtrader** 实现多周期交易策略。
 
-这意味着需要在backtrader中组合多个时间框架的数据，以支持这种组合。
+## 基本规则
 
-原生支持已内置。最终用户只需遵循以下规则：
+**Backtrader** 原生支持多时间框架的数据组合，只需遵循几个简单的规则。
 
-1. 最小时间框架（即条数最多）的数据必须首先添加到Cerebro实例中。
-2. 数据必须正确地日期时间对齐，使平台能够解析它们。
+第一步，**最小时间框架的数据必须首先加载**。较小时间框架（条数最多的数据）应当首先加载到Cerebro实例中。
 
-除此之外，用户可以随意在较短/较长的时间框架上应用指标。当然：
+第二步，**数据必须按日期时间对齐**。为了让平台能够正确解析数据并执行策略，必须保证各时间框架的数据时间对齐。
 
-- 应用于较大时间框架的指标会产生较少的条数。
-- 平台还会考虑到较大时间框架的最小周期。
+第三步，**使用 `resampledata` 实现较大时间框架的重采样**。`cerebro.resample` 函数能轻松地将较大的时间框架数据添加到策略中。
 
-最小周期可能会导致在Cerebro中添加的策略在开始执行之前，需要消耗几个数量级的较小时间框架的条数。
+在这个基础上，就可以在较短和较长时间框架上使用不同的技术指标。要注意，应用于大时间框架的指标产生的信号较少，还有，**Backtrader** 会考虑大时间框架的最小周期，以确保数据的准确性。
 
-将使用内置的`cerebro.resample`来创建较大的时间框架。
+## 示例：如何使用多个时间框架
 
-下面是一些示例，但首先是测试脚本的基础代码。
+如何在 **Backtrader** 实现多时间周期呢？大概演示这个步骤吧。
+
+### 加载数据
+
+首先，加载较小时间框架的数据。
 
 ```python
-# 加载数据
-datapath = args.dataname or '../../datas/2006-day-001.txt'
 data = btfeeds.BacktraderCSVData(dataname=datapath)
-cerebro.adddata(data)  # 首先添加原始数据 - 较小的时间框架
+```
 
-tframes = dict(daily=bt.TimeFrame.Days, weekly=bt.TimeFrame.Weeks,
-               monthly=bt.TimeFrame.Months)
+### 将数据添加到Cerebro
 
-# 方便的字典用于时间框架参数转换
-# 重采样数据
-if args.noresample:
-    datapath = args.dataname2 or '../../datas/2006-week-001.txt'
-    data2 = btfeeds.BacktraderCSVData(dataname=datapath)
-    # 然后是较大的时间框架
-    cerebro.adddata(data2)
-else:
-    cerebro.resampledata(data, timeframe=tframes[args.timeframe],
-                         compression=args.compression)
+将较小时间框架数据都添加到 Cerebro 实例中。
 
-# 运行所有内容
+```python
+cerebro.adddata(data)
+```
+
+### 重采样数据
+
+使用 `cerebro.resampledata` 将数据重采样到较大的时间框架。
+
+```python
+cerebro.resampledata(data, timeframe=tframes[args.timeframe], compression=args.compression)
+```
+
+### 运行策略
+
+执行策略并生成结果。
+
+```python
 cerebro.run()
 ```
 
-## 步骤：
+### 示例
 
-1. 加载数据
-2. 根据用户指定的参数重采样
-3. 脚本还允许加载第二个数据
-4. 将数据添加到cerebro
-5. 将重采样的数据（较大时间框架）添加到cerebro
-6. 运行
-
-### 示例 1 - 每日和每周
-
-脚本调用：
+首先，演示每日和每周时间框架。假设我们希望在一个策略中同时使用每日和每周的时间框架。通过命令行指定时间框架为每周，并进行数据重采样：
 
 ```bash
 $ ./multitimeframe-example.py --timeframe weekly --compression 1
 ```
 
-输出图表：
+此时，程序会加载每日数据，并将其重采样为每周数据。最终输出将包括每周和每日数据的合成图表。
 
-（此处应有图表）
-
-### 示例 2 - 每日和每日压缩（2条变1条）
-
-脚本调用：
+继续用每日时间框架压缩。如果我们希望将每日数据压缩为每两天一条数据，可以使用以下命令：
 
 ```bash
 $ ./multitimeframe-example.py --timeframe daily --compression 2
 ```
 
-输出图表：
+此时，Backtrader会将每日数据压缩为每两天一条数据，并生成合成图表。
 
-（此处应有图表）
+还可以带简单移动平均（SMA）指标。为了展示不同时间框架对策略的影响，可以在策略中使用简单的移动平均线（SMA）指标。SMA将在较小和较大时间框架上应用，并根据它们产生不同的信号。
 
-### 示例 3 - 带有SMA的策略
+- 在较小的时间框架（如每日）上，SMA将在第10个数据点后首次计算出值。
+- 在较大的时间框架（如每周）上，SMA的计算会延迟，可能需要10个周期的时间来产生有效信号。
 
-虽然绘图很有用，但关键问题是展示较大时间框架如何影响系统，特别是涉及到起始点时。
+由于Backtrader的多时间框架支持，较大时间框架会消耗多个较小时间框架的数据条目来计算指标。
 
-脚本可以使用`--indicators`参数添加一个创建10周期简单移动平均线的策略，应用于较小和较大时间框架数据。
+在策略中使用 SMA 时，如果数据点来自较大时间框架，`nextstart` 方法的调用可能会有所延迟。例如，在每周时间框架下，SMA的计算需要10周的数据，而在每个周期内，我们将看到多个“nextstart”调用，因为Backtrader会等待所有数据都齐全时才开始执行策略逻辑。
 
-如果只考虑较小的时间框架：
-
-- 在第10个条之后会首次调用`next`，这是简单移动平均线需要的时间来产生一个值。
-
-注意：策略监视创建的指标，并且只有在所有指标产生值时才调用`next`。其逻辑是，用户添加指标是为了在逻辑中使用它们，因此如果指标没有产生值，就不应进行任何逻辑操作。
-
-但在这种情况下，较大时间框架（每周）延迟了`next`的调用，直到较大时间框架上的简单移动平均线产生一个值，这需要……10周。
-
-脚本重写了`nextstart`，它只调用一次，默认调用`next`来显示首次调用的时间。
-
-调用1：
-只有较小的时间框架（每日）得到一个简单移动平均线
-
-命令行和输出：
-
-```bash
-$ ./multitimeframe-example.py --timeframe weekly --compression 1 --indicators --onlydaily
---------------------------------------------------
-nextstart called with len 10
---------------------------------------------------
-```
-
-输出图表：（此处应有图表）
-
-调用2：
-
-两个时间框架都得到一个简单移动平均线
-
-命令行：
-
-```bash
-$ ./multitimeframe-example.py --timeframe weekly --compression 1 --indicators
---------------------------------------------------
-nextstart called with len 50
---------------------------------------------------
---------------------------------------------------
-nextstart called with len 51
---------------------------------------------------
---------------------------------------------------
-nextstart called with len 52
---------------------------------------------------
---------------------------------------------------
-nextstart called with len 53
---------------------------------------------------
---------------------------------------------------
-nextstart called with len 54
---------------------------------------------------
-```
-
-需要注意的两点：
-
-1. 策略在50个周期后首次调用，而不是10个周期后。
-2. 这是因为应用于较大时间框架（每周）的简单移动平均线在10周后产生一个值，而这相当于10周 * 5天/周……50天。
-
-`nextstart`被调用了5次，而不是只调用一次。这是混合时间框架并应用于较大时间框架的指标的自然副作用。较大时间框架的简单移动平均线在消耗5个每日条时会产生5次相同的值。因此，`nextstart`被调用了5次。
-
-输出图表：（此处应有图表）
-
-### 结论
-
-在backtrader中使用多个时间框架数据不需要特殊的对象或调整：只需首先添加较小的时间框架。
-
-### 测试脚本
+## 代码示例
 
 ```python
+# 导入必要的库
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
 
 import argparse
-
 import backtrader as bt
 import backtrader.feeds as btfeeds
 import backtrader.indicators as btind
 
-
+# 创建SMA策略
 class SMAStrategy(bt.Strategy):
     params = (
-        ('period', 10),
-        ('onlydaily', False),
+        ('period', 10),  # SMA的周期
+        ('onlydaily', False),  # 是否只在每日时间框架上应用
     )
 
     def __init__(self):
+        # 为较小时间框架添加SMA
         self.sma_small_tf = btind.SMA(self.data, period=self.p.period)
+        
+        # 如果选择不只应用于每日时间框架
         if not self.p.onlydaily:
+            # 为较大时间框架（如每周）添加SMA
             self.sma_large_tf = btind.SMA(self.data1, period=self.p.period)
 
+    # nextstart方法，用于输出调试信息
     def nextstart(self):
         print('--------------------------------------------------')
         print('nextstart called with len', len(self))
         print('--------------------------------------------------')
-
         super(SMAStrategy, self).nextstart()
 
-
+# 运行策略
 def runstrat():
     args = parse_args()
 
-    # 创建 cerebro 实体
+    # 创建Cerebro实例
     cerebro = bt.Cerebro(stdstats=False)
 
-    # 添加策略
+    # 根据用户选择的策略参数加载相应策略
     if not args.indicators:
         cerebro.addstrategy(bt.Strategy)
     else:
-        cerebro.addstrategy(
-            SMAStrategy,
+        cerebro.addstrategy(SMAStrategy, period=args.period, onlydaily=args.onlydaily)
 
-            # 策略参数
-            period=args.period,
-            onlydaily=args.onlydaily,
-        )
-
-    # 加载数据
+    # 加载数据文件
     datapath = args.dataname or '../../datas/2006-day-001.txt'
     data = btfeeds.BacktraderCSVData(dataname=datapath)
-    cerebro.adddata(data)  # 首先添加原始数据 - 较小的时间框架
+    cerebro.adddata(data)  # 添加较小时间框架的数据
 
-    tframes = dict(daily=bt.TimeFrame.Days, weekly=bt.TimeFrame.Weeks,
-                   monthly=bt.TimeFrame.Months)
+    tframes = dict(daily=bt.TimeFrame.Days, weekly=bt.TimeFrame.Weeks, monthly=bt.TimeFrame.Months)
 
-    # 方便的字典用于时间框架参数转换
-    # 重采样数据
+    # 根据需要重采样数据到较大时间框架
     if args.noresample:
         datapath = args.dataname2 or '../../datas/2006-week-001.txt'
         data2 = btfeeds.BacktraderCSVData(dataname=datapath)
-        # 然后是较大的时间框架
         cerebro.adddata(data2)
     else:
-        cerebro.resampledata(data, timeframe=tframes[args.timeframe],
-                             compression=args.compression)
+        cerebro.resampledata(data, timeframe=tframes[args.timeframe], compression=args.compression)
 
-    # 运行所有内容
+    # 执行策略并生成结果
     cerebro.run()
 
     # 绘制结果
     cerebro.plot(style='bar')
 
-
+# 解析命令行参数
 def parse_args():
-    parser = argparse.ArgumentParser(
-        description='Multitimeframe test')
-
-    parser.add_argument('--dataname', default='', required=False,
-                        help='文件数据加载路径')
-
-    parser.add_argument('--dataname2', default='', required=False,
-                        help='加载较大时间框架文件路径')
-
-    parser.add_argument('--noresample', action='store_true',
-                        help='不重采样，而是加载较大时间框架')
-
-    parser.add_argument('--timeframe', default='weekly', required=False,
-                        choices=['daily', 'weekly', 'monthly'],
-                        help='要重采样到的时间框架')
-
-    parser.add_argument('--compression', default=1, required=False, type=int,
-                        help='压缩n条数据为1条')
-
-    parser.add_argument('--indicators', action='storetrue',
-                        help='是否应用带指标的策略')
-
-    parser.add_argument('--onlydaily', action='storetrue',
-                        help='仅将指标应用于每日时间框架')
-
-    parser.add_argument('--period', default=10, required=False, type=int,
-                        help='应用于指标的周期')
-
+    parser = argparse.ArgumentParser(description='Multitimeframe test')
+    parser.add_argument('--dataname', default='', required=False, help='数据文件路径')
+    parser.add_argument('--dataname2', default='', required=False, help='第二个数据文件路径')
+    parser.add_argument('--noresample', action='store_true', help='不进行数据重采样')
+    parser.add_argument('--timeframe', default='weekly', choices=['daily', 'weekly', 'monthly'], help='重采样时间框架')
+    parser.add_argument('--compression', default=1, type=int, help='压缩数据条数')
+    parser.add_argument('--indicators', action='store_true', help='是否使用带指标的策略')
+    parser.add_argument('--onlydaily', action='store_true', help='仅在每日时间框架上应用指标')
+    parser.add_argument('--period', default=10, type=int, help='指标周期')
     return parser.parse_args()
-
 
 if __name__ == '__main__':
     runstrat()
 ```
+
+## 结论
+
+通过Backtrader的多时间框架支持，您可以轻松地将不同时间框架的数据结合在一起，从而实现更加灵活的交易策略。只需遵循上述规则，就能在多个时间框架中应用不同的指标，并根据数据的不同粒度调整策略的执行逻辑。
+
+此外，Backtrader也允许通过`nextstart`方法来精确控制每个周期的数据处理逻辑，这使得您可以清晰地跟踪每个时间框架的计算过程，方便调试和优化。
+

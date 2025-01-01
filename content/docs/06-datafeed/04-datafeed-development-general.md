@@ -1,23 +1,20 @@
 ---
-title: "开发二进制数据源"
+title: "开发 Binary 数据源"
 weight: 4
 ---
 
-### 二进制数据源开发
+# 开发 Binary 据源
 
-**注意**
+**注意**：示例中使用的 Binary 文件 `goog.fd` 属于 VisualChart，不能与 backtrader 一起分发。
 
-示例中使用的二进制文件 `goog.fd` 属于 VisualChart，不能与 backtrader 一起分发。
-
-对于那些有兴趣直接使用二进制文件的人，可以免费下载 VisualChart。
+对于那些有兴趣直接使用 Binary 文件的人，可以免费下载 VisualChart。
 
 CSV 数据源开发展示了如何添加新的基于 CSV 的数据源。现有的基类 `CSVDataBase` 提供了框架，减轻了子类的大部分工作，在大多数情况下，它们可以简单地执行：
 
 ```python
 def _loadline(self, linetokens):
 
-  # 在这里解析 linetokens 并将它们放入 self.lines.close,
-  # self.lines.high 等中
+  # 在这里解析 linetokens 并将它们放入 self.lines.close, self.lines.high 等中
 
   return True # 如果数据已解析，否则返回 False
 ```
@@ -62,13 +59,13 @@ class DataBase(with_metaclass(MetaDataBase, dataseries.OHLCDateTime)):
 - `compression`（默认值：1）：每条实际条的条数。信息性。仅在数据重采样/重放中有效。
 - `sessionend`：如果传递（`datetime.time` 对象），将添加到数据源日期时间行，允许识别会话结束。
 
-### 示例二进制数据源
+## 示例二进制数据源
 
 backtrader 已经定义了一个 CSV 数据源（VChartCSVData）用于 VisualChart 的导出数据，但也可以直接读取二进制数据文件。
 
 让我们来实现（完整的数据源代码可以在文末找到）。
 
-#### 初始化
+### 初始化
 
 二进制 VisualChart 数据文件可以包含每日数据（.fd 扩展名）或日内数据（.min 扩展名）。这里使用参数 `timeframe` 来区分读取的文件类型。
 
@@ -90,7 +87,7 @@ def __init__(self):
         self.barfmt = 'IIffffII'
 ```
 
-#### 开始
+### 开始
 
 数据源将在回测开始时启动（在优化期间实际上可以启动多次）。
 
@@ -108,7 +105,7 @@ def start(self):
         self.f = open(self.p.dataname, 'rb')
 ```
 
-#### 停止
+### 停止
 
 回测结束时调用。
 
@@ -122,7 +119,7 @@ def stop(self):
         self.f = None
 ```
 
-#### 实际加载
+### 实际加载
 
 实际工作在 `_load` 中完成。调用以加载下一组数据，在这种情况下是下一个：datetime、open、high、low、close、volume、openinterest。在 backtrader 中，“实际”时刻对应于索引 0。
 
@@ -180,7 +177,7 @@ def _load(self):
     return True
 ```
 
-### 其他二进制格式
+## 其他二进制格式
 
 同样的模型可以应用于任何其他二进制源：
 
@@ -195,7 +192,7 @@ def _load(self):
 - `stop` -> 清理，例如关闭数据库连接或打开的套接字
 - `_load` -> 查询数据库或在线源以获取下一组数据并将其加载到对象的行中。标准字段为：datetime、open、high、low、close、volume、openinterest
 
-### VChartData 测试
+## VChartData 测试
 
 VChartData 从本地 `.fd` 文件加载 2006 年 Google 的数据。
 
