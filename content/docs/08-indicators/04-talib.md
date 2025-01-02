@@ -1,23 +1,22 @@
 ---
-title: "TALib"
+title: "TA-Lib"
 weight: 4
 ---
 
-## TA-Lib
+# TA-Lib
 
-即使backtrader已经提供了大量内置指标，并且开发一个指标主要是定义输入、输出并以自然方式编写公式，但有些人仍然希望使用TA-LIB。原因如下：
-
-- 指标X在TA-LIB库中存在，但在backtrader中不存在（作者很乐意接受请求）
-- TA-LIB的行为是众所周知的，人们信赖传统的事物
+即使backtrader已经提供了大量内置指标，并且开发一个指标主要是定义输入、输出并以自然方式编写公式，但有些人仍然希望使用TA-LIB。因为，指标X在TA-LIB库中存在，但在backtrader中不存在（作者很乐意接受请求），还有，TA-LIB的行为是众所周知的，人们信赖传统的事物。
 
 为了满足每个人的需求，提供了TA-LIB集成。
 
-### 需求
+## 需求
+
 - TA-LIB的Python封装
 - 任何需要的依赖项（例如numpy）
 - 安装详情在GitHub仓库中
 
-### 使用TA-LIB
+## 使用TA-LIB
+
 与使用backtrader内置指标一样简单。以下是一个简单移动平均线的示例。首先是backtrader的示例：
 
 ```python
@@ -89,7 +88,7 @@ Outputs:
 - 哪些参数及其默认值
 - 指标实际提供的输出线
 
-### 移动平均线和MA_Type
+## 移动平均线和MA_Type
 要选择特定的移动平均线，如`bt.talib.STOCH`，标准的TA-LIB `MA_Type`可以通过`backtrader.talib.MA_Type`访问。例如：
 
 ```python
@@ -98,14 +97,15 @@ print('SMA:', bt.talib.MA_Type.SMA)
 print('T3:', bt.talib.MA_Type.T3)
 ```
 
-### 绘制TA-LIB指标
+## 绘制TA-LIB指标
 与常规用法一样，绘制TA-LIB指标无需特殊操作。
 
 **注意：**
 
 输出蜡烛图的指标（所有寻找蜡烛图模式的指标）会生成二进制输出：0或100。为了避免在图表上添加子图，存在自动绘图转换，以在识别模式时将其绘制在数据上。
 
-### 示例和比较
+## 示例和比较
+
 以下是一些比较TA-LIB指标输出与backtrader内置指标的示例。注意：
 
 - TA-LIB指标在图上有一个`TA_`前缀。这是样例特意这样做以帮助用户区分。
@@ -113,7 +113,8 @@ print('T3:', bt.talib.MA_Type.T3)
 
 所有样例包括`CDLDOJI`指标作为参考。
 
-#### KAMA（考夫曼移动平均线）
+### KAMA（考夫曼移动平均线）
+
 这是第一个示例，因为这是样本直接比较的所有指标中唯一存在差异的：
 
 - 样本的初始值不同
@@ -141,7 +142,7 @@ $ ./talibtest.py --plot --ind kama
 
 图像
 
-#### SMA
+### SMA
 
 ```
 $ ./talibtest.py --plot --ind sma
@@ -150,7 +151,7 @@ $ ./talibtest.py --plot --ind sma
 
 图像
 
-#### EMA
+### EMA
 
 ```
 $ ./talibtest.py --plot --ind ema
@@ -159,7 +160,7 @@ $ ./talibtest.py --plot --ind ema
 
 图像
 
-#### 随机指标
+### 随机指标
 
 ```
 $ ./talibtest.py --plot --ind stoc
@@ -168,7 +169,7 @@ $ ./talibtest.py --plot --ind stoc
 
 图像
 
-#### RSI
+### RSI
 
 ```
 $ ./talibtest.py --plot --ind rsi
@@ -186,7 +187,7 @@ $ ./talibtest.py --plot --ind macd
 
 图像
 
-#### 布林带
+### 布林带
 
 ```
 $ ./talibtest.py --plot --ind bollinger
@@ -195,7 +196,8 @@ $ ./talibtest.py --plot --ind bollinger
 
 图像
 
-#### AROON
+### AROON
+
 注意，TA-LIB选择先绘制下降线，并且颜色与backtrader内置指标相反。
 
 ```
@@ -205,7 +207,7 @@ $ ./talibtest.py --plot --ind aroon
 
 图像
 
-#### Ultimate Oscillator
+### Ultimate Oscillator
 
 ```
 $ ./talibtest.py --plot --ind ultimate
@@ -214,7 +216,7 @@ $ ./talibtest.py --plot --ind ultimate
 
 图像
 
-#### Trix
+### Trix
 
 ```
 $ ./talibtest.py --plot --ind trix
@@ -223,7 +225,8 @@ $ ./talibtest.py --plot --ind trix
 
 图像
 
-#### ADXR
+### ADXR
+
 backtrader同时提供ADX和ADXR线。
 
 ```
@@ -242,7 +245,7 @@ $ ./talibtest.py --plot --ind dema
 
 图像
 
-#### TEMA
+### TEMA
 
 ```
 $ ./talibtest.py --plot --ind tema
@@ -251,7 +254,8 @@ $ ./talibtest.py --plot --ind tema
 
 图像
 
-#### PPO
+### PPO
+
 backtrader不仅提供PPO线，还提供更传统的MACD方法。
 
 ```
@@ -280,7 +284,7 @@ $ ./talibtest.py --plot --ind roc
 
 图像
 
-### 样本用法
+## 样本用法
 
 ```
 $ ./talibtest.py --help
@@ -310,7 +314,7 @@ optional arguments:
                         style="candle" (to plot candles) (default: None)
 ```
 
-### 样本代码
+## 样本代码
 
 ```python
 from __future__ import (absolute_import, division, print_function,
