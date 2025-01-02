@@ -9,62 +9,38 @@ Cerebro 是 backtrader 中的关键控制系统，而 Strategy（一个子类）
 
 订单将策略中的逻辑决策转化为适合 Broker 执行操作的消息。这是通过以下方式完成的：
 
-### 创建
+## 创建
 
 通过 Strategy 的方法：`buy`、`sell` 和 `close`（Strategy），这些方法返回一个订单实例作为参考。
 
-### 取消
+## 取消
 
 通过 Strategy 的方法：`cancel`（Strategy），该方法需要一个订单实例来操作。
 
 订单也作为一种通信方式反馈给用户，通知 Broker 中的执行情况。
 
-### 通知
+## 通知
 
 通过 Strategy 的方法：`notify_order`（Strategy），该方法报告一个订单实例。
 
-### 订单创建
+## 订单创建
+
 调用 `buy`、`sell` 和 `close` 时，以下参数适用于创建：
 
-- `data`（默认：None）
+参数名          | 默认值         | 描述
+--------------- | -------------- | -------------------
+`data`          | None           | 为哪个数据创建订单。如果为 None，则使用系统中的第一个数据，`self.datas[0]` 或 `self.data0`（又名 `self.data`）。
+`size`          | None           | 使用的单位数量。如果为 None，则使用通过 `getsizer` 获取的 sizer 实例来确定大小。
+`price`         | None           | 使用的价格（实时 Broker 可能会对格式有实际限制，如果不符合最小刻度要求）。对于 Market 和 Close 订单，None 是有效的（市场决定价格）。对于 Limit、Stop 和 StopLimit 订单，该值决定触发点（在 Limit 的情况下，触发点显然是订单匹配的价格）。
+`plimit`        | None           | 仅适用于 StopLimit 订单。这是在 Stop 触发后设置隐含 Limit 订单的价格。
+`exectype`      | None           | 可能的值：<ul style="list-style-type: none;padding-left: 0; margin-left: 0;"><li>- `Order.Market` 或 None：市场订单将以下一个可用价格执行。在回测中，这将是下一根K线的开盘价。</li><li>- `Order.Limit`：只能在给定价格或更好的价格执行的订单。</li><li>- `Order.Stop`：在价格触发时执行的订单，执行方式如同 Market 订单。</li><li>- `Order.StopLimit`：在价格触发时执行的订单，作为隐含 Limit 订单执行，价格由 `pricelimit` 给定。</li></li>
+`valid`         | None           | 可能的值：<ul style="list-style-type: none;padding-left: 0; margin-left: 0;"><li>- None：生成一个不会过期的订单（即 Good till cancel），并在市场中保留直到匹配或取消。实际上，Broker 往往会强制一个时间限制，但这通常是很长时间，所以认为它不会过期。</li><li>- `datetime.datetime` 或 `datetime.date` 实例：使用给定的日期生成一个有效直到该日期的订单（即 Good till date）。</li><li>- `Order.DAY` 或 0 或 `timedelta()`：生成一个有效期为一天的订单（即日订单），有效期直到会话结束。</li><li>- 数值：假定为一个对应于 `matplotlib` 编码的日期时间值（backtrader 使用的），并用于生成一个有效期至该时间的订单（即 Good till date）。</li></ul>
+`tradeid`       | 0              | 这是 backtrader 用来跟踪同一资产上重叠交易的内部值。在通知订单状态变化时，该 `tradeid` 会返回给策略。
+`**kwargs`      | /              | 额外的 Broker 实现可能支持额外的参数。backtrader 会将 kwargs 传递给创建的订单对象。
 
-  为哪个数据创建订单。如果为 None，则使用系统中的第一个数据，`self.datas[0]` 或 `self.data0`（又名 `self.data`）。
+## 示例
 
-- `size`（默认：None）
-
-  使用的单位数量。如果为 None，则使用通过 `getsizer` 获取的 sizer 实例来确定大小。
-
-- `price`（默认：None）
-
-  使用的价格（实时 Broker 可能会对格式有实际限制，如果不符合最小刻度要求）。对于 Market 和 Close 订单，None 是有效的（市场决定价格）。对于 Limit、Stop 和 StopLimit 订单，该值决定触发点（在 Limit 的情况下，触发点显然是订单匹配的价格）。
-
-- `plimit`（默认：None）
-
-  仅适用于 StopLimit 订单。这是在 Stop 触发后设置隐含 Limit 订单的价格。
-
-- `exectype`（默认：None）
-
-  可能的值：
-  - `Order.Market` 或 None：市场订单将以下一个可用价格执行。在回测中，这将是下一根K线的开盘价。
-  - `Order.Limit`：只能在给定价格或更好的价格执行的订单。
-  - `Order.Stop`：在价格触发时执行的订单，执行方式如同 Market 订单。
-  - `Order.StopLimit`：在价格触发时执行的订单，作为隐含 Limit 订单执行，价格由 `pricelimit` 给定。
-
-- `valid`（默认：None）
-
-  可能的值：
-  - None：生成一个不会过期的订单（即 Good till cancel），并在市场中保留直到匹配或取消。实际上，Broker 往往会强制一个时间限制，但这通常是很长时间，所以认为它不会过期。
-  - `datetime.datetime` 或 `datetime.date` 实例：使用给定的日期生成一个有效直到该日期的订单（即 Good till date）。
-  - `Order.DAY` 或 0 或 `timedelta()`：生成一个有效期为一天的订单（即日订单），有效期直到会话结束。
-  - 数值：假定为一个对应于 `matplotlib` 编码的日期时间值（backtrader 使用的），并用于生成一个有效期至该时间的订单（即 Good till date）。
-
-- `tradeid`（默认：0）
-
-  这是 backtrader 用来跟踪同一资产上重叠交易的内部值。在通知订单状态变化时，该 `tradeid` 会返回给策略。
-
-- **kwargs：额外的 Broker 实现可能支持额外的参数。backtrader 会将 kwargs 传递给创建的订单对象。
-
-示例：如果 backtrader 直接支持的 4 种订单执行类型不够，例如对于 Interactive Brokers，可以传递如下参数：
+如果 backtrader 直接支持的 4 种订单执行类型不够，例如对于 Interactive Brokers，可以传递如下参数：
 
 ```python
 orderType='LIT', lmtPrice=10.0, auxPrice=9.8
@@ -76,7 +52,8 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 
 `close` 方法将检查当前仓位，并相应地使用 `buy` 或 `sell` 有效地关闭仓位。除非参数由用户输入，否则大小也将自动计算，在这种情况下可以实现部分关闭或反转。
 
-### 订单通知
+## 订单通知
+
 要接收通知，必须在用户子类的 Strategy 中重写 `notify_order` 方法（默认行为是什么都不做）。以下适用于这些通知：
 
 - 在策略的 `next` 方法调用之前发出。
@@ -97,7 +74,8 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 
 创建时的值存储在 `order.created` 中，在订单生命周期中保持不变。
 
-### 订单状态值
+## 订单状态值
+
 以下定义：
 
 - `Order.Created`：在创建订单实例时设置。除非手动创建订单实例，否则终端用户不会看到该状态。
@@ -114,7 +92,7 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
   - 必须考虑，通过策略的 `cancel` 方法请求取消订单并不保证取消。订单可能已经执行，但此执行可能尚未被 Broker 通知，并且通知可能尚未传递给策略。
 - `Order.Expired`：之前接受的订单具有时间有效性，已过期并被从系统中移除。
 
-### 引用：Order 及相关类
+## 引用：Order 及相关类
 这些对象是 backtrader 生态系统中的通用类。在与其他 Broker 操作时，它们可能已扩展和/或包含额外的嵌入信息。请参阅相应 Broker 的参考。
 
 ```python
