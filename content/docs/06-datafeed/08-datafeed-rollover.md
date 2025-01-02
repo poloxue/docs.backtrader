@@ -5,14 +5,12 @@ weight: 8
 
 # 滚动
 
-并非所有提供商都提供连续期货合约数据。有时提供的数据是仍在交易的到期合约的有效数据。
+并非所有提供商都提供连续期货合约数据。有时提供的数据是仍在交易的到期合约的有效数据。这种情况下，进行回测会变得很不方便，因为数据分散在多个不同的合约上，并且这些合约还会在时间上重叠。
 
-这种情况下，进行回测会变得很不方便，因为数据分散在多个不同的合约上，并且这些合约还会在时间上重叠。
-
-能够正确地将这些过去的合约数据连接成一个连续的数据流，可以缓解这种痛苦。问题在于：
+如果能够正确地将这些过去的合约数据连接成一个连续的数据流，可以缓解这种痛苦。问题在于：
 
 - 没有一种最佳方法将不同到期日期的数据连接成一个连续的期货数据
-- 有些文献，比如SierraChart的文章：http://www.sierrachart.com/index.php?page=doc/ChangingFuturesContract.html
+- 有些文献，如 [SierraChart的文章](http://www.sierrachart.com/index.php?page=doc/ChangingFuturesContract.html)
 
 ## 滚动数据源
 
@@ -32,10 +30,9 @@ drollover = cerebro.rolloverdata(data0, data1, ..., dataN, name='MyRoll', **kwar
 cerebro.run()
 ```
 
-**注意：**
-
-- 可能的`**kwargs`将在下文解释
-- 也可以直接访问RollOver数据源（如果需要子类化，这是很有帮助的）：
+> **注意：** 
+> - `**kwargs`将在下文解释
+> - 也可以直接访问RollOver数据源（如果需要子类化，这是很有帮助的）：
 
 ```python
 import backtrader as bt
@@ -52,65 +49,27 @@ cerebro.adddata(drollover)
 cerebro.run()
 ```
 
-**注意：**
+> **注意：**
+> - 使用RollOver时，使用`dataname`参数分配名称，这是所有数据源用于传递名称/代码的标准参数。在这种情况下，它被重用以给整个滚动的期货集分配一个通用名称。
+> - 对于`cerebro.rolloverdata`，使用`name`参数为数据源分配名称，这是该方法的一个命名参数。
 
-- 使用RollOver时，使用`dataname`参数分配名称，这是所有数据源用于传递名称/代码的标准参数。在这种情况下，它被重用以给整个滚动的期货集分配一个通用名称。
-- 对于`cerebro.rolloverdata`，使用`name`参数为数据源分配名称，这是该方法的一个命名参数。
-
-总结：
+Rollover 的使用可概括为：
 
 1. 按通常方式创建数据源，但**不要**将它们添加到cerebro
 2. 将这些数据源作为输入传递给`bt.feeds.RollOver`
 3. 也传递一个`dataname`，主要用于识别目的
 4. 然后将这个滚动的数据源添加到cerebro
 
-#### 滚动的选项
+## 滚动的选项
 
 提供两个参数来控制滚动过程：
 
-- `checkdate`（默认：None）：必须是一个可调用对象，具有以下签名：
+参数名           | 默认值 |  描述           
+---------------- | ------ | -----------------------------
+`checkdate`      | None   | 必须是一个可调用对象，签名：`checkdate(dt, d)`<ul style="list-style-type: none;padding-left: 0; margin-left: 0;"><li>- `dt` 一个`datetime.datetime`对象</li> <li>- `d`，当前活跃期货的数据源</li></ul> 预期返回值<ul style="list-style-type: none;padding-left: 0; margin-left: 0;"><li>- `True`：只要可调用对象返回此值，就可以切换到下一个期货 </li><li>- `False`：不能进行到期转换</li></ul>例如，如果某商品在3月的第三个星期五到期，`checkdate`可以在到期所在的一整周内返回`True`。
+`checkcondition` | None   | 仅当`checkdate`返回`True`时才会调用此参数。如果为`None`，则内部评估为`True`（执行滚动）。否则，它必须是一个可调用对象，签名是 `checkcondition(d0, d1)` <ul><li/>- `d0`是当前活跃期货的数据源</li><li>- `d1`是下一个到期的数据源</li></ul>预期返回值：<ul><li>- `True`：滚动到下一个期货</li><li>- `False`：不能进行到期转换</li></ul>例如，可以通过`checkcondition`判断，如果`d0`的交易量小于`d1`，则进行到期转换。
 
-```python
-checkdate(dt, d)
-```
-
-其中：
-
-- `dt`是一个`datetime.datetime`对象
-- `d`是当前活跃期货的数据源
-
-预期返回值：
-
-- `True`：只要可调用对象返回此值，就可以切换到下一个期货
-- `False`：不能进行到期转换
-
-例如，如果某商品在3月的第三个星期五到期，`checkdate`可以在到期所在的一整周内返回`True`。
-
-- `checkcondition`（默认：None）
-
-**注意：** 仅当`checkdate`返回`True`时才会调用此参数。
-
-如果为`None`，则内部评估为`True`（执行滚动）。
-
-否则，它必须是一个可调用对象，具有以下签名：
-
-```python
-checkcondition(d0, d1)
-```
-
-其中：
-
-- `d0`是当前活跃期货的数据源
-- `d1`是下一个到期的数据源
-
-预期返回值：
-
-- `True`：滚动到下一个期货
-- `False`：不能进行到期转换
-
-例如，可以通过`checkcondition`判断，如果`d0`的交易量小于`d1`，则进行到期转换。
-
-#### 子类化RollOver
+## 子类化RollOver
 
 如果指定的可调用对象还不够用，可以子类化`RollOver`。需要子类化的方法有：
 
@@ -126,7 +85,7 @@ def _checkcondition(self, d0, d1)
 
 它与上文同名参数的签名相匹配。预期返回值也相同。
 
-#### 示例用法
+## 示例用法
 
 **注意：** 示例中的默认行为是使用`cerebro.rolloverdata`。可以通过传递`-no-cerebro`标志来更改。在这种情况下，示例使用`RollOver`和`cerebro.adddata`。
 
@@ -204,7 +163,7 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 
 这大部分是错误的。虽然backtrader无法知道，但作者知道EuroStoxx 50期货在到期月的第三个星期五中午12:00 CET停止交易。因此，即使在到期月的第三个星期五有一个每日条，更换也是太晚了。
 
-#### 在周内更换
+## 在周内更换
 
 在示例中实现了一个`checkdate`可调用对象，它计算当前活跃合约的到期日期。
 
@@ -241,7 +200,7 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 
 效果要好得多。滚动现在发生在到期月的第三个星期五之前的星期一。
 
-#### 添加交易量条件
+## 添加交易量条件
 
 即使有了改进，还可以进一步改善，通过考虑日期和交易量来决定是否滚动。仅在新合约的交易量超过当前活跃合约时进行切换。
 
@@ -278,11 +237,11 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 
 效果更好。我们已将切换日期移至到期月第三个星期五之前的星期四。
 
-#### 结论
+## 结论
 
 backtrader 现在包含一个灵活的机制，用于创建连续期货数据流。
 
-#### 示例用法
+## 示例用法
 
 ```bash
 $ ./rollover.py --help

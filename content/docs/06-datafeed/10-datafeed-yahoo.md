@@ -3,7 +3,7 @@ title: "Yahoo 数据源说明"
 weight: 10
 ---
 
-### Yahoo 数据源说明
+# Yahoo 数据源说明
 
 在 2017 年 5 月，Yahoo 停用了现有的 CSV 格式的历史数据下载 API。
 

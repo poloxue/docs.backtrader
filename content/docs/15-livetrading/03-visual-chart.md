@@ -1,9 +1,10 @@
 ---
-title: "visual chart"
+title: "Visual Chart"
 weight: 3
 ---
 
-### Visual Chart
+# Visual Chart
+
 Visual Chart 的集成支持以下功能：
 
 - 实时数据馈送
@@ -15,11 +16,13 @@ Visual Chart 是一个完整的交易解决方案：
 
 有关更多信息，请访问：[www.visualchart.com](http://www.visualchart.com)
 
-### 要求
+## 要求
+
 - **VisualChart 6**（运行在 Windows 上）
 - **comtypes fork**： [https://github.com/mementum/comtypes](https://github.com/mementum/comtypes)
 
 可以通过以下命令安装：
+
 ```bash
 pip install https://github.com/mementum/comtypes/archive/master.zip
 ```

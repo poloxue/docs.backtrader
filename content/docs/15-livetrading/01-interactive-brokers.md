@@ -1,5 +1,5 @@
 ---
-title: "盈透 Interactive Brokers"
+title: "Interactive Brokers"
 weight: 1
 ---
 

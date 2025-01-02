@@ -3,15 +3,11 @@ title: "Pandas 数据源示例"
 weight: 11
 ---
 
-### Pandas 数据源示例
+# Pandas 数据源示例
 
-**注意**
+**注意**，需要安装 pandas 及其依赖项。支持 Pandas Dataframe 对很多人来说很重要，他们依赖于 Pandas 提供的不同数据源（包括 CSV）的解析代码及其他功能。
 
-需要安装 pandas 及其依赖项。
-
-支持 Pandas Dataframe 对很多人来说很重要，他们依赖于 Pandas 提供的不同数据源（包括 CSV）的解析代码及其他功能。
-
-#### 数据源的重要声明
+## 数据源的重要声明
 
 **注意**
 
