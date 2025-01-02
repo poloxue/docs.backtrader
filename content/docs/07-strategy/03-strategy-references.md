@@ -3,50 +3,32 @@ title: "策略参考"
 weight: 3
 ---
 
-### 策略参考
+# 策略参考
 
-#### 内置策略参考
+## 内置策略参考
 
-#### MA_CrossOver
-别名：
-- SMA_CrossOver
+## MA_CrossOver
 
-这是一个仅做多的策略，基于移动平均线交叉操作。
+别名：SMA_CrossOver，这是一个仅做多的策略，基于移动平均线交叉操作。
 
-**注意：**
+### 交易规则
 
-- 尽管默认...
+**买入逻辑：** 如果无持仓，`fast` 移动平均线向上穿过 `slow` 移动平均线。
 
-**买入逻辑：**
+**卖出逻辑：** 有持仓时，`fast` 移动平均线向下穿过 `slow` 移动平均线。
 
-- 数据上没有头寸。
-- `fast` 移动平均线向上穿过 `slow` 移动平均线。
-
-**卖出逻辑：**
-
-- 数据上存在头寸。
-- `fast` 移动平均线向下穿过 `slow` 移动平均线。
-
-**订单执行类型：**
-
-- 市价单
-
-**线：**
-
-- datetime
+**订单类型：** 市价单
 
 **参数：**
 
-- fast (10)
-- slow (30)
-- _movav (<class ‘backtrader.indicators.sma.SMA’>)
+- fast (10)，_movav (<class ‘backtrader.indicators.sma.SMA’>)
+- slow (30)，_movav (<class ‘backtrader.indicators.sma.SMA’>)
 
-#### SignalStrategy
-此策略的子类旨在使用信号自动操作。
+## SignalStrategy
 
-信号通常是指标，预期输出值为：
+此策略的子类旨在使用信号自动操作。信号通常是指标，预期输出值为：
 
-- > 0 表示多头指示
+- \> 0 表示多头指示
 - < 0 表示空头指示
 
 信号分为两组，共有 5 种类型。
