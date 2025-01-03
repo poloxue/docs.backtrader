@@ -1,2 +1,3 @@
-# fyne-chinese
-Fyne 中文文档
+# Backtrader 教程
+
+本仓库是我基于 backtrader 梳理的中文，努力将官方文档中不易理解梳理的更加清晰，还在不断更新中。。。
