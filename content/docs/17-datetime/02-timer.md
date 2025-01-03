@@ -3,11 +3,11 @@ title: "定时器"
 weight: 2
 ---
 
-### 定时器
+# 定时器
 
 在版本 1.9.44.116 中，backtrader 添加了定时器功能。这使得在特定时间点调用 `notify_timer`（在 Cerebro 和 Strategy 中可用）成为可能，用户可以进行精细控制。
 
-#### 选项
+## 选项
 
 - 基于绝对时间输入或相对于会话开始/结束时间的定时器。
 - 时间规范的时区指定，可以直接通过 pytz 兼容对象或通过数据源会话结束时间进行指定。
@@ -17,7 +17,7 @@ weight: 2
 - 月份天数过滤器（带有结转选项）。
 - 自定义回调过滤器。
 
-#### 使用模式
+## 使用模式
 
 在 Cerebro 和 Strategy 子类中，定时器回调将在以下方法中接收：
 
@@ -31,7 +31,7 @@ def notify_timer(self, timer, when, *args, **kwargs):
     '''
 ```
 
-#### 添加定时器 - 通过 Strategy
+## 添加定时器 - 通过 Strategy
 
 使用以下方法完成：
 
@@ -48,7 +48,7 @@ def add_timer(self, when,
 
 它返回创建的 Timer 实例。下面是参数的解释。
 
-#### 添加定时器 - 通过 Cerebro
+## 添加定时器 - 通过 Cerebro
 
 使用相同的方法，只是增加了参数 `strats`。如果设置为 `True`，定时器不仅会通知给 cerebro，还会通知系统中运行的所有策略。
 
@@ -65,9 +65,9 @@ def add_timer(self, when,
 
 它返回创建的 Timer 实例。
 
-#### 定时器调用时间
+## 定时器调用时间
 
-##### 如果 `cheat=False`
+### 如果 `cheat=False`
 
 这是默认设置。在这种情况下，定时器将在以下情况后调用：
 
@@ -76,7 +76,7 @@ def add_timer(self, when,
 - 指标重新计算之前（因为这由策略触发）。
 - 调用任何策略的 `next` 方法之前。
 
-##### 如果 `cheat=True`
+### 如果 `cheat=True`
 
 在这种情况下，定时器将在以下情况后调用：
 
@@ -89,7 +89,7 @@ def add_timer(self, when,
 - 指标具有前一天收盘时的值，并可用于生成进出信号（或在上次评估 `next` 时设置标志）。
 - 因为新价格可用，可以使用开盘价计算股份。这假设一个人通过观察开盘拍卖得到良好的开盘指示。
 
-### 使用每日柱
+## 使用每日柱
 
 示例 `scheduled.py` 默认使用 backtrader 发行版中提供的标准每日柱。策略参数如下：
 
@@ -164,7 +164,7 @@ strategy notify_timer with tid 0, when 2005-01-04 09:30:00 cheat False
 
 定时器回调时间为 09:30。会话开始时间为 09:00。这样可以简单地说希望在会话开始后 30 分钟执行一个操作。
 
-### 运行带有 5 分钟柱的数据
+## 运行带有 5 分钟柱的数据
 
 示例 `scheduled-min.py` 默认运行 backtrader 发行版中的标准 5 分钟柱。策略参数如下：
 
@@ -214,7 +214,7 @@ strategy notify_timer with tid 0, when 2006-01-03 15:30:00 cheat False
 
 定时器在 15:30 触发。日志显示了它在前两天的触发情况。
 
-### 增加 15 分钟的重复间隔
+## 增加 15 分钟的重复间隔
 
 ```shell
 $ ./scheduled-min.py --strat when='datetime.time(15, 30)',repeat='datetime.timedelta(minutes=15)'
@@ -258,7 +258,7 @@ strategy notify_timer with tid 0, when 2006-01-03 15:30:00 cheat False
 ...
 ```
 
-### 使用作弊模式
+## 使用作弊模式
 
 ```shell
 $ ./scheduled-min.py --strat when='bt.timer.SESSION_START',cheat=True
@@ -298,7 +298,7 @@ strategy notify_timer with tid 0, when 2006-01-02 09:00:00 cheat False
 
 下达时间和执行时间均为 09:05:00，执行价格为 09:05:00 的开盘价。
 
-#### 其他场景
+## 其他场景
 
 定时器允许通过传递一个整数列表来指定哪些天（iso 代码，周一为 1，周日为 7）定时器可以实际触发。例如：
 
@@ -349,7 +349,7 @@ class FutOpExp(object):
 
 然后将 `allow=FutOpExp()` 传递给定时器的创建。
 
-#### `add_timer` 的参数
+## `add_timer` 的参数
 
 - `when`：可以是
   - `datetime.time` 实例（见下文的 `tzdata`）
@@ -371,7 +371,7 @@ class FutOpExp(object):
 - `*args`：任何额外的参数将传递给 `notify_timer`。
 - `**kwargs`：任何额外的关键字参数将传递给 `notify_timer`。
 
-#### 示例用法 `scheduled.py`
+## 示例用法 `scheduled.py`
 
 ```shell
 $ ./scheduled.py --help
@@ -399,7 +399,7 @@ optional arguments:
   --plot [kwargs]      kwargs in key=value format (default: )
 ```
 
-#### 示例源代码 `scheduled.py`
+## 示例源代码 `scheduled.py`
 
 ```python
 from __future__ import (absolute_import, division, print_function,
@@ -551,7 +551,7 @@ if __name__ == '__main__':
 ```
 
 
-示例源代码 scheduled-min.py
+## 示例源代码 scheduled-min.py
 
 ```python
 from __future__ import (absolute_import, division, print_function,

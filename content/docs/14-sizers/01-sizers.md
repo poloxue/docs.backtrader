@@ -1,9 +1,9 @@
 ---
-title: "仓位管理 sizers"
+title: "sizers"
 weight: 1
 ---
 
-### Sizers 智能下注
+# Sizers
 
 策略提供交易方法，即：`buy`、`sell` 和 `close`。让我们看看 `buy` 的签名：
 
@@ -24,9 +24,9 @@ class SizerFix(SizerBase):
 
 很容易猜到这个 Sizer 只是使用 1 个单位（无论是股票、合约等）买卖。
 
-### 使用 Sizers
+## 使用 Sizers
 
-#### 从 Cerebro
+### 从 Cerebro
 
 Sizers 可以通过 Cerebro 以两种不同的方法添加：
 
@@ -64,17 +64,12 @@ cerebro.addstrategy(MyOtherStrategy)
 
 注意：默认并不意味着策略共享单个 Sizer 实例。每个策略都接收不同的默认 Sizer 实例。要共享单个实例，共享的 Sizer 应该是一个单例类。如何定义一个超出了 backtrader 的范围。
 
-#### 从策略
+### 从策略
 
 `Strategy` 类提供了一个 API：`setsizer` 和 `getsizer`（以及一个属性 `sizer`）来管理 Sizer。签名：
 
-```python
 def setsizer(self, sizer): 它接受一个已经实例化的 Sizer
-
-def getsizer(self): 返回当前的 Sizer 实例
-
-sizer 是可以直接获取/设置的属性
-```
+def getsizer(self): 返回当前的 Sizer 实例，sizer 是可以直接获取/设置的属性
 
 在这种情况下，Sizer 可以例如：
 
@@ -92,7 +87,7 @@ class MyStrategy(bt.Strategy):
 
 这将允许在与 cerebro 调用相同级别创建一个 Sizer，并将其作为参数传递给系统中的所有策略，从而有效地共享一个 Sizer。
 
-### Sizer 开发
+## Sizer 开发
 
 开发一个 Sizer 很容易：
 
@@ -155,7 +150,7 @@ class FixedReverser(bt.FixedSize):
 
 这将解除策略决定是否反转头寸或开仓的负担，Sizer 负责控制，可以随时替换而不影响逻辑。
 
-### 实用 Sizer 应用
+## 实用 Sizer 应用
 
 不考虑复杂的头寸算法，可以使用两种不同的 Sizers 将策略从仅做多转换为多空策略。只需在 cerebro 执行中更改 Sizer，策略的行为将发生变化。一个非常简单的收盘价交叉 SMA 算法：
 
@@ -225,7 +220,7 @@ cerebro.run()
 
 两种方法都负面，但这只是一个示例。
 
-### bt.Sizer 参考
+## bt.Sizer 参考
 
 ```python
 class backtrader.Sizer()

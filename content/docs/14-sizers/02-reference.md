@@ -3,9 +3,9 @@ title: "参考"
 weight: 2
 ---
 
-### Sizers 参考
+# 参考
 
-#### FixedSize
+## FixedSize
 
 ```python
 class backtrader.sizers.FixedSize()
@@ -18,7 +18,7 @@ class backtrader.sizers.FixedSize()
 - `stake`（默认：`1`）
 - `tranches`（默认：`1`）
 
-#### FixedReverser
+## FixedReverser
 
 ```python
 class backtrader.sizers.FixedReverser()
@@ -33,7 +33,7 @@ class backtrader.sizers.FixedReverser()
 
 - `stake`（默认：`1`）
 
-#### PercentSizer
+## PercentSizer
 
 ```python
 class backtrader.sizers.PercentSizer()
@@ -45,7 +45,7 @@ class backtrader.sizers.PercentSizer()
 
 - `percents`（默认：`20`）
 
-#### AllInSizer
+## AllInSizer
 
 ```python
 class backtrader.sizers.AllInSizer()
@@ -57,7 +57,7 @@ class backtrader.sizers.AllInSizer()
 
 - `percents`（默认：`100`）
 
-#### PercentSizerInt
+## PercentSizerInt
 
 ```python
 class backtrader.sizers.PercentSizerInt()
@@ -69,7 +69,7 @@ class backtrader.sizers.PercentSizerInt()
 
 - `percents`（默认：`20`）
 
-#### AllInSizerInt
+## AllInSizerInt
 
 ```python
 class backtrader.sizers.AllInSizerInt()

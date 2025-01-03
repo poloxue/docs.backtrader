@@ -3,7 +3,7 @@ title: "绘制日期范围"
 weight: 2
 ---
 
-### 绘制日期范围
+# 日期范围
 
 在 1.9.31.x 版本中，backtrader 增加了部分绘图的功能。
 
@@ -45,7 +45,7 @@ Python 中的 eval 魔法允许直接在命令行中编写 `datetime.date` 并�
 
 ![完整绘图示例](image)
 
-#### 示例用法
+## 示例用法
 
 ```shell
 $ ./partial-plot.py --help
@@ -68,7 +68,7 @@ optional arguments:
   --plot [kwargs]      kwargs in key=value format (default: )
 ```
 
-#### 示例代码
+## 示例代码
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)

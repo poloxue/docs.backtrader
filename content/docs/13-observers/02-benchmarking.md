@@ -3,7 +3,7 @@ title: "基准测试"
 weight: 2
 ---
 
-### 基准测试
+# 基准测试
 
 Ticket #89 是关于添加基准测试以对比一个资产的表现。这个功能非常实用，因为有些策略即使盈利也可能低于单纯追踪资产的收益。
 
@@ -22,7 +22,7 @@ backtrader 包含两种不同类型的对象可以帮助进行追踪：
 
 另一方面，分析器通过 `get_analysis` 返回一组结果，并且实现可能直到运行结束时才会提供任何结果。
 
-### 分析器 - 基准测试
+## 分析器 - 基准测试
 
 标准的 `TimeReturn` 分析器已扩展为支持跟踪数据源。涉及的两个主要参数：
 
@@ -101,7 +101,7 @@ tdata_analyzer = strat0.analyzers.getbyname('datareturns')
 print(tdata_analyzer.get_analysis())
 ```
 
-### 观察器 - 基准测试
+## 观察器 - 基准测试
 
 感谢能够在观察器中使用分析器的底层机制，添加了两个新观察器：
 
@@ -112,7 +112,7 @@ print(tdata_analyzer.get_analysis())
 
 与上述代码片段相比，以下是一个完整的示例，以展示它们的功能。
 
-#### 观察 TimeReturn
+### 观察 TimeReturn
 
 执行：
 
@@ -129,7 +129,7 @@ $ ./observer-benchmark.py --plot --timereturn --timeframe notimeframe
 
 起始现金（从图表中显而易见）为 50K 货币单位，策略最终以 36,970 货币单位收尾，因此价值减少了 -26%。
 
-#### 观察基准测试
+### 观察基准测试
 
 因为基准测试还会显示 `timereturn` 结果，让我们在激活基准测试的情况下运行相同的操作：
 
@@ -169,7 +169,7 @@ $ ./observer-benchmark.py --plot --timeframe weeks
 
 由于在年底的最后一周没有进行任何交易，且资产几乎没有移动，最后显示的值为 0.00（最后一周之前的最后收盘价为 25.54，而样本数据收盘于 25.55，差异首先在小数点后第四位显现）。
 
-#### 观察基准测试 - 另一个数据
+### 观察基准测试 - 另一个数据
 
 示例允许对比不同的数据。默认情况下使用 `--benchdata1` 基准对比 Oracle。考虑整个数据集时使用 `--timeframe notimeframe`：
 
@@ -185,7 +185,7 @@ $ ./observer-benchmark.py --plot --timeframe notimeframe --benchdata1
 
 要么需要更改策略，要么需要交易另一个更好的资产。
 
-### 结论
+## 结论
 
 现在有两种方式，使用相同的底层代码/计算，来跟踪 `TimeReturn` 和 `Benchmark`：
 
@@ -194,7 +194,7 @@ $ ./observer-benchmark.py --plot --timeframe notimeframe --benchdata1
 
 当然，基准测试并不保证利润，只是比较。
 
-### 示例代码
+## 示例代码
 
 ```sh
 $ ./observer-benchmark.py --help

@@ -3,13 +3,9 @@ title: "Position"
 weight: 5
 ---
 
-# 头寸
+# Position
 
-通常在策略中通过以下方式检查资产的头寸：
-
-- `position`（一个属性）或 `getposition(data=None, broker=None)`
-
-这将返回策略在cerebro提供的默认经纪商中的`datas[0]`的头寸。
+通常在策略中要检查资产 Position，或成为仓位、头寸，通过 `position` 属性或 `getposition(data=None, broker=None)` 方法。这将返回策略在cerebro提供的默认经纪商中的`datas[0]`的头寸。
 
 头寸只是一个表示：
 
@@ -18,7 +14,7 @@ weight: 5
 
 它用作状态指示，例如可以用于决定是否需要发出订单（例如：仅在没有持仓时进入多头头寸）。
 
-参考：头寸
+## 参考
 
 ```python
 class backtrader.position.Position(size=0, price=0.0)

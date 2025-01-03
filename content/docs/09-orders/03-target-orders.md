@@ -3,19 +3,17 @@ title: "目标订单"
 weight: 3
 ---
 
-## 目标订单
+# 目标订单
 
-在1.8.10.96版本之前，通过策略方法buy和sell可以实现智能持仓。关键在于添加一个Sizer（大小调整器），它负责确定持仓的大小。
+在 1.8.10.96 版本之前，策略方法 buy 和 sell 可通过 `sizer` 实现智能持仓，`sizer` 负责确定持仓的大小。然而，`Sizer` 不能决定操作是买入还是卖出。这就需要一个新的概念，在决策中加入一个小的智能层。这就是策略中的order_target_xxx方法家族。
 
-然而，Sizer不能决定操作是买入还是卖出。这就需要一个新的概念，在决策中加入一个小的智能层。
-
-这就是策略中的order_target_xxx方法家族。受zipline的启发，这些方法提供了简单指定最终目标的机会，无论目标是：
+受 **zipline** 的启发，这些方法提供了简单指定最终目标的机会，无论目标是：
 
 - size -> 特定资产的股份或合约数量
 - value -> 资产在投资组合中的货币单位价值
 - percent -> 当前投资组合中资产的百分比值
 
-**注意**：这些方法的参考文档在Strategy中可以找到。总结来说，这些方法使用与buy和sell相同的参数签名，只是将size参数替换为target参数。
+**注意**：这些方法的在 Strategy 类的参考文档中可以找到。简言之，这些方法使用与 `buy` 和 `sell` 相同的参数签名，只是将 `size` 参数替换为 target 参数。
 
 这些方法的核心在于指定最终目标，然后方法决定操作是买入还是卖出。所有三种方法的逻辑相同。以下是order_target_size的工作方式：
 
@@ -40,18 +38,16 @@ weight: 3
 - 如果目标值小于当前值且仓位>=0 -> 卖出
 - 如果目标值小于当前值且仓位<0 -> 买入
 
-order_target_percent的逻辑与order_target_value相同。该方法简单地根据当前投资组合的总价值确定资产的目标价值。
+`order_target_percent` 的逻辑与 `order_target_value` 相同。该方法简单地根据当前投资组合的总价值确定资产的目标价值。
 
-### 示例
+## 示例
 
-backtrader尝试为每个新功能提供一个示例，这也不例外。该示例在samples目录下的order_target子目录中。
+**Backtrader** 尝试为每个新功能提供一个示例，这也不例外。该示例在 samples 目录下的 `order_target` 子目录中。示例逻辑比较简单，仅用于测试结果是否如预期：
 
-示例逻辑比较简单，仅用于测试结果是否如预期：
+- 在奇数月（1月、3月等），使用日期作为目标（在 `order_target_value` 的情况下，将日期乘以1000）；
+- 在偶数月（2月、4月等），使用31减去日期作为目标；
 
-- 在奇数月（1月、3月等），使用日期作为目标（在order_target_value的情况下，将日期乘以1000）
-- 在偶数月（2月、4月等），使用31减去日期作为目标
-
-#### order_target_size
+### order_target_size
 
 我们来看1月和2月的情况。
 
@@ -80,7 +76,7 @@ $ ./order_target.py --target-size --plot
 
 在1月结束时，最后一个目标是31，当进入2月时，该持仓量被报告出来，新的目标变为30，并以1的递减变化。
 
-#### order_target_value
+### order_target_value
 
 期望有类似的行为：
 
@@ -112,7 +108,7 @@ $ ./order_target.py --target-value --plot
 ...
 ```
 
-#### order_target_percent
+### order_target_percent
 
 此方法仅计算当前投资组合价值的百分比：
 
@@ -135,9 +131,7 @@ $ ./order_target.py --target-percent --plot
 0021 - 2005-02-01 - Position Size:     8733 - Value 988008.94
 0021 - 2005-02-01 - data percent 0.31
 0021 - 2005-02-01 - Order Target Percent: 0.30
-0022 - 2005-
-
-02-02 - Position Size:     8530 - Value 995005.45
+0022 - 2005-02-02 - Position Size:     8530 - Value 995005.45
 0022 - 2005-02-02 - data percent 0.30
 0022 - 2005-02-02 - Order Target Percent: 0.29
 0023 - 2005-02-03 - Position Size:     8120 - Value 991240.75
@@ -146,7 +140,7 @@ $ ./order_target.py --target-percent --plot
 ...
 ```
 
-#### 示例使用
+## 示例使用
 
 ```bash
 $ ./order_target.py --help

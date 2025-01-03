@@ -3,7 +3,9 @@ title: "Reference"
 weight: 4
 ---
 
-### AnnualReturn
+# 参考
+
+## AnnualReturn
 
 ```python
 class backtrader.analyzers.AnnualReturn()
@@ -23,7 +25,7 @@ class backtrader.analyzers.AnnualReturn()
 
 ---
 
-### Calmar
+## Calmar
 
 ```python
 class backtrader.analyzers.Calmar()
@@ -41,7 +43,7 @@ class backtrader.analyzers.Calmar()
 
 ---
 
-### DrawDown
+## DrawDown
 
 ```python
 class backtrader.analyzers.DrawDown()
@@ -63,7 +65,7 @@ class backtrader.analyzers.DrawDown()
 
 ---
 
-### TimeDrawDown
+## TimeDrawDown
 
 ```python
 class backtrader.analyzers.TimeDrawDown()
@@ -84,7 +86,7 @@ class backtrader.analyzers.TimeDrawDown()
 
 ---
 
-### GrossLeverage
+## GrossLeverage
 
 ```python
 class backtrader.analyzers.GrossLeverage()
@@ -100,7 +102,7 @@ class backtrader.analyzers.GrossLeverage()
 
 ---
 
-### PositionsValue
+## PositionsValue
 
 ```python
 class backtrader.analyzers.PositionsValue()
@@ -119,7 +121,7 @@ class backtrader.analyzers.PositionsValue()
 
 ---
 
-### PyFolio
+## PyFolio
 
 ```python
 class backtrader.analyzers.PyFolio()
@@ -151,7 +153,7 @@ class backtrader.analyzers.PyFolio()
 
 ---
 
-### LogReturnsRolling
+## LogReturnsRolling
 
 ```python
 class backtrader.analyzers.LogReturnsRolling()
@@ -169,7 +171,7 @@ class backtrader.analyzers.LogReturnsRolling()
 
 ---
 
-### PeriodStats
+## PeriodStats
 
 ```python
 class backtrader.analyzers.PeriodStats()
@@ -196,7 +198,7 @@ class backtrader.analyzers.PeriodStats()
 
 ---
 
-### Returns
+## Returns
 
 ```python
 class backtrader.analyzers.Returns()
@@ -225,7 +227,7 @@ class backtrader.analyzers.Returns()
 
 ---
 
-### SharpeRatio
+## SharpeRatio
 
 ```python
 class backtrader.analyzers.SharpeRatio()
@@ -250,7 +252,7 @@ class backtrader.analyzers.SharpeRatio()
 
 ---
 
-### SharpeRatio_A
+## SharpeRatio_A
 
 ```python
 class backtrader.analyzers.SharpeRatio_A()
@@ -263,7 +265,7 @@ class backtrader.analyzers.SharpeRatio_A()
 
 ---
 
-### SQN
+## SQN
 
 ```python
 class backtrader.analyzers.SQN()
@@ -289,7 +291,7 @@ SquareRoot(NumberTrades) * Average(TradesProfit) / StdDev(TradesProfit)
 
 ---
 
-### TimeReturn
+## TimeReturn
 
 ```python
 class backtrader.analyzers.TimeReturn()
@@ -307,7 +309,7 @@ class backtrader.analyzers.TimeReturn()
 
 ---
 
-### TradeAnalyzer
+## TradeAnalyzer
 
 ```python
 class backtrader.analyzers.TradeAnalyzer()
@@ -331,7 +333,7 @@ dictname[‘total’][‘total’] 将具有值 0（该字段也可以使用点�
 
 ---
 
-### Transactions
+## Transactions
 
 ```python
 class backtrader.analyzers.Transactions()
@@ -351,7 +353,7 @@ class backtrader.analyzers.Transactions()
 
 ---
 
-### VWR
+## VWR
 
 ```python
 class backtrader.analyzers.VWR()

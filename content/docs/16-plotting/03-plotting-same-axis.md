@@ -3,7 +3,7 @@ title: "同轴绘图"
 weight: 3
 ---
 
-### 在同一轴上绘图
+# 在同轴绘图
 
 在之前的文章“future-spot”中，我们在同一空间上绘制了原始数据和略微（随机）修改后的数据，但它们并没有在同一轴上绘制。
 
@@ -62,7 +62,7 @@ $ ./future-spot.py --sameaxis
 - 右侧只有一个刻度。
 - 现在，随机化数据似乎明显在原始数据周围摆动，这是预期的视觉行为。
 
-#### 示例用法
+## 示例用法
 
 ```shell
 $ ./future-spot.py --help
@@ -76,7 +76,7 @@ optional arguments:
   --sameaxis
 ```
 
-#### 示例代码
+## 示例代码
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)

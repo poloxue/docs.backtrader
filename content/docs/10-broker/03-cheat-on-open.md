@@ -3,7 +3,7 @@ title: "开盘作弊"
 weight: 3
 ---
 
-### Cheat On Open（开盘作弊）
+# Cheat On Open（开盘作弊）
 
 版本 1.9.44.116 添加了 Cheat-On-Open 支持。这似乎是对那些在计算完一个柱的收盘价后全仓操作的人们的需求，他们期望与开盘价匹配。
 
@@ -11,15 +11,13 @@ weight: 3
 
 虽然人们可以尝试通过正 [1] 索引法查看未来，但这需要预加载数据，而这并不总是可行的。
 
-### 模式：
+## 模式
 
 ```python
 cerebro = bt.Cerebro(cheat_on_open=True)
 ```
 
-这会：
-
-- 在系统中激活一个额外的循环，该循环调用策略中的 `next_open`、`nextstart_open` 和 `prenext_open` 方法。
+这会在系统中激活一个额外的循环，该循环调用策略中的 `next_open`、`nextstart_open` 和 `prenext_open` 方法。
 
 为了清楚地分离常规方法（这些方法基于所检查的价格不再可用且未来未知）和作弊模式下的操作，决定增加一组额外的方法家族。
 
@@ -35,7 +33,7 @@ cerebro = bt.Cerebro(cheat_on_open=True)
 - Cerebro 还有一个名为 `broker_coo`（默认值：True）参数，它告诉 cerebro 如果激活了 cheat-on-open，它也会尝试在经纪商中激活它（如果可能的话）。
 - 模拟经纪商有一个名为 `coo` 的参数和一个名为 `set_coo` 的方法来设置它。
 
-### 尝试 Cheat-on-open
+## 尝试 Cheat-on-open
 
 下面的示例有一个策略，具有两种不同的行为：
 
@@ -49,11 +47,9 @@ cerebro = bt.Cerebro(cheat_on_open=True)
 
 第二种情况下，可以精确计算全仓策略的份额，因为可以直接访问当前的开盘价。
 
-在这两种情况下：
+在这两种情况下，当前的开盘价和收盘价将从 `next` 中打印。
 
-- 当前的开盘价和收盘价将从 `next` 中打印。
-
-### 常规执行：
+## 常规执行：
 
 ```bash
 $ ./cheat-on-open.py --cerebro cheat_on_open=False
@@ -73,7 +69,7 @@ Strat Len 68 2005-04-08 Send Buy, fromopen False, close 3088.92
 - 在 2005-04-08 收盘后发出。
 - 在 2005-04-11 以开盘价 3088.47 执行。
 
-### 作弊执行：
+## 作弊执行：
 
 ```bash
 $ ./cheat-on-open.py --cerebro cheat_on_open=True
@@ -93,10 +89,11 @@ $ ./cheat-on-open.py --cerebro cheat_on_open=True
 - 在 2005-04-11 开盘前发出。
 - 在 2005-04-11 以开盘价 3088.47 执行。
 
-### 总结
+## 总结
+
 开盘作弊允许在开盘前发出订单，这可以例如允许精确计算全仓场景的份额。
 
-### 示例用法
+## 示例用法
 
 ```bash
 $ ./cheat-on-open.py --help
@@ -119,7 +116,7 @@ optional arguments:
   --plot [kwargs]      kwargs in key=value format (default: )
 ```
 
-### 示例代码
+## 示例代码
 
 ```python
 from __future__ import (absolute_import, division, print_function,

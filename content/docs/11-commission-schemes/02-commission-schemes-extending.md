@@ -3,7 +3,7 @@ title: "扩展"
 weight: 2
 ---
 
-### 扩展佣金
+# 扩展佣金
 
 佣金及相关功能由一个单一的类 `CommissionInfo` 管理，通常通过调用 `broker.setcommission` 实例化。
 
@@ -111,7 +111,7 @@ optional arguments:
 
 让我们进行一些运行来重新创建原始佣金方案的原始行为。
 
-#### 期货佣金（固定且带保证金）
+## 期货佣金（固定且带保证金）
 
 执行和图表：
 
@@ -130,7 +130,7 @@ $ ./commission-schemes.py --comm 2.0 --margin 2000.0 --mult 10 --plot
 ...
 ```
 
-#### 股票佣金（百分比且无保证金）
+## 股票佣金（百分比且无保证金）
 
 执行和图表：
 
@@ -157,7 +157,7 @@ $ ./commission-schemes.py --percrel --comm 0.5 --margin 0 --mult 1 --plot
 ...
 ```
 
-#### 期货佣金（百分比且带保证金）
+## 期货佣金（百分比且带保证金）
 
 使用新参数，基于百分比的期货方案：
 
@@ -182,7 +182,7 @@ $ ./commission-schemes.py --commtype perc --percrel --comm 0.5 --margin 2000 --m
 
 另一个帖子将详细说明新类和自定义佣金方案的实现。
 
-示例代码：
+## 示例
 
 ```python
 from __future__ import (absolute_import, division, print_function,

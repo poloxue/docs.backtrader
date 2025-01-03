@@ -3,7 +3,7 @@ title: "交易日历"
 weight: 3
 ---
 
-### 交易日历
+# 交易日历
 
 版本 1.9.42.116 增加了对交易日历的支持。这在以下场景中的重采样时非常有用：
 
@@ -11,7 +11,7 @@ weight: 3
 - 这是因为交易日历可以识别下一个交易日，并且可以提前识别出本周的最后一个交易日。
 - 当交易会话的结束时间不是常规时间（可以通过数据源来指定）时，从子日内到每日的重采样。
 
-#### 交易日历接口
+## 交易日历接口
 
 有一个基类 `TradingCalendarBase` 用作任何交易日历的基类。它定义了两个必须被重写的方法：
 
@@ -31,9 +31,9 @@ class TradingCalendarBase(with_metaclass(MetaParams, object)):
         raise NotImplementedError
 ```
 
-#### 实现
+## 实现
 
-##### PandasMarketCalendar
+### PandasMarketCalendar
 
 这个实现基于一个不错的包，这是从 Quantopian 的初始功能衍生出来的。包位于 `pandas_market_calendars`，可以很容易地安装：
 
@@ -72,7 +72,7 @@ class PandasMarketCalendar(TradingCalendarBase):
     )
 ```
 
-##### TradingCalendar
+### TradingCalendar
 
 这个实现允许通过指定假期、早市天数、非交易工作日以及开盘和收盘时间来构建一个日历：
 
@@ -112,9 +112,9 @@ class TradingCalendar(TradingCalendarBase):
     )
 ```
 
-#### 使用模式
+## 使用模式
 
-##### 全局交易日历
+### 全局交易日历
 
 通过 `Cerebro`，可以添加一个全局日历，作为所有数据源的默认日历，除非为数据源指定了一个日历：
 
@@ -128,7 +128,7 @@ def addcalendar(self, cal):
     '''
 ```
 
-##### 每个数据源
+### 每个数据源
 
 通过指定一个 `calendar` 参数，遵循与上面描述的 `addcalendar` 相同的约定。例如：
 
@@ -139,9 +139,9 @@ cerebro.adddata(data)
 ...
 ```
 
-#### 示例
+## 示例
 
-##### 从每日到每周
+### 从每日到每周
 
 让我们看一个示例代码的运行结果。2016 年的复活节星期五（2016-03-25）也是纽约证券交易所的假期。如果运行没有交易日历的示例代码，让我们看看该日期前后的情况。
 
@@ -214,7 +214,7 @@ Strategy len 58 datetime 2016-03-28 Data0 len 58 datetime 2016-03-28 Data1 len 1
 
 使用手动编写的日历定义得到了相同的结果。
 
-##### 从分钟到每日
+### 从分钟到每日
 
 使用一些私有的日内数据，并且知道市场在 2016-11-25 提前收盘（感恩节后的第二天市场在美国东部时间 13:00 收盘），再进行一个测试运行，这次使用第二个示例。
 
@@ -302,7 +302,7 @@ Strategy len 6841 datetime 2016-11-28 14:32:00 Data0 len 6841 datetime 2016-11-2
 
 现在 2016-11-25 的重采样日线条在 13:01 与 1 分钟条一起交付。
 
-### 策略的额外奖励
+## 策略的额外奖励
 
 第一个日期时间，属于策略的，总是在不同的时区，实际上是 UTC。使用这个版本 1.9.42.116，这也可以同步。以下参数已添加到 `Cerebro`（在实例化期间使用或与 `cerebro.run` 一起使用：
 
@@ -348,7 +348,7 @@ Strategy len 6841 datetime 2016-11-28 09:32:00 Data0 len 6841 datetime 2016-11-2
 
 时间戳现在与时区对齐。
 
-### 示例使用（tcal.py）
+## 示例使用（tcal.py）
 
 ```bash
 $ ./tcal.py --help
@@ -376,7 +376,7 @@ optional arguments:
   --timeframe {Weeks,Months,Years} Timeframe to resample to (default: Weeks)
 ```
 
-### 示例使用（tcal-intra.py）
+## 示例使用（tcal-intra.py）
 
 ```bash
 $ ./tcal-intra.py --help
@@ -402,7 +402,7 @@ optional arguments:
   --timeframe {Days}    Timeframe to resample to (default: Days)
 ```
 
-### 示例代码（tcal.py）
+## 示例代码（tcal.py）
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)
@@ -528,7 +528,7 @@ if __name__ == '__main__':
     runstrat()
 ```
 
-### 示例代码（tcal-intra.py）
+## 示例代码（tcal-intra.py）
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)

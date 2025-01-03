@@ -3,12 +3,12 @@ title: "期货和现货补偿"
 weight: 6
 ---
 
-## 期货和现货补偿
+# 期货和现货补偿
 
 版本 1.9.32.116 增加了对社区提出的一个有趣用例的支持：
 
-- 用期货启动交易，包括实物交割
-- 使用指标进行分析
+- 用期货启动交易，包括实物交割；
+- 使用指标进行分析；
 - 如有必要，通过操作现货价格来平仓，从而有效地取消实物交割，无论是收货还是交货（希望能获利）
 - 期货在操作现货价格的当天到期
 
@@ -37,7 +37,8 @@ cerebro.adddata(data1)
 cerebro.run()
 ```
 
-### 综合示例
+## 综合示例
+
 一个示例胜过千言万语，所以让我们把所有的部分结合起来。
 
 - 使用 backtrader 源代码中的一个标准示例数据源。这将是期货数据
@@ -66,6 +67,7 @@ def close_changer(data, *args, **kwargs):
 
 ```python
 class St(bt.Strategy):
+
     def __init__(self):
         bt.obs.BuySell(self.data0, barplot=True)  # 为不同数据添加不同标记
         BuySellArrows(self.data1, barplot=True)  # 为不同数据添加不同标记
@@ -88,8 +90,6 @@ $ ./future-spot.py --no-comp
 
 得到如下图形输出。
 
-![图像](image)
-
 可以看到：
 
 - 买操作用向上的绿色三角形标记，图例显示它们属于 data0
@@ -103,16 +103,12 @@ $ ./future-spot.py --no-comp
 $ ./future-spot.py --no-comp
 ```
 
-输出如下：
-
-![图像](image)
-
-显然，这会惨败：
+这会惨败：
 
 - 逻辑期望 data0 上的头寸通过 data1 的操作平仓，并且只有在市场不在时才在 data0 上开仓
 - 但是补偿被禁用，data0 上的初始操作（绿色三角形）从未平仓，因此无法发起其他操作，data1 上的空头头寸开始累积。
 
-### 示例用法：
+## 示例用法：
 
 ```bash
 $ ./future-spot.py --help
@@ -125,7 +121,7 @@ optional arguments:
   --no-comp
 ```
 
-### 示例代码：
+## 示例代码：
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)

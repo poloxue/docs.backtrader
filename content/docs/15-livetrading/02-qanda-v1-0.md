@@ -3,22 +3,25 @@ title: "Qanda"
 weight: 2
 ---
 
-### Oanda
+# Oanda
 Oanda的集成支持以下功能：
 
 - 实时数据馈送
 - 实时交易
 
-### 要求
+## 要求
+
 - **oandapy**：可以通过以下命令安装：`pip install git+https://github.com/oanda/oandapy.git`
 - **pytz**（可选，不推荐）：由于外汇市场的全球性和24x7的特点，选择使用UTC时间。如果愿意，仍然可以使用所需的输出时区。
 
-### 示例代码
+## 示例代码
+
 源代码中包含完整示例：
 
 `samples/oandatest/oandatest.py`
 
-### Oanda - 存储
+## Oanda - 存储
+
 存储是实时数据馈送和交易支持的核心，提供了Oanda API和数据馈送及经纪代理之间的适配层。
 
 可以通过以下方法获取经纪商实例：
@@ -34,7 +37,8 @@ OandaStore.getdata(*args, **kwargs)
 
 数据可能提供其他参数。请参阅下面的参考。
 
-### 必要参数
+## 必要参数
+
 为了成功连接到Oanda，以下参数是必要的：
 
 - `token`（默认：无）：API访问令牌
@@ -48,7 +52,8 @@ OandaStore.getdata(*args, **kwargs)
 账户需要定期检查以获取现金和价值。周期性可以通过以下方式控制：
 - `account_tmout`（默认：10.0）：刷新账户价值/现金刷新周期
 
-### Oanda数据馈送
+## Oanda数据馈送
+
 实例化数据时：
 
 按照Oanda指南传递符号。例如，EUR/USD根据Oanda的指南需要指定为EUR_USD。实例化如下：
@@ -56,14 +61,17 @@ OandaStore.getdata(*args, **kwargs)
 data = oandastore.getdata(dataname='EUR_USD', ...)
 ```
 
-### 时间管理
+## 时间管理
+
 除非传递了`tz`参数（一个pytz兼容对象）给数据馈送，否则所有时间输出都以UTC格式表示，如上所述。
 
-### 回填
+## 回填
 backtrader不会向Oanda发出特殊请求。对于小时间框架，Oanda在模拟服务器上返回的回填数据长度为500个柱。
 
-### OandaBroker - 实时交易
+## OandaBroker - 实时交易
+
 ### 使用经纪商
+
 要使用OandaBroker，需要替换cerebro创建的标准经纪商模拟实例。
 
 使用存储模型（推荐）：
@@ -76,6 +84,7 @@ cerebro.broker = oandastore.getbroker()  # 或 cerebro.setbroker(...)
 ```
 
 ### 经纪商 - 初始头寸
+
 经纪商支持一个参数：
 - `use_positions`（默认：True）：连接到经纪商提供商时使用现有头寸来启动经纪商。
   在实例化时设置为False以忽略任何现有头寸。
@@ -117,9 +126,9 @@ backtrader在回测期间可用的相同有效期概念（使用`valid`参数买
 - `Canceled`（或 `Cancelled`）
 - `Expired` - 当订单因过期而取消时
 
-### 参考
+## 参考
 
-#### OandaStore
+### OandaStore
 ```python
 class backtrader.stores.OandaStore()
 ```
@@ -131,7 +140,7 @@ class backtrader.stores.OandaStore()
 - `practice`（默认：False）：使用测试环境
 - `account_tmout`（默认：10.0）：刷新账户价值/现金刷新周期
 
-#### OandaBroker
+### OandaBroker
 ```python
 class backtrader.brokers.OandaBroker(**kwargs)
 ```
@@ -143,7 +152,8 @@ Oanda的经纪商实现。
 - `use_positions`（默认：True）：连接到经纪商提供商时使用现有头寸来启动经纪商。
   在实例化时设置为False以忽略任何现有头寸。
 
-#### OandaData
+### OandaData
+
 ```python
 class backtrader.feeds.OandaData(**kwargs)
 ```

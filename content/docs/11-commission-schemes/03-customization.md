@@ -1,9 +1,9 @@
 ---
-title: "用户定义的佣金"
+title: "自定义佣金"
 weight: 3
 ---
 
-### 用户定义的佣金
+# 自定义佣金
 
 重新设计 `CommInfo` 对象以实现当前版本的最重要部分包括：
 
@@ -11,21 +11,21 @@ weight: 3
 - 为轻松创建用户定义的佣金打开大门
 - 将格式 `xx%` 作为新佣金方案的默认值，而不是 `0.xx`（这只是个口味问题），同时保持行为可配置
 
-#### 定义佣金方案
+## 定义佣金方案
 
 这涉及 1 到 2 个步骤：
 
-1. 子类化 `CommInfoBase`
+### 子类化 `CommInfoBase`
 
-   仅更改默认参数可能就足够了。`backtrader` 已经在模块 `backtrader.commissions` 中使用一些定义进行了此操作。期货的常规行业标准是每合同和每轮固定金额。定义可以这样做：
+仅更改默认参数可能就足够了。`backtrader` 已经在模块 `backtrader.commissions` 中使用一些定义进行了此操作。期货的常规行业标准是每合同和每轮固定金额。定义可以这样做：
 
-   ```python
-   class CommInfo_Futures_Fixed(CommInfoBase):
-       params = (
-           ('stocklike', False),
-           ('commtype', CommInfoBase.COMM_FIXED),
-       )
-   ```
+```python
+class CommInfo_Futures_Fixed(CommInfoBase):
+   params = (
+       ('stocklike', False),
+       ('commtype', CommInfoBase.COMM_FIXED),
+   )
+```
 
    对于股票和按百分比计算的佣金：
 
@@ -48,17 +48,17 @@ weight: 3
        )
    ```
 
-2.（如有必要）重写 `_getcommission` 方法
+### 重写 `_getcommission` 方法（如有必要）
 
-   定义如下：
+定义如下：
 
-   ```python
-   def _getcommission(self, size, price, pseudoexec):
-       '''Calculates the commission of an operation at a given price
+```python
+def _getcommission(self, size, price, pseudoexec):
+   '''Calculates the commission of an operation at a given price
 
-       pseudoexec: if True the operation has not yet been executed
-       '''
-   ```
+   pseudoexec: if True the operation has not yet been executed
+   '''
+```
 
    下面的实际示例中有更多详细信息。
 
@@ -82,7 +82,7 @@ def addcommissioninfo(self, comminfo, name=None):
 
 设置 `name` 意味着 `comminfo` 对象将仅适用于具有该名称的资产。默认值 `None` 表示它适用于系统中的所有资产。
 
-#### 实际示例
+## 实际示例
 
 问题 #45 询问一种适用于期货的佣金方案，该方案基于百分比，并使用整个“虚拟”合约价值的佣金百分比，即：包括期货乘数在佣金计算中。
 
@@ -131,7 +131,7 @@ comminfo = CommInfo_Fut_Perc_Mult(
 cerebro.addcommissioninfo(comminfo)
 ```
 
-#### 解释 `pseudoexec`
+## 解释 `pseudoexec`
 
 让我们回顾 `_getcommission` 的定义：
 
@@ -186,6 +186,6 @@ class CommInfo_Fut_Discount(bt.CommInfoBase):
         return commvalue
 ```
 
-#### `CommInfoBase` 文档字符串和参数
+## `CommInfoBase` 文档字符串和参数
 
 有关 `CommInfoBase` 的参考，请参见“佣金：股票与期货”。

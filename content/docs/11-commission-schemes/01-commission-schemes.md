@@ -1,23 +1,27 @@
 ---
-title: "佣金：股票 vs 期货"
+title: "佣金"
 weight: 1
 ---
 
-### 佣金：股票 vs 期货
+# 佣金
 
-#### 中立性
+## 中立性
 
 在开始之前，让我们记住 backtrader 尝试保持数据代表内容的中立性。不同的佣金方案可以应用于相同的数据集。让我们看看如何做到这一点。
 
-#### 使用经纪商快捷方式
+## 经纪商快捷方式
 
-这使得最终用户远离 CommissionInfo 对象，因为可以通过一次函数调用创建/设置佣金方案。在常规的 cerebro 创建/设置过程中，只需在经纪商成员属性上添加一个调用 setcommission 的调用即可。以下调用设置了使用 Interactive Brokers 操作 Eurostoxx50 期货的常规佣金方案：
+这使得最终用户远离 CommissionInfo 对象，因为可以通过一次函数调用创建/设置佣金方案。在常规的 cerebro 创建/设置过程中，只需在经纪商成员属性上添加一个调用 setcommission 的调用即可。
+
+以下调用设置了使用 Interactive Brokers 操作 Eurostoxx50 期货的常规佣金方案：
 
 ```python
 cerebro.broker.setcommission(commission=2.0, margin=2000.0, mult=10.0)
 ```
 
-由于大多数用户通常只测试单一工具，这已经足够。如果你为你的数据馈送命名，因为在图表上同时考虑了多个工具，这个调用可以稍微扩展如下：
+由于大多数用户通常只测试单一工具，这已经足够。
+
+如果你为你的数据馈送命名，因为在图表上同时考虑了多个工具，这个调用可以稍微扩展如下：
 
 ```python
 cerebro.broker.setcommission(commission=2.0, margin=2000.0, mult=10.0, name='Eurostoxxx50')
@@ -25,12 +29,11 @@ cerebro.broker.setcommission(commission=2.0, margin=2000.0, mult=10.0, name='Eur
 
 在这种情况下，此即时佣金方案将仅应用于名称匹配 Eurostoxx50 的工具。
 
-#### setcommission 参数的含义
+## setcommission 参数的含义
 
 - `commission`（默认值：0.0）
 
   每次操作的货币单位，绝对值或百分比。在上述示例中，每份合约的买入和卖出费用分别为 2.0 欧元。
-
   重要的是何时使用绝对值或百分比值。
 
   如果 margin 为 False（例如，它是 False、0 或 None），则将视为佣金表示为价格乘以操作数量的百分比。
@@ -53,7 +56,7 @@ cerebro.broker.setcommission(commission=2.0, margin=2000.0, mult=10.0, name='Eur
 
   将佣金方案应用于名称匹配的工具。可以在创建数据馈送时设置此值。如果未设置，则方案将适用于系统中的任何数据。
 
-#### 两个示例：股票 vs 期货
+## 两个示例：股票 vs 期货
 
 期货的示例：
 
@@ -73,7 +76,7 @@ cerebro.broker.setcommission(commission=0.005)  # 交易金额的 0.5%
 
 要完全指定佣金方案，需要创建 CommissionInfo 的子类。
 
-#### 创建永久性佣金方案
+## 创建永久性佣金方案
 
 可以通过直接使用 CommissionInfo 类创建更永久的佣金方案。用户可以选择在某处定义：
 
@@ -112,7 +115,7 @@ from mycomm import CommEurostoxx50
 cerebro.broker.addcommissioninfo(CommEuroStoxx50(), name='Eurostoxxx50')
 ```
 
-#### 使用 SMA 交叉的实际比较
+## 使用 SMA 交叉的实际比较
 
 使用简单移动平均交叉作为进出信号，使用相同的数据集来测试期货类佣金方案和股票类佣金方案。
 
@@ -197,13 +200,7 @@ else:
 
 但重要的是：无论是期货还是股票……都可以进行回测。
 
-期货的佣金
-![期货佣金](image)
-
-股票的佣金
-![股票佣金](image)
-
-#### 代码
+## 代码
 
 ```python
 from __future__ import (absolute_import, division, print_function,
@@ -303,7 +300,7 @@ if __name__ == '__main__':
     cerebro.plot()
 ```
 
-#### 参考
+## 参考
 
 ```python
 class backtrader.CommInfoBase()
@@ -327,76 +324,67 @@ margin 不是 None：`_commtype` 设置为 COMM_FIXED，`_stocklike` 设置为 F
 
 如果此参数设置为其他值，则将传递给内部 `_commtype` 属性，并且相同将适用于参数 stocklike 和内部属性 `_stocklike`
 
-- `stocklike`（默认值：False）：指示工具是类似股票还是类似期货（请参阅上述 commtype 讨论）
-- `percabs`（默认值：False）：当 commtype 设置为 COMM_PERC 时，参数 commission 是否理解为 XX% 或 0.XX
+- `stocklike`（默认值：False）： 指示工具是类似股票还是类似期货（请参阅上述 commtype 讨论）
+- `percabs`（默认值：False）： 当 commtype 设置为 COMM_PERC 时，参数 commission 是否理解为 XX% 或 0.XX
 
-如果此参数为 True：0.XX
+  如果此参数为 True：0.XX
 
-如果此参数为 False：XX%
+  如果此参数为 False：XX%
 
 - `interest`（默认值：0.0）：如果这是非零值，则这是持有空头头寸的年利率。这主要是指股票空头卖空
 
-公式：天数 * 价格 * 绝对值（大小）*（利息 / 365）
+  公式：天数 * 价格 * 绝对值（大小）*（利息 / 365）
 
-必须以绝对值表示：0.05 -> 5%
+  必须以绝对值表示：0.05 -> 5%
 
-注意
-
-可以通过覆盖方法 `_get_credit_interest` 更改行为
+  注意，可以通过覆盖方法 `_get_credit_interest` 更改行为
 
 - `interest_long`（默认值：False）：某些产品如 ETF 对空头和多头头寸收取利息。如果为 True 并且 interest 为非零，则对两个方向都收取利息
 
 - `leverage`（默认值：1.0）：与所需现金相比的杠杆比例
 
-#### CommissionInfo 类
+## CommissionInfo 类
 
-基础类用于实际佣金方案。
-
-CommInfoBase 是为了保持对 backtrader 提供的原始不完整支持。新的佣金方案从此类派生。
-
-默认的 percabs 值也更改为 True
+基础类用于实际佣金方案。CommInfoBase 是为了保持对 backtrader 提供的原始不完整支持。新的佣金方案从此类派生。默认的 percabs 值也更改为 True .
 
 参数：
 
 - `percabs`（默认值：True）：当 commtype 设置为 COMM_PERC 时，参数 commission 是否理解为 XX% 或 0.XX
 
-如果此参数为 True：0.XX
+  如果此参数为 True：0.XX
 
-如果此参数为 False：XX%
+  如果此参数为 False：XX%
+
+返回此佣金方案允许的杠杆水平
 
 ```python
 get_leverage()
 ```
 
-返回此佣金方案允许的杠杆水平
-
-```python
-getsize(price, cash)
-```
 
 返回在给定价格下满足现金操作所需的大小
-
 ```python
-getoperationcost(size, price)
+getsize(price, cash)
 ```
 
 返回操作所需的现金量
 
 ```python
-getvaluesize(size, price)
+getoperationcost(size, price)
 ```
 
 返回给定价格的大小值。对于类似期货的对象，固定为大小 * 保证金
 
 ```python
-getvalue(position, price)
+getvaluesize(size, price)
 ```
 
 返回给定价格的头寸价值。对于类似期货的对象，固定为大小 * 保证金
 
 ```python
-get_margin(price)
+getvalue(position, price)
 ```
+
 
 返回在给定价格下单个资产所需的实际保证金/保证金。默认实现有以下策略：
 
@@ -407,13 +395,13 @@ get_margin(price)
 使用参数 automargin，即 automargin * price 如果 automargin > 0
 
 ```python
-getcommission(size, price)
+get_margin(price)
 ```
 
 计算在给定价格下的操作佣金
 
 ```python
-_getcommission(size, price, pseudoexec)
+getcommission(size, price)
 ```
 
 计算在给定价格下的操作佣金
@@ -421,34 +409,36 @@ _getcommission(size, price, pseudoexec)
 pseudoexec：如果为 True，则操作尚未执行
 
 ```python
-profitandloss(size, price, newprice)
+_getcommission(size, price, pseudoexec)
 ```
 
 返回头寸的实际损益
 
 ```python
-cashadjust(size, price, newprice)
+profitandloss(size, price, newprice)
 ```
 
 计算价格差异的现金调整
 
 ```python
-get_credit_interest(data, pos, dt)
+cashadjust(size, price, newprice)
 ```
 
 计算股票卖空或特定产品的信用费用
 
 ```python
-_get_credit_interest(data, size, price, days, dt0, dt1)
+get_credit_interest(data, pos, dt)
 ```
 
 此方法返回由经纪商收取的信用利息费用。
 
 在 size > 0 的情况下，仅当类的参数 interest_long 为 True 时才调用此方法
 
-计算信用利率的公式是：
+计算信用利率的公式是：公式：天数 * 价格 * 绝对值（大小）*（利息 / 365）
 
-公式：天数 * 价格 * 绝对值（大小）*（利息 / 365）
+```python
+_get_credit_interest(data, size, price, days, dt0, dt1)
+```
 
 参数：
 

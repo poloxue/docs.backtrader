@@ -3,7 +3,7 @@ title: "Pyfolio 集成"
 weight: 3
 ---
 
-Pyfolio 集成
+# Pyfolio 集成
 
 在 Ticket #108 中提出了一个投资组合工具，即 pyfolio 的集成。
 
@@ -30,7 +30,7 @@ http://www.lfd.uci.edu/~gohlke/pythonlibs/
 
 如果没有测试集成，它就不会完成，这就是为什么通常的示例总是存在的原因。
 
-### 没有 PyFolio
+## 没有 PyFolio
 
 示例使用 random.randint 来决定何时买卖，因此这只是检查事情是否正常运行：
 
@@ -58,7 +58,7 @@ SELL 250 @%37.01
 
 有 3 个数据，多个买卖操作在测试运行的默认两年期间随机选择和分散。
 
-### 一个 PyFolio 运行
+## 一个 PyFolio 运行
 
 pyfolio 在 Jupyter Notebook 内运行效果很好，包括内联绘图。以下是 notebook 示例：
 

@@ -3,9 +3,9 @@ title: "参考"
 weight: 3
 ---
 
-### 观察器参考
+# 参考
 
-#### Benchmark
+## Benchmark
 
 ```python
 class backtrader.observers.Benchmark()
@@ -27,7 +27,7 @@ class backtrader.observers.Benchmark()
 
 记住，在运行的任何时刻都可以通过查看索引 0 处的线条名称来检查当前值。
 
-#### Broker
+## Broker
 
 ```python
 class backtrader.observers.Broker(*args, **kwargs)
@@ -37,7 +37,7 @@ class backtrader.observers.Broker(*args, **kwargs)
 
 **参数**：无
 
-#### Broker - Cash
+## Broker - Cash
 
 ```python
 class backtrader.observers.Cash(*args, **kwargs)
@@ -59,7 +59,7 @@ class backtrader.observers.Value(*args, **kwargs)
 
 - `fund`（默认：无）：如果为 None，将自动检测经纪人的实际模式（fundmode - True/False）来决定回报率是基于总净资产价值还是基金价值。见经纪人文档中的 `set_fundmode`。设置为 True 或 False 以获得特定行为。
 
-#### BuySell
+## BuySell
 
 ```python
 class backtrader.observers.BuySell(*args, **kwargs)
@@ -72,7 +72,7 @@ class backtrader.observers.BuySell(*args, **kwargs)
 - `barplot`（默认：`False`）：在最低点下方绘制买入信号，在最高点上方绘制卖出信号。如果为 `False`，则将在条形的平均执行价格上绘制。
 - `bardist`（默认：`0.015` 1.5%）：当 `barplot` 为 `True` 时，与最大值/最小值的距离。
 
-#### DrawDown
+## DrawDown
 
 ```python
 class backtrader.observers.DrawDown()
@@ -84,7 +84,7 @@ class backtrader.observers.DrawDown()
 
 - `fund`（默认：无）：如果为 None，将自动检测经纪人的实际模式（fundmode - True/False）来决定回报率是基于总净资产价值还是基金价值。见经纪人文档中的 `set_fundmode`。设置为 True 或 False 以获得特定行为。
 
-#### TimeReturn
+## TimeReturn
 
 ```python
 class backtrader.observers.TimeReturn()
@@ -100,7 +100,7 @@ class backtrader.observers.TimeReturn()
 
 记住，在运行的任何时刻都可以通过查看索引 0 处的线条名称来检查当前值。
 
-#### Trades
+## Trades
 
 ```python
 class backtrader.observers.Trades()
@@ -114,7 +114,7 @@ class backtrader.observers.Trades()
 
 - `pnlcomm`（默认：`True`）：显示净利润和亏损，即扣除佣金后的结果。如果设置为 `False`，将显示扣除佣金前的交易结果。
 
-#### LogReturns
+## LogReturns
 
 ```python
 class backtrader.observers.LogReturns()
@@ -130,7 +130,7 @@ class backtrader.observers.LogReturns()
 
 记住，在运行的任何时刻都可以通过查看索引 0 处的线条名称来检查当前值。
 
-#### LogReturns2
+## LogReturns2
 
 ```python
 class backtrader.observers.LogReturns2()
@@ -138,7 +138,7 @@ class backtrader.observers.LogReturns2()
 
 扩展 `LogReturns` 观察器以显示两个工具。
 
-#### FundValue
+## FundValue
 
 ```python
 class backtrader.observers.FundValue(*args, **kwargs)
@@ -148,7 +148,7 @@ class backtrader.observers.FundValue(*args, **kwargs)
 
 **参数**：无
 
-#### FundShares
+## FundShares
 
 ```python
 class backtrader.observers.FundShares(*args, **kwargs)

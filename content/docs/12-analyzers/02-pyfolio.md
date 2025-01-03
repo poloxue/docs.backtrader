@@ -1,28 +1,21 @@
 ---
-title: ""
+title: "Pyfolio"
 weight: 2
 ---
 
-PyFolio 概述
+# PyFolio
 
-注意
+注意，截至（至少）2017-07-25，pyfolio 的 API 已更改，`create_full_tear_sheet` 不再有 `gross_lev` 作为命名参数。因此，集成示例无法正常工作。
 
-截至（至少）2017-07-25，pyfolio 的 API 已更改，`create_full_tear_sheet` 不再有 `gross_lev` 作为命名参数。
+> 引用 pyfolio 主页面 http://quantopian.github.io/pyfolio/ 的内容：
+> pyfolio 是一个由 Quantopian Inc. 开发的用于金融投资组合的表现和风险分析的 Python 库。它与开源回测库 Zipline 配合良好，现在它也可以很好地与 backtrader 配合。所需的内容包括：
+> - 显然需要 pyfolio
+> - 以及它的依赖项（如 pandas、seaborn 等）
 
-因此，集成示例无法正常工作。
+注意，在与 0.5.1 版本集成期间，需要更新依赖项的最新版本，例如将之前安装的 seaborn 从 0.7.0-dev 更新到 0.7.1，显然是由于缺少方法 `swarmplot`。
 
-引用 pyfolio 主页面 http://quantopian.github.io/pyfolio/ 的内容：
+## 用法
 
-pyfolio 是一个由 Quantopian Inc. 开发的用于金融投资组合的表现和风险分析的 Python 库。它与开源回测库 Zipline 配合良好，现在它也可以很好地与 backtrader 配合。所需的内容包括：
-
-- 显然需要 pyfolio
-- 以及它的依赖项（如 pandas、seaborn 等）
-
-注意
-
-在与 0.5.1 版本集成期间，需要更新依赖项的最新版本，例如将之前安装的 seaborn 从 0.7.0-dev 更新到 0.7.1，显然是由于缺少方法 `swarmplot`。
-
-用法
 将 PyFolio 分析器添加到 cerebro 中：
 
 ```python
@@ -87,6 +80,6 @@ pf.create_full_tear_sheet(
 # 此时表格和图表将显示
 ```
 
-参考
+## 参考
 
 查看分析器参考以了解 PyFolio 分析器及其内部使用的分析器。

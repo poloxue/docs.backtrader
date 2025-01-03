@@ -3,7 +3,7 @@ title: "Interactive Brokers"
 weight: 1
 ---
 
-### 盈透（Interactive Brokers）
+# 盈透（Interactive Brokers）
 
 与盈透（Interactive Brokers）的集成支持以下功能：
 
@@ -24,7 +24,7 @@ pip install git+https://github.com/blampe/IbPy.git
 pip install https://github.com/blampe/IbPy/archive/master.zip
 ```
 
-### 示例代码
+## 示例代码
 
 源码包含一个完整的示例，位于：
 
@@ -36,7 +36,7 @@ pip install https://github.com/blampe/IbPy/archive/master.zip
 
 示例在任何交易活动开始之前，都会等待 `data.LIVE` 数据状态通知。这可能是任何实时策略中都需要考虑的事项。
 
-### 存储模型与直接模型
+## 存储模型与直接模型
 
 与互动经纪商的交互支持两种模型：
 
@@ -76,7 +76,7 @@ data = bt.feeds.IBData(dataname='EUR.USD-CASH-IDEALPRO',
 
 - 清晰度较低，因为不清楚哪些属于数据，哪些属于存储。
 
-### IBStore - 存储
+## IBStore - 存储
 
 存储是实时数据馈送/交易支持的关键，提供了 IbPy 模块和数据馈送及经纪代理需求之间的适配层。
 
@@ -112,9 +112,9 @@ notifyall (default: False): 在这种情况下，IB 发送的任何错误信息�
 _debug (default: False): 在这种情况下，TWS 接收到的每条消息都将打印到标准输出。
 ```
 
-### IBData 数据馈送
+## IBData 数据馈送
 
-#### 数据选项
+### 数据选项
 
 无论是直接还是通过 `getdata`，IBData 数据馈送都支持以下数据选项：
 
@@ -165,7 +165,7 @@ cerebro.resampledata(data, timeframe=bt.TimeFrame.Minutes, compression=2)
 
 现在应该清楚，最终考虑的时间框架/压缩组合是 Minutes/2。
 
-### 数据合约检查
+## 数据合约检查
 
 在启动阶段，数据馈送将尝试下载指定合约的详细信息（请参阅参考，了解如何指定）。如果未找到合约或找到多个匹配项，数据将拒绝继续并将通知系统。一些示例。
 
@@ -189,7 +189,7 @@ data = ibstore.getdata(dataname='AAPL')  # 错误 -> 多个合约
 data = ibstore.getdata(dataname='AAPL-STK-SMART-USD')  # 找到1个合约
 ```
 
-### 数据通知
+## 数据通知
 
 数据馈送将通过以下一种或多种方式报告当前状态（请检查 Cerebro 和 Strategy 参考）：
 
@@ -224,7 +224,7 @@ class IBStrategy(bt.Strategy):
 
 策略开发人员应考虑在发生断开连接或接收到延迟数据时应采取哪些措施。
 
-### 数据时间框架和压缩
+## 数据时间框架和压缩
 
 backtrader 生态系统中的数据馈送在创建期间支持 `timeframe` 和 `compression` 参数。这些参数也可以作为属性访问，使用 `data._timeframe` 和 `data._compression`。
 
@@ -286,7 +286,7 @@ cerebro.resampledata(data, timeframe=bt.TimeFrame.Seconds, compression=20)
 - 即使添加了 `rtbar=True`
 - 来自 TWS 的事件最多每 250 毫秒发生一次。这可能并不重要，因为系统每 20 秒只会向策略发送一个条。
 
-### 时间管理
+## 时间管理
 
 数据馈送将自动从 TWS 报告的 ContractDetails 对象中确定时区。
 
@@ -311,7 +311,7 @@ cerebro.resampledata(data, timeframe=bt.TimeFrame.Seconds, compression=20)
 
 **注意**：TWS 演示在报告没有数据下载权限的资产时区方面不准确（EuroStoxx 50 期货是这种情况的一个例子）。
 
-### 实时数据馈送和重采样/重放
+## 实时数据馈送和重采样/重放
 
 设计决策关于何时为实时数据馈送交付条：
 
@@ -369,7 +369,7 @@ data = ibstore.getdata('TWTR', _latethrough=True, ...)
 cerebro.resampledata(data, takelate=True)
 ```
 
-### IBBroker - 实时交易
+## IBBroker - 实时交易
 
 **注意**：应要求，在 backtrader 中提供的模拟经纪商中实现了 `tradeid` 功能。这允许正确分配不同 `tradeid` 的佣金。
 
@@ -377,7 +377,7 @@ cerebro.resampledata(data, takelate=True)
 
 尽管仍可以指定 `tradeid`，但它不再有意义。
 
-#### 使用经纪商
+### 使用经纪商
 
 要使用 IB 经纪商，必须替换 cerebro 创建的标准模拟经纪实例。
 
@@ -402,13 +402,13 @@ cerebro = bt.Cerebro()
 cerebro.broker = bt.brokers.IBBroker(host='127.0.0.1', port=7496, clientId=35)
 ```
 
-#### 经纪商参数
+## 经纪商参数
 
 无论是直接还是通过 `getbroker`，IBBroker 都不支持任何参数。这是因为经纪商只是一个代理，真实的经纪商提供的内容不应被删除。
 
-#### 一些限制
+## 一些限制
 
-##### 现金和价值报告
+### 现金和价值报告
 
 内部 backtrader 模拟经纪商在调用策略 `next` 方法之前计算值（净清算价值）和现金，而实时经纪商不能保证这一点。
 
@@ -422,13 +422,13 @@ backtrader 告诉 TWS 提供更新后的值，但不知道消息何时会到达�
 
 **注意**：进一步的限制是，这些值以账户的基本货币报告，即使可用更多货币的值。这是一个设计选择。
 
-##### 头寸
+### 头寸
 
 backtrader 使用 TWS 报告的资产的头寸（价格和数量）。可以通过订单执行和订单状态消息进行内部计算，但如果丢失了这些消息中的一些，计算将不准确。
 
 当然，如果在连接到 TWS 时，将进行交易的资产已经有一个未平仓头寸，策略计算的交易将无法像往常一样工作，因为有一个初始偏移。
 
-#### 交易
+## 交易
 
 在使用方面没有变化。只需使用策略中提供的方法（请参阅策略参考以获取完整说明）：
 
@@ -437,11 +437,11 @@ backtrader 使用 TWS 报告的资产的头寸（价格和数量）。可以通�
 - `close`
 - `cancel`
 
-#### 返回的订单对象
+## 返回的订单对象
 
 与 backtrader 订单对象兼容（在相同层次结构中子类化）。
 
-#### 订单执行类型
+## 订单执行类型
 
 IB 支持众多执行类型，其中一些由 IB 模拟，一些由交易所支持。决定最初支持哪些订单执行类型的动机是：
 
@@ -472,7 +472,7 @@ def next(self):
 
 请参考 IB API 文档以获取关于止损触发的进一步说明。
 
-#### 订单有效期
+## 订单有效期
 
 backtrader 在回测期间可用的相同有效期概念（使用 `valid` 参数买入和卖出）在此也可用，并具有相同含义。因此，有效期参数对于 IB 订单转换如下：
 
@@ -496,7 +496,7 @@ backtrader 在回测期间可用的相同有效期概念（使用 `valid` 参数
 
   指定了一个值（而不是 `None`），但为空值，解释为当天（会话）有效的订单。
 
-#### 通知
+## 通知
 
 标准订单状态将通过策略的 `notify_order` 方法通知（如果覆盖）。
 
@@ -517,9 +517,9 @@ backtrader 在回测期间可用的相同有效期概念（使用 `valid` 参数
 
 - `Expired` - 请参见上文解释。
 
-### 参考
+## 参考
 
-#### IBStore
+### IBStore
 
 ```python
 class backtrader.stores.IBStore()
@@ -554,7 +554,7 @@ class backtrader.stores.IBStore()
 - `indcash`（默认：True）
   - 将 IND 代码管理为现金以获取价格。
 
-#### IBBroker
+## IBBroker
 
 ```python
 class backtrader.brokers.IBBroker(**kwargs)
@@ -569,7 +569,7 @@ class backtrader.brokers.IBBroker(**kwargs)
 - 头寸：如果在操作开始时有资产的未平仓头寸，或者通过其他方式给出的订单改变了头寸，Cerebro 中策略计算的交易将不反映现实。
   - 为避免这种情况，经纪商将不得不进行自己的头寸管理，这也将允许多个 id 的 `tradeid`（盈亏也将本地计算），但可能被认为违背了与实时经纪商合作的目的。
 
-#### IBData
+## IBData
 
 ```python
 class backtrader.feeds.IBData(**kwargs)

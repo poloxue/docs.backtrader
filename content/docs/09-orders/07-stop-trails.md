@@ -3,17 +3,13 @@ title: "跟踪止损（限价）"
 weight: 07
 ---
 
-## 跟踪止损（限价）
+# 跟踪止损（限价）
 
 版本 1.9.35.116 增加了跟踪止损和跟踪止损限价订单执行类型到回测工具中。
 
-**注意**
+**注意**，这只在回测中实现，尚未在实时经纪商中实现
 
-这只在回测中实现，尚未在实时经纪商中实现
-
-**注意**
-
-更新至版本 1.9.36.116。Interactive Brokers 支持跟踪止损、跟踪止损限价和 OCO。
+**注意**，更新至版本 1.9.36.116。Interactive Brokers 支持跟踪止损、跟踪止损限价和 OCO。
 
 OCO 始终将组中的第一个订单指定为参数 oco
 
@@ -102,10 +98,6 @@ self.sell(size=1, exectype=bt.Order.StopTrail, price=10.50, trailpercent=0.02)
 $ ./trail.py --plot --strat trailamount=50.0
 ```
 
-生成以下图表
-
-![图像](image)
-
 以及以下输出：
 
 ```plaintext
@@ -193,11 +185,7 @@ $ ./trail.py --plot --strat trailamount=30.0
 $ ./trail.py --plot --strat trailpercent=0.02
 ```
 
-相应的图表：
-
-![图像](image)
-
-示例用法：
+## 示例用法
 
 ```bash
 $ ./trail.py --help
@@ -220,7 +208,7 @@ optional arguments:
   --plot [kwargs]      kwargs in key=value format (default: )
 ```
 
-示例代码：
+## 示例代码
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)
