@@ -9,7 +9,7 @@ weight: 2
 
 ## 需求和版本
 
-Backtrader 注明是可运行在 Pyhon3.2-3.7，但它目前也能在 Python 3.10 及以上版本中正常运行。如需绘图，请安装 Matplotlib >= 1.4.1；
+官方仓库注明是 Backtrader 可运行在 Python 3.2-3.7，但它目前也能在 Python 3.10 及以上版本中正常运行。如需绘图，请安装 Matplotlib >= 1.4.1；
 
 如果你追求更快的回测速度，可尝试使用 PyPy3 环境运行，但需注意它的绘图支持较弱。
 
@@ -19,7 +19,7 @@ Backtrader 在 Python 2.x 和 3.x  上的兼容行如何呢？
 
 Backtrader 的开发主要在 Python 2.7 下进行，有时也会在 3.4 下进行测试。为了确保兼容性，本地测试环境会使用这两个版本。
 
-开发过程中，通过 Travis 持续集成系统，还确保了与 Python 3.2 / 3.3 / 3.5 以及 pypy/pypy3 的兼容性。
+Backtrader 的开发过程通过 Travis 持续集成系统，确保了与 Python 3.2 / 3.3 / 3.5 以及 pypy/pypy3 的兼容性。
 
 ## 从 PyPI 安装
 
@@ -37,6 +37,7 @@ easy_install backtrader
 ```bash
 pip install "backtrader[plotting]"
 ```
+
 这会自动安装 Matplotlib 及其依赖项。
 
 ## 源码安装
