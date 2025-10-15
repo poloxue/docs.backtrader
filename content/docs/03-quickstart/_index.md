@@ -6,8 +6,6 @@ bookCollapseSection: true
 
 # 快速开始
 
-Backtrader 是一款功能强大且结构优雅的 Python 回测框架。它不仅能让你轻松实现各种交易策略，还能帮助你完成策略优化、绩效可视化和实盘对接。
-
 本文是一份 Backtrader 的快速入门指南，将通过一个完整的示例，带你从零构建一个交易系统，希望在此过程中掌握 Backtrader 的基础使用。
 
 - **初始设置**： 配置 Backtrader，实例化 Cerebro 准备运行环境；<br/>
