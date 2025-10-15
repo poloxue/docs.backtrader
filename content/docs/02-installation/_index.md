@@ -5,29 +5,21 @@ weight: 2
 
 # 安装指南
 
-本文将介绍如何安装和配置 Backtrader，以便您能快速开始交易策略的开发与测试。
+本文是 Backtrader 的安装指南，介绍如何安装 Backtrader。
 
 ## 需求和版本
 
-Backtrader 是一个自包含的平台，无需外部依赖（除非您需要使用绘图功能）。
+Backtrader 注明是可运行在 Pyhon3.2-3.7，但它目前也能在 Python 3.10 及以上版本中正常运行。如需绘图，请安装 Matplotlib >= 1.4.1；
 
-它的基本需求和兼容版本如下：
+如果你追求更快的回测速度，可尝试使用 PyPy3 环境运行，但需注意它的绘图支持较弱。
 
-**基本需求：**
+## 兼容性
 
-- Python 2.7
-- Python 3.2 / 3.3 / 3.4 / 3.5
-- pypy/pypy3
+Backtrader 在 Python 2.x 和 3.x  上的兼容行如何呢？
 
-**额外需求（如需绘图）：**
+Backtrader 的开发主要在 Python 2.7 下进行，有时也会在 3.4 下进行测试。为了确保兼容性，本地测试环境会使用这两个版本。
 
-- Matplotlib >= 1.4.1（虽然更早的版本可能也能工作，但这是开发时使用的版本）
-
-**注意：** 在撰写本文时，Matplotlib 还不支持 pypy/pypy3。
-
-## Python 2.x/3.x 兼容性
-
-Backtrader 的开发主要在 Python 2.7 下进行，有时也会在 3.4 下进行测试。为了确保兼容性，本地测试环境会使用这两个版本。此外，通过 Travis 持续集成系统，我们还确保了与 Python 3.2 / 3.3 / 3.5 以及 pypy/pypy3 的兼容性。
+开发过程中，通过 Travis 持续集成系统，还确保了与 Python 3.2 / 3.3 / 3.5 以及 pypy/pypy3 的兼容性。
 
 ## 从 PyPI 安装
 
@@ -47,25 +39,27 @@ pip install "backtrader[plotting]"
 ```
 这会自动安装 Matplotlib 及其依赖项。
 
-## 从源码安装
+## 源码安装
 
-1. 从 GitHub 网站下载发布版本或最新的 tarball：[下载链接](https://github.com/mementum/backtrader)
-2. 解压下载的文件，然后运行以下命令安装：
+从 GitHub 通过 git 下载发布最新版本，访问 [GitHub 仓库地址](https://github.com/mementum/backtrader)。
+
+运行命令安装：
+
 ```bash
+git clone https://github.com:mementum/backtrader
+cd backtrader
 python setup.py install
 ```
 
-## 在项目中从源码运行
+## 源码运行
 
-如果您希望在项目中直接运行 Backtrader 的源码，可以按照以下步骤操作：
+如果你希望将 Backtrader 直接包含在你的项目源码中，可从 GitHub 下载发布版本，并将 backtrader 复制到您的项目中。
 
-1. 从 GitHub 网站下载发布版本或最新的 tarball：[下载链接](https://github.com/mementum/backtrader)
-2. 将 backtrader 包目录复制到您的项目中。如在类 Unix 系统，可执行命令：
 ```bash
-tar xzf backtrader.tgz
-cd backtrader
+git clone https://github.com:mementum/backtrader
 cp -r backtrader project_directory
 ```
-3. 请记住，如果需要绘图功能，还需手动安装 Matplotlib。
 
-通过这些步骤，您将能够轻松安装和使用 Backtrader 平台进行量化交易的开发和测试。希望这些说明对您有所帮助，祝您在使用 Backtrader 时一切顺利！
+> 请记住，如果需要绘图功能，还需手动安装 Matplotlib。
+
+这种运行方式的最大好处是，开发策略时，也能非常方便的调试和阅读 Backtrader 的核心源码。

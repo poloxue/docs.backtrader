@@ -9,7 +9,7 @@ disableKinds = ['taxonomy']
 
 [modules]
 [[module.imports]]
-  path = 'github.com/alex-shpak/hugo-book'
+  path = 'github.com/alex-shpak/hugo-book/v12'
 
 [params]
   BookTheme = 'dark'
