@@ -1,6 +1,6 @@
 ---
 title: "技术指标"
-weight: 9
+weight: 10
 ---
 
 # 技术指标（Indicators）
