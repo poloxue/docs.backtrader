@@ -15,11 +15,9 @@ import backtrader as bt
 if __name__ == '__main__':
     cerebro = bt.Cerebro()
 
-    print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
-
+    print(f'初始资金: {cerebro.broker.getvalue()}')
     cerebro.run()
-
-    print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+    print(f'最终资金: {cerebro.broker.getvalue()})
 ```
 
 
@@ -38,21 +36,21 @@ cerebro = bt.Cerebro()
 通过 `cerebro.broker.getvalue()` 获取并打印了初始的组合价值。
 
 ```python
-print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
+print(f'初始资金: {cerebro.broker.getvalue()}')
 ```
 
 接着运行 `cerebro.run()` 迭代数据模拟交易。完成后，再次打印最终的持仓组合价值
 
 ```python
 cerebro.run()
-print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+print(f'最终资金: {cerebro.broker.getvalue()})
 ```
 
 输出如下：
 
 ```
-Starting Portfolio Value: 10000.00
-Final Portfolio Value: 10000.00
+初始资金: 10000.00
+最终资金: 10000.00
 ```
 
 这个基础设置是构建复杂交易策略的基础。
@@ -61,5 +59,4 @@ Final Portfolio Value: 10000.00
 
 如未明确设置 broker，系统会使用默认 broker，默认初始资金通常是 10,000 货币单位。
 
-接下来的章节，继续添加数据源（DataFeed）、策略（Strategy）、指标（Indicator）等，逐步完善这个交易系统。
-
+接下来的章节，会对 broker 进行更对的配置，继续添加数据源（DataFeed）、策略（Strategy）、指标（Indicator）等，逐步完善这个交易系统。
