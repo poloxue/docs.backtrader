@@ -5,6 +5,8 @@ weight: 1
 
 ## 什么是 Backtrader？
 
+{{< youtube ksExB9TzIIE >}}
+
 Backtrader 是一个基于 Python 实现功能强大且开源的量化回测交易框架。Backtrader 有着完整的基础设施，支持编写可重用组件，如策略、指标和分析器。
 
 Backtrader 支持多品种多周期多策略的回测。相对于其他专门用于策略回测的框架，Backtrader 不仅仅是可以回测交易策略，还可以连接 Broker 实盘交易。

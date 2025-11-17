@@ -1,6 +1,6 @@
 ---
 title: "第一个策略"
-weight: 5
+weight: 4
 ---
 
 # 第一个策略
