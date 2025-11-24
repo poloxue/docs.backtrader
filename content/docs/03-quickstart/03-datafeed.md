@@ -3,70 +3,116 @@ title: "配置数据"
 weight: 3
 ---
 
-# 配置数据 DataFeed
+# 配置数据
 
-我们目标是通过策略实现资产增值，这就离不开价格数据，甚至是其他有用的数据。本小节，我们将学习如何系统配置数据源，即添加数据源 DataFeed。
+本文具体讲讲如何在 Backtrader 中配置数据源，也就是 DataFeed。
 
-配置 DataFeed 要用到的是 `backtrader.feeds` 中提供的数据工具。要用到的数据文件是 [orcl-1995-2014](https://raw.githubusercontent.com/mementum/backtrader/master/datas/orcl-1995-2014.txt)（点击下载即可下载）。
+我会先演示如何给 Backtrader 添加 CSV 数据源。然后，再介绍 Backtrader 中最常用的两种 DataFeed 的使用。
 
-假设，数据文件被下载到当前目录，通过 `bt.feeds.YahooFinanceCSVDataFeed` 即可创建 datafeed。
+## 添加数据
+
+首先，来演示给 Backtrader 添加数据源吧。
+
+给 Backtrader 加载数据源的过程可分为两个步骤，首先是创建 DataFeed，然后就是将 DataFeed 加载到 cerebro。
 
 ```python
-data = bt.feeds.YahooFinanceCSVData(
-  dataname="./orcl-1995-2014.txt",
-  fromdate=datetime.datetime(2000, 1, 1),
-  todate=datetime.datetime(2000, 12, 31),
-  reverse=False
+data = bt.feeds.{DataFeedClass}
+cerebro.adddata(data)
+```
+
+Backtrader 提供了种类繁多的 DataFeedClass，可用于对接处理不同的数据源，如 CSV 文件、Pandas DataFrame 或者其他自定义的数据类。
+
+下面来个具体的案例，先用 CSV 数据文件作为演示案例。
+
+先从 Backtrader 代码仓库中下载了 Oracle 从 1995 年到 2014 的行情数据文件[orcl-1995-2014.csv](https://github.com/mementum/backtrader/blob/master/datas/orcl-1995-2014.txt)。
+
+开始编写代码吧。
+
+首先是读取 csv 数据文件创建 DataFeed。Backtrader 内置的 `bt.feeds.GenericCSVData` 类来读取 CSV 数据文件。
+
+具体操作代码如下：
+
+```python
+data = bt.feeds.GenericCSVData(
+    dataname="./orcl-1995-2014.txt",
+    dtformat="%Y-%m-%d",
 )
 ```
 
-Yahoo 在线下载的 CSV 数据按日期降序排列，YahooFinanceCSVData 也是按这个标准解析。但我们提供的数据是升序排列，故设置参数 `reverse=True`。
+指定数据文件的路径和设置日期格式。
 
-接下来，我们通过 `cerebro.adddata` 将数据添加系统即可。
+GenericCSVData 能适应各种格式的 CSV 文件，是一个通用的读取 CSV 行情数据的 DataFeed 类。
+
+Datafeed 创建好后，接下来的关键一步，即通过 cerebro.adddata(data) 把数据加载到回测引擎中。
 
 ```python
 cerebro.adddata(data)
 ```
 
-将这部分实现补充到我们的系统中。
-
-## 完整示例
+这个脚本的代码：
 
 ```python
-import datetime  # For datetime objects
-import os.path  # To manage paths
-import sys  # To find out the script name (in argv[0])
 import backtrader as bt
 
-if __name__ == '__main__':
+
+def main():
     cerebro = bt.Cerebro()
 
-    modpath = os.path.dirname(os.path.abspath(sys.argv[0]))
-    datapath = os.path.join(modpath, './datas/orcl-1995-2014.txt')
-
-    data = bt.feeds.YahooFinanceCSVData(
-        dataname=datapath,
-        fromdate=datetime.datetime(2000, 1, 1),
-        todate=datetime.datetime(2000, 12, 31),
-        reverse=False)
-
+    data = bt.feeds.GenericCSVData(
+        dataname="./orcl-1995-2014.txt", dtformat="%Y-%m-%d",
+    )
     cerebro.adddata(data)
-    cerebro.broker.setcash(100000.0)
-
-    print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
 
     cerebro.run()
+    cerebro.plot()
 
-    print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+
+if __name__ == "__main__":
+    main()
 ```
 
-运行输出：
+运行这个代码，现在就能看到输出的图表中是有价格行情了。
 
+![](https://cdn.jsdelivr.net/gh/poloxue/images@backtrader/03-quickstart-03datafeed-01.png)
+
+## 创建数据
+
+前面是通过从远程下载 CSV 文件，通过 Backtrader 的 GenericCSVData 读取 CSV 文件创建 DataFeed。Backtrader 还支持数据获取方式。
+
+这里就再介绍一种更常用的 DataFeed 数据创建方式：基于 Pandas 的 DataFrame 创建 DataFeed。
+
+依赖 pandas 的灵活性，这种方式能极大扩展你的数据渠道，无论是本地文件，如 CSV 文件，还是关系型数据，如 CSV，或是远程 API 下载，如 yfinance、tushare、akshare 等，都能搞定。
+
+好，我们直接来看代码。
+
+现在通过 yfinance 下载行情数据，而不是手动下载 CSV 文件再加载。
+
+下载和加载 BTC-USD 从 2024-01-01 到 2025-11-10 的行情数据
+
+```python
+cerebro = bt.Cerebro()
+df = yf.download("BTC-USD", start="2024-01-01", end='2025-11-10', multi_level_index=False)
+data = bt.feeds.PandasData(dataname=df)
+cerebro.adddata(data)
+cerebro.run()
+cerebro.plot(style='bar')
 ```
-Starting Portfolio Value: 100000.00
-Final Portfolio Value: 100000.00
-```
 
-系统已经有了数据源，但资产并未增值，为什么？让我们继续下一节，策略（Strategy）类的学习。
+注，记得使用最新的 yfinance 要设置 multi_level_index=False，否则可能得到多级索引的数据，导致加载失败。
 
+输出绘图如下所示：
+
+![](https://cdn.jsdelivr.net/gh/poloxue/images@backtrader/03-quickstart-03datafeed-02.png)
+
+如上所示，我们先用 yfinance 获取函数下载指定品种和时间段的数据，得到一个 DataFrame。然后传递给 PandasData 就可创建出满足 Backtrader 的数据了。
+
+实际上 PandasData 对传入的数据是有一定要求的。
+
+索引是时间，数据列要满足 open，high，low，close，volume等。当然，数据列名是大写，如 Open、High、Low、Close 也是可以的。PandasData 内部会自动转化为小写。
+
+准备工作做完后，个 DataFrame 就可用 bt.feeds.PandasData 来包装了。然后通过 cerebro.adddata() 把它添加到回测系统中。
+
+好了，现在我们的回测系统里已经有了数据。
+
+下一节，我们学习如何在 Backtrader 中编写我们的交易策略。
 
