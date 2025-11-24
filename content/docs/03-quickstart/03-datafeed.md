@@ -116,7 +116,9 @@ cerebro.plot(style='bar')
 
 ## 最后说明
 
-Backtrader 的数据能力是非常强大，本文只是简单的介绍创建和添加数据。除此，Backtrader 还提供了其他丰富多样的 DataFeed 类，当然大部分情况，本文的 GenericCSVData 和 PandasData 已经基本能满足大部分的情况。如果有自定义数据列的需求，Backtrader 也是只是自定义数据的。
+Backtrader 的数据能力是非常强大，本文只是简单的介绍创建和添加数据。除此，Backtrader 还提供了其他丰富多样的 DataFeed 类。
+
+大部分情况，本文的 GenericCSVData 和 PandasData 已经基本能满足大部分的情况。如果有自定义数据列的需求，Backtrader 也是只是自定义数据的。
 
 添加数据部分，除了 `cerebro.adddata` 直接将数据添加到回测系统，还可以重放、重采样数据，模拟实际交易环境，或者多周期交易。
 
