@@ -39,8 +39,8 @@ if __name__ == '__main__':
 输出：
 
 ```
-Starting Portfolio Value: 100000.00
-Final Portfolio Value: 100000.00
+初始资金: 100000.00
+最终资金: 100000.00
 ```
 
 ## 设置交易费率（佣金）
