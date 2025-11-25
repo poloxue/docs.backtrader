@@ -22,7 +22,6 @@ if __name__ == '__main__':
     print(f'最终资金: {cerebro.broker.getvalue()})
 ```
 
-
 首先导入了 backtrader 模块并命名为 bt。
 
 ```python
