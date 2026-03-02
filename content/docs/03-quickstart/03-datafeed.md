@@ -5,6 +5,8 @@ weight: 3
 
 # 配置数据
 
+{{< youtube XVIo4X8eUks >}}
+
 本文具体讲讲如何在 Backtrader 中配置数据源，也就是 DataFeed。
 
 我会先演示如何给 Backtrader 添加 CSV 数据源。然后，再介绍 Backtrader 中最常用的两种 DataFeed 的使用。
