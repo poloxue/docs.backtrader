@@ -5,6 +5,8 @@ weight: 8
 
 # 交易监控
 
+{{< youtube NMvRzpyzlFM >}}
+
 我们已经知道如何使用 backtrader 买卖交易了。本节将介绍 backtrader 如何监控它每笔交易，如成本、利润和佣金。由于佣金的存在，利润还分为毛利润和净利润
 
 ## 设置佣金
