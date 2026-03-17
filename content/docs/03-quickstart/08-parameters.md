@@ -5,6 +5,8 @@ weight: 9
 
 # 参数定义
 
+{{< youtube L8NjD0eLkHc >}}
+
 前面的案例中，参数都是硬编码在策略中。本节将介绍如何在 backtrader 自定义参数。
 
 ## 定义参数
