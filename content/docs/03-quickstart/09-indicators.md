@@ -5,6 +5,8 @@ weight: 10
 
 # 技术指标（Indicators）
 
+{{< youtube CPs4IuEvcxM >}}
+
 本节将介绍如何使用技术指标，将技术指标作为入场和出场信号。我们将用简单移动平均线（Simple Moving Average），或称 SMA，作为演示指标。SMA 是一个非常简单的技术指标，计算一定周期的价格均值。
 
 ## 交易规则
