@@ -5,6 +5,8 @@ weight: 11
 
 # 可视化
 
+{{< youtube fsHzlg9tmik >}}
+
 通过 `print` 输出每个 bar 的信息不利于我们阅读，我们还是更倾向于图表的视觉效果。backtrader 内置了图表绘制的能力，一行代码即可绘图。
 
 ```python
