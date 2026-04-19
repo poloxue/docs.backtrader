@@ -5,7 +5,7 @@ weight: 1
 
 # 订单
 
-{{< youtube nvim FRFs28J14Gs >}}}
+{{< youtube nvim FRFs28J14Gs >}}
 
 Cerebro 是 backtrader 中的关键控制系统，而 Strategy（一个子类）是终端用户的关键控制点。后者需要一个连接系统其他部分的方法，这就是订单发挥关键作用的地方。
 
