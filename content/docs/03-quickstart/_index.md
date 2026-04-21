@@ -11,15 +11,46 @@ bookCollapseSection: true
 主要内容如下：
 
 - **初始设置**：配置 Backtrader，实例化 Cerebro 准备运行环境；<br/>
+
+{{< youtube Li6h94v3zYg >}}
+
 - **账户资金**：Cerebro 配置初始资金、手续费与滑点；<br/>
+
+{{< youtube 5_69kMaLltk >}}
+
 - **配置数据**：加载历史行情数据（CSV 或 Pandas）并定义时间周期；<br/>
+
+{{< youtube XVIo4X8eUks >}}
+
 - **基础概念**：在开始编写策略前，先了解 `Line` 和索引 0 的概念；<br/>
 - **演示策略**：编写基础策略类，实现最简单的买入逻辑；<br/>
+
+{{< youtube DfqY81TQdTg >}}
+
 - **开始交易**：运行策略，完成第一轮回测；<br/>
+
+{{< youtube WFeAgO2X3oc >}}
+
 - **卖出操作**：添加卖出逻辑，支持止盈止损与仓位管理；<br/>
+
+{{< youtube E9yLLr9-brM >}}
+
 - **交易监控**：通过 notify_order 和 notify_trade 实时跟踪成交情况；<br/>
+
+{{< youtube NMvRzpyzlFM >}}
+
 - **参数定义**：为策略添加可调参数，为后续优化做准备；<br/>
+
+{{< youtube L8NjD0eLkHc >}}
+
 - **技术指标**：引入常用指标（SMA、EMA、RSI 等），完善信号判断；<br/>
+
+{{< youtube CPs4IuEvcxM >}}
+
 - **可视化**：  绘制回测结果图，展示每笔交易盈亏与指标变化；<br/>
+
+{{< youtube fsHzlg9tmik >}}
+
 - **策略优化**：利用 optstrategy 功能自动化优化参数，比较收益表现；<br/>
 
+{{< youtube SxiNOUs2h00 >}}
