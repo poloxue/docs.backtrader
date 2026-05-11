@@ -5,19 +5,19 @@ weight: 3
 
 # 自定义佣金
 
-重新设计 `CommInfo` 对象以实现当前版本的最重要部分包括：
+当前版本重新设计 `CommInfo` 对象，核心目标包括：
 
 - 保留原始 `CommissionInfo` 类和行为
-- 为轻松创建用户定义的佣金打开大门
-- 将格式 `xx%` 作为新佣金方案的默认值，而不是 `0.xx`（这只是个口味问题），同时保持行为可配置
+- 为用户轻松创建自定义佣金方案提供支持
+- 将 `xx%` 格式作为新佣金方案的默认值，而不是 `0.xx`（这只是个人偏好），同时保持行为可配置
 
 ## 定义佣金方案
 
-这涉及 1 到 2 个步骤：
+这需要 1 到 2 个步骤：
 
 ### 子类化 `CommInfoBase`
 
-仅更改默认参数可能就足够了。`backtrader` 已经在模块 `backtrader.commissions` 中使用一些定义进行了此操作。期货的常规行业标准是每合同和每轮固定金额。定义可以这样做：
+仅更改默认参数可能就足够了。`backtrader` 在 `backtrader.commissions` 模块中已经有一些预定义。期货的行业标准是每份合约固定金额。可以这样定义：
 
 ```python
 class CommInfo_Futures_Fixed(CommInfoBase):
@@ -37,7 +37,7 @@ class CommInfo_Futures_Fixed(CommInfoBase):
        )
    ```
 
-   如上所述，此处解释百分比的默认值（作为参数 `commission` 传递）为：`xx%`。如果需要旧的/其他行为 `0.xx`，可以轻松实现：
+   如上所述，百分比的默认值（通过参数 `commission` 传递）为 `xx%`。如果需要旧的行为 `0.xx`，可以这样实现：
 
    ```python
    class CommInfo_Stocks_PercAbs(CommInfoBase):
@@ -60,11 +60,11 @@ def _getcommission(self, size, price, pseudoexec):
    '''
 ```
 
-   下面的实际示例中有更多详细信息。
+   下面的实际示例中有更详细的说明。
 
 #### 如何将其应用于平台
 
-一旦有了 `CommInfoBase` 子类，诀窍是使用 `broker.addcommissioninfo` 而不是通常的 `broker.setcommission`。后者将在内部使用旧版 `CommissionInfoObject`。
+有了 `CommInfoBase` 子类后，需要使用 `broker.addcommissioninfo` 而不是常用的 `broker.setcommission`。后者会在内部使用旧版 `CommissionInfoObject`。
 
 ```python
 ...
@@ -80,11 +80,11 @@ def addcommissioninfo(self, comminfo, name=None):
     self.comminfo[name] = comminfo
 ```
 
-设置 `name` 意味着 `comminfo` 对象将仅适用于具有该名称的资产。默认值 `None` 表示它适用于系统中的所有资产。
+设置 `name` 后，`comminfo` 对象将仅适用于具有该名称的资产。默认值 `None` 表示适用于系统中的所有资产。
 
 ## 实际示例
 
-问题 #45 询问一种适用于期货的佣金方案，该方案基于百分比，并使用整个“虚拟”合约价值的佣金百分比，即：包括期货乘数在佣金计算中。
+问题 #45 提出了一种适用于期货的佣金方案，基于百分比，并使用整个”虚拟”合约价值的佣金百分比，即在佣金计算中包括期货乘数。
 
 ```python
 import backtrader as bt
@@ -112,7 +112,7 @@ comminfo = CommInfo_Fut_Perc_Mult(
 cerebro.addcommissioninfo(comminfo)
 ```
 
-如果更喜欢 `0.xx` 格式作为默认值，只需将参数 `percabs` 设置为 `True`：
+如果更倾向于 `0.xx` 格式，只需将参数 `percabs` 设置为 `True`：
 
 ```python
 class CommInfo_Fut_Perc_Mult(bt.CommInfoBase):
@@ -143,15 +143,15 @@ def _getcommission(self, size, price, pseudoexec):
     '''
 ```
 
-`pseudoexec` 参数的目的是在平台可能调用此方法进行可用现金的预计算和其他一些任务时使用。
+`pseudoexec` 参数用于平台可能调用此方法进行可用现金预计算等任务。
 
-这意味着该方法可能（实际上确实会）使用相同的参数多次调用。
+这意味着该方法可能（实际上也确实会）使用相同参数被多次调用。
 
-`pseudoexec` 指示调用是否对应于订单的实际执行。尽管乍看之下这似乎不“相关”，但在以下情景中却是如此：
+`pseudoexec` 指示调用是否对应订单的实际执行。虽然乍看之下似乎无关紧要，但在以下场景中却很重要：
 
-经纪商在期货往返佣金超过 5000 单位合同时提供 50% 的折扣。
+经纪商对期货交易量超过 5000 张合约时提供 50% 的佣金折扣。
 
-在这种情况下，如果没有 `pseudoexec`，对该方法的多次非执行调用将迅速触发折扣到位的假设。
+在这种情况下，如果没有 `pseudoexec`，多次非执行调用会错误地触发折扣条件。
 
 将此情景付诸实践：
 
@@ -188,4 +188,4 @@ class CommInfo_Fut_Discount(bt.CommInfoBase):
 
 ## `CommInfoBase` 文档字符串和参数
 
-有关 `CommInfoBase` 的参考，请参见“佣金：股票与期货”。
+有关 `CommInfoBase` 的参考，请参见”佣金”一章。

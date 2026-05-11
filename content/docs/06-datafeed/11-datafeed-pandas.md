@@ -5,13 +5,13 @@ weight: 11
 
 # Pandas 数据源示例
 
-**注意**，需要安装 pandas 及其依赖项。支持 Pandas Dataframe 对很多人来说很重要，他们依赖于 Pandas 提供的不同数据源（包括 CSV）的解析代码及其他功能。
+**注意**，需要安装 pandas 及其依赖项。支持 Pandas Dataframe 很重要，许多人依赖 Pandas 提供的解析功能来处理不同数据源（包括 CSV）。
 
-## 数据源的重要声明
+## 参数声明
 
 **注意**
 
-这些只是声明。不要盲目复制此代码。请参见下面的实际用法示例：
+以下只是参数声明，不要盲目复制。请参见下面的实际用法示例：
 
 ```python
 class PandasData(feed.DataBase):
@@ -41,11 +41,11 @@ class PandasData(feed.DataBase):
     )
 ```
 
-上述 PandasData 类的片段展示了关键点：
+上述 PandasData 类的片段展示了以下关键点：
 
-- 在实例化时，类的 `dataname` 参数包含 Pandas Dataframe
+- 实例化时，`dataname` 参数包含 Pandas Dataframe
 - 该参数继承自基类 `feed.DataBase`
-- 新参数具有 DataSeries 中常规字段的名称，并遵循以下约定：
+- 新参数使用 DataSeries 中常规字段的名称，遵循以下约定：
 
   - `datetime` (默认: None)
     - None: datetime 是 Pandas Dataframe 中的“索引”
@@ -59,9 +59,9 @@ class PandasData(feed.DataBase):
     - >= 0: pandas dataframe 中列的数值索引
     - string: pandas dataframe 中的列名（作为索引）
 
-一个小示例应能够加载经过 Pandas 解析的标准 2006 示例数据，而不是直接由 backtrader 解析。
+一个小示例，加载经 Pandas 解析的标准 2006 示例数据，而非由 backtrader 直接解析。
 
-运行示例代码以使用 CSV 数据中的现有“头”：
+运行示例代码，使用 CSV 数据中的标题行：
 
 ```sh
 $ ./panda-test.py
@@ -73,7 +73,7 @@ Date
 2006-01-04  3615.23  3652.46  3615.23  3652.46       0             0
 ```
 
-相同的代码，但告诉脚本跳过头：
+相同的代码，但告诉脚本跳过标题：
 
 ```sh
 $ ./panda-test.py --noheaders
@@ -85,11 +85,11 @@ $ ./panda-test.py --noheaders
 2006-01-04  3615.23  3652.46  3615.23  3652.46  0  0
 ```
 
-第二次运行时，使用 pandas.read_csv：
-- 跳过第一行输入（skiprows 参数设置为 1）
-- 不查找头行（header 参数设置为 None）
+第二次运行时，使用 `pandas.read_csv`：
+- 跳过第一行（skiprows 设置为 1）
+- 不查找标题行（header 设置为 None）
 
-backtrader 对 Pandas 的支持尝试自动检测列名是否已被使用，否则使用数值索引，并相应地进行操作，尽量提供最佳匹配。
+backtrader 的 Pandas 支持会尝试自动检测列名，否则使用数值索引，以提供最佳匹配。
 
 以下图表展示了成功的结果。Pandas Dataframe 已正确加载（在两种情况下均如此）。
 

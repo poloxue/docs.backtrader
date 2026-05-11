@@ -11,7 +11,7 @@ weight: 3
 class backtrader.observers.Benchmark()
 ```
 
-该观察器存储策略的回报和作为参考资产的回报，这个参考资产是传递给系统的一个数据。
+该观察器存储策略的回报以及作为参考资产的回报，参考资产是传递给系统的一个数据源。
 
 **参数：**
 
@@ -33,7 +33,7 @@ class backtrader.observers.Benchmark()
 class backtrader.observers.Broker(*args, **kwargs)
 ```
 
-该观察器跟踪经纪人中的当前现金金额和投资组合价值（包括现金）。
+该观察器跟踪经纪商中的当前现金金额和投资组合价值（包括现金）。
 
 **参数**：无
 
@@ -43,17 +43,17 @@ class backtrader.observers.Broker(*args, **kwargs)
 class backtrader.observers.Cash(*args, **kwargs)
 ```
 
-该观察器跟踪经纪人中的当前现金金额。
+该观察器跟踪经纪商中的当前现金金额。
 
 **参数**：无
 
-#### Broker - Value
+### Broker - Value
 
 ```python
 class backtrader.observers.Value(*args, **kwargs)
 ```
 
-该观察器跟踪经纪人中的当前投资组合价值，包括现金。
+该观察器跟踪经纪商中的当前投资组合价值，包括现金。
 
 **参数**：
 
@@ -65,7 +65,7 @@ class backtrader.observers.Value(*args, **kwargs)
 class backtrader.observers.BuySell(*args, **kwargs)
 ```
 
-该观察器跟踪单个买入/卖出订单（单个执行）并将在图表上绘制它们，围绕执行价格水平绘制。
+该观察器跟踪单个买入/卖出订单（单次执行），并在图表上围绕执行价格水平绘制它们。
 
 **参数**：
 
@@ -106,9 +106,9 @@ class backtrader.observers.TimeReturn()
 class backtrader.observers.Trades()
 ```
 
-该观察器跟踪完整的交易，并在交易关闭时绘制实现的损益水平。
+该观察器跟踪完整的交易，并在交易关闭时绘制实现的损益。
 
-交易在仓位从 0（或跨越 0）变为 X 时开立，然后在回到 0（或反方向跨越 0）时关闭。
+交易在头寸从 0（或跨越 0）变为 X 时开立，在回到 0（或反向跨越 0）时关闭。
 
 **参数**：
 

@@ -5,30 +5,30 @@ weight: 3
 
 # Pyfolio 集成
 
-在 Ticket #108 中提出了一个投资组合工具，即 pyfolio 的集成。
+在 Ticket #108 中提出了 pyfolio 的集成需求。
 
-一开始看教程觉得很难，因为 zipline 和 pyfolio 之间的紧密集成，但 pyfolio 提供的一些其他用途的示例测试数据实际上非常有用，可以解码幕后运行的内容，从而实现集成。
+刚开始看教程觉得很难，因为 zipline 和 pyfolio 之间集成得很紧密，但 pyfolio 提供的一些示例测试数据实际上很有用，帮助理解了幕后运行机制，从而实现了集成。
 
-在 backtrader 中大多数部分已经就位：
+backtrader 中大部分功能已经就位：
 
 - 分析器基础设施
 - 子分析器
-- TimeReturn 分析器
+- `TimeReturn` 分析器
 
-只需要一个主 PyFolio 分析器和三个简单的子分析器。再加上依赖于 pyfolio 所需的依赖项之一，即 pandas 的方法。
+只需要一个主 `PyFolio` 分析器和三个简单的子分析器。再加上 pyfolio 依赖项之一 pandas 的方法。
 
-最具挑战的部分是…“正确获取所有依赖项”。
+最具挑战的部分是”正确获取所有依赖项”。
 
 - 更新 pandas
 - 更新 numpy
-- 更新 scikit-lean
+- 更新 scikit-learn
 - 更新 seaborn
 
-在类似 Unix 的环境中，有一个 C 编译器，一切都是时间问题。在 Windows 上，即使安装了特定的 Microsoft 编译器（在这种情况下是 Python 2.7 的链），事情也失败了。但一个知名网站拥有最新的 Windows 软件包集合，提供了帮助。如果你需要它，可以访问：
+在类 Unix 环境中，只要有 C 编译器，就只是时间问题。在 Windows 上，即使安装了特定的 Microsoft 编译器（这里是 Python 2.7 的工具链），事情也会失败。不过一个知名的 Windows 软件包网站提供了帮助。如果你需要，可以访问：
 
 http://www.lfd.uci.edu/~gohlke/pythonlibs/
 
-如果没有测试集成，它就不会完成，这就是为什么通常的示例总是存在的原因。
+没有经过测试的集成不算完成，这就是为什么示例代码始终存在的原因。
 
 ## 没有 PyFolio
 
@@ -56,11 +56,11 @@ SELL 250 @%17.14
 SELL 250 @%37.01
 ```
 
-有 3 个数据，多个买卖操作在测试运行的默认两年期间随机选择和分散。
+有 3 个数据源，多个买卖操作在默认两年的测试期间随机选择和分散。
 
 ## 一个 PyFolio 运行
 
-pyfolio 在 Jupyter Notebook 内运行效果很好，包括内联绘图。以下是 notebook 示例：
+pyfolio 在 Jupyter Notebook 内运行效果很好，包括内联绘图。以下是 notebook 示例代码：
 
 ```python
 %matplotlib inline

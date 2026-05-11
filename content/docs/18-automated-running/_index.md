@@ -5,30 +5,30 @@ weight: 18
 
 # 自动运行
 
-到目前为止，所有 backtrader 示例和工作样本都从头开始创建一个主 Python 模块，该模块加载数据、策略、观察器，并准备现金和佣金方案。
+迄今为止，所有 backtrader 示例都是从零创建 Python 模块，加载数据、策略、观察器，并设置现金和佣金方案。
 
-算法交易的目标之一是自动化交易，而 backtrader 作为一个回测平台，旨在检查交易算法（因此是一个算法交易平台），自动化使用 backtrader 是一个显而易见的目标。
+算法交易的目标是自动化。backtrader 作为回测和算法交易平台，其自动化是必然的需求。
 
-安装 backtrader 后，它提供了两个脚本/可执行文件形式的入口点，自动化大多数任务：
+安装 backtrader 后，提供了两个入口点用于自动化大多数任务：
 
-1. `bt-run-py`：一个使用下一个条目中的代码库的脚本。
-2. `btrun`（可执行文件）：由 setuptools 在打包时创建的入口点。该可执行文件在 Windows 下具有优势，理论上不会出现“找不到路径/文件”的错误。
+1. `bt-run-py`：一个脚本。
+2. `btrun`（可执行文件）：由 setuptools 在打包时创建，在 Windows 下不会出现”找不到路径/文件”的错误。
 
-下面的描述适用于这两个工具。
+以下描述适用于这两个工具。
 
-`btrun` 允许最终用户：
+`btrun` 允许你：
 
 - 指定要加载的数据源
-- 设置加载数据的格式
-- 指定数据的日期范围
+- 设置数据格式
+- 指定日期范围
 - 传递参数给 Cerebro
 - 禁用标准观察器
-  - 这是一个原始的额外开关，在实现“Cerebro”参数之前。因此，如果传递了与标准观察器相关的参数给 Cerebro，将忽略此参数（参数 stdstats 给 Cerebro）
-- 从内置或 Python 模块加载一个或多个观察器（例如：DrawDown）
-- 设置经纪商的现金和佣金方案参数（佣金、保证金、倍数）
+  - 这是一个遗留开关（在 Cerebro 参数实现之前）。如果通过 Cerebro 传递了标准观察器相关参数，此开关将忽略（对应 Cerebro 的 `stdstats` 参数）
+- 从内置或 Python 模块加载观察器（如 DrawDown）
+- 设置经纪商现金和佣金方案（佣金、保证金、倍数）
 - 启用绘图，控制图表的数量和样式
-- 向系统添加一个参数化的 writer
-- 最后是核心功能：加载一个策略（内置或来自 Python 模块）
+- 添加参数化的 writer
+- 核心功能：加载策略（内置或来自 Python 模块）
   - 传递参数给加载的策略
 
 请参阅下面的脚本用法。
@@ -52,7 +52,7 @@ class MyTest(bt.Strategy):
 
     def log(self, txt, dt=None):
         '''策略的日志记录函数'''
-        dt = dt或self.data.datetime[0]
+        dt = dt or self.data.datetime[0]
         if isinstance(dt, float):
             dt = bt.num2date(dt)
         print('%s, %s' % (dt.isoformat(), txt))
@@ -109,11 +109,11 @@ btrun --csvformat btcsv \
 
 ![Chart Output](image_path)
 
-注意：如果没有提供 `.py` 扩展名，`bt-run` 会自动添加它。
+注意：如果没有提供 `.py` 扩展名，`btrun` 会自动添加。
 
 ## 使用内置策略
 
-backtrader 将逐步包括一些示例（教科书）策略。与 `bt-run.py` 脚本一起，包含了一个标准的简单移动平均交叉策略。名称为 `SMA_CrossOver`。
+backtrader 逐步内置了一些示例策略。与 `btrun` 一起提供了一个标准的简单移动平均交叉策略，名称为 `SMA_CrossOver`。
 
 ### 参数
 
@@ -195,7 +195,7 @@ btrun --csvformat btcsv \
 
 ## 使用无策略
 
-这是一个夸张的说法。会应用一个策略，但您可以省略任何类型的策略，会自动添加一个默认的 `backtrader.Strategy`。
+这其实有些夸张——仍然会应用一个策略，但你可以省略策略类型，系统会自动添加默认的 `backtrader.Strategy`。
 
 分析器、观察器和指标将自动注入策略中。
 
@@ -208,9 +208,7 @@ btrun --csvformat btcsv \
       --commission 2.0 \
       --mult 10 \
       --margin 2000 \
-      --nost
-
-dstats \
+      --nostdstats \
       --observer :Broker
 ```
 
@@ -248,12 +246,12 @@ btrun --csvformat btcsv \
 
 控制台输出为空。
 
-如果希望打印分析器结果，必须指定：
+如需打印分析器结果，需指定：
 
-- `--pranalyzer`，默认调用下一个（除非分析器覆盖了适当的方法）
-- `--ppranalyzer`，使用 `pprint` 模块打印结果
+- `--pranalyzer`：默认打印（除非分析器覆盖了相应方法）
+- `--ppranalyzer`：使用 `pprint` 模块美化输出
 
-注意：这两个打印选项在 writers 成为 backtrader 的一部分之前实现。添加一个 writer 而不输出 CSV 将实现相同的效果（并且输出得到了改进）。
+注意：这两个打印选项在 writer 成为 backtrader 一部分之前就有。使用不带 CSV 输出的 writer 可实现相同效果（且输出更优）。
 
 扩展上述示例：
 
@@ -377,9 +375,10 @@ btrun --csvformat btcsv \
 上面大多数示例都使用了以下选项：
 
 - `--plot`：激活创建默认图表
-更多控制可以通过向 `--plot` 选项添加 kwargs 实现
+更多控制可以通过向 `--plot` 选项添加 kwargs 实现。
 
-- `--plot style="candle"` 例如，使用蜡烛图而不是 LineOnClose 样式（这是绘图默认值）
+例如，使用蜡烛图代替默认的 LineOnClose 样式：
+`--plot style="candle"`
 调用如下：
 
 ```bash

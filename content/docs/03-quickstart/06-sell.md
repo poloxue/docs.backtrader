@@ -7,42 +7,34 @@ weight: 7
 
 {{< youtube E9yLLr9-brM >}}
 
-了解如何进入市场（多头，`self.buy`）后，还要一个“退出概念”，以及了解策略是否在市场中。
+了解如何入场（多头，`self.buy`）后，还需要了解如何退出以及策略是否持有头寸。
 
-本节将演示入场后如何退出市场。
+本节演示入场后如何退出市场。逻辑很简单：入场持有 5 根 bar 后（在第 6 根 bar 上）退出，无论盈亏。同时简化逻辑：仅在未持仓且无进行中的订单时才允许买入。
 
-退出逻辑很简单，入场持有 5 根 bar 后（在第 6 根 bar 上）退出，无论是盈利还是亏损。另外，为了简化逻辑，仅在未入场时允许买入订单，即如果有持仓或者进行中的订单都不可买入。
+## 实现逻辑
 
-## 逻辑逻辑
-
-要完成这个逻辑，要能确认订单成交时间、成交所在位置、当前是否有进行中的订单以及是否有持仓。
+要实现这个逻辑，需要确认订单成交时间、成交所在位置、当前是否有进行中的订单以及是否有持仓。
 
 ### 订单状态
 
-订单确认状态通过 `Strategy` 的订单状态变化 `notify_order` 方法监听。
+订单状态变化通过 `notify_order` 方法监听：
 
 ```python
 def notify_order(self, order):
     print(order.status)
 ```
 
-订单状态有 `Accepted`（已接受）、`Submitted`（已提交）、`Completed`（已成交）、`Margin`（保证金不足）、`Rejected`（已拒绝）。
+订单状态包括 `Submitted`（已提交）、`Accepted`（已接受）、`Completed`（已成交）、`Margin`（保证金不足）、`Rejected`（已拒绝）。
 
-订单类中除了状态，还包括订单的其他信息，如执行价格 - `order.executed.price`，已执行价值 - `order.executed.value`，订单手续费 - `order.executed.comm`。
+订单对象还包含其他信息，如执行价格 `order.executed.price`、已执行价值 `order.executed.value`、手续费 `order.executed.comm`。
 
 更多订单的信息，可查看 [订单- Orders](/backtrader/docs/09-orders/01-general/)。
 
 ### 成交位置
 
-策略对象提供了对默认数据源位置的访问，通过 `len(self)` 即可获得。
+策略对象通过 `len(self)` 提供对当前 bar 位置的访问。`next` 方法没有直接提供 bar 索引，但 `len(self)` 告诉你当前线的长度。
 
-```python
-len(self)
-```
-
-next 方法没有提供 "bar索引"，因此很难理解何时经过了 5 根bar，但调用对象的 len 方法，它会告诉你线的长度。
-
-我们只需记下订单完成时的长度，并查看当前长度是否距离其5根bar。
+我们只需记下订单完成时的长度，然后检查当前长度是否已超过 5 根 bar。
 
 ```python
 def notify_order(self, order):
@@ -59,9 +51,7 @@ def next(self):
 
 ### 进行中的订单
 
-是否有进行中的订单如何判断？
-
-我们调用买入和卖出方法会返回创建的（尚未执行的）订单。我们可记录创建后的订单，待最终确认后（即非提交中 Submitted 和订单被接受 Accepted）将其清空。而我们只要在每次交易前，检查是否有进行中的订单即可。
+`buy` 和 `sell` 方法会返回创建的（尚未执行的）订单。我们可以记录创建的订单，待订单最终确认后（非 Submitted 或 Accepted 状态）将其清空。每次交易前检查是否有进行中的订单即可。
 
 ```python
 def notify_order(self, order):
@@ -81,9 +71,9 @@ def next(self):
   self.order = self.sell()
 ```
 
-### 是否有持仓
+### 持仓判断
 
-是否有持仓的判断比较简单，通过 `self.position` 即可判断。
+通过 `self.position` 判断是否有持仓：
 
 ```python
 if not self.position:
@@ -203,5 +193,5 @@ Starting Portfolio Value: 100000.00
 Final Portfolio Value: 100018.53
 ```
 
-现在，系统确实赚到了钱，恭喜我们又进了一步。
+现在系统盈利了，我们又前进了一步。
 

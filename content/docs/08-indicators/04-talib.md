@@ -5,7 +5,7 @@ weight: 4
 
 # TA-Lib
 
-即使backtrader已经提供了大量内置指标，并且开发一个指标主要是定义输入、输出并以自然方式编写公式，但有些人仍然希望使用TA-LIB。因为，指标X在TA-LIB库中存在，但在backtrader中不存在（作者很乐意接受请求），还有，TA-LIB的行为是众所周知的，人们信赖传统的事物。
+即使 backtrader 已提供大量内置指标，且开发指标只需定义输入、输出并编写公式，但仍有人希望使用 TA-LIB。原因有二：某些指标在 TA-LIB 中存在但 backtrader 中没有（欢迎提交请求），且 TA-LIB 的行为广为人知，值得信赖。
 
 为了满足每个人的需求，提供了TA-LIB集成。
 
@@ -17,7 +17,7 @@ weight: 4
 
 ## 使用TA-LIB
 
-与使用backtrader内置指标一样简单。以下是一个简单移动平均线的示例。首先是backtrader的示例：
+与使用 backtrader 内置指标一样简单。以下是简单移动平均线的示例，先看 backtrader 版本：
 
 ```python
 import backtrader as bt
@@ -43,7 +43,7 @@ class MyStrategy(bt.Strategy):
         ...
 ```
 
-注意，TA-LIB指标的参数由库本身定义，而不是backtrader。在这种情况下，TA-LIB中的SMA使用名为`timeperiod`的参数来定义操作窗口的大小。
+TA-LIB 指标的参数由库本身定义，而非 backtrader。例如，TA-LIB 的 SMA 使用名为 `timeperiod` 的参数来定义窗口大小。
 
 对于需要多个输入的指标，例如随机指标：
 
@@ -100,9 +100,7 @@ print('T3:', bt.talib.MA_Type.T3)
 ## 绘制TA-LIB指标
 与常规用法一样，绘制TA-LIB指标无需特殊操作。
 
-**注意：**
-
-输出蜡烛图的指标（所有寻找蜡烛图模式的指标）会生成二进制输出：0或100。为了避免在图表上添加子图，存在自动绘图转换，以在识别模式时将其绘制在数据上。
+输出蜡烛图的指标（所有识别蜡烛图形态的指标）会生成二进制输出：0 或 100。为了避免增加子图，自动绘图转换会在识别到模式时将其绘制在数据上。
 
 ## 示例和比较
 
@@ -115,12 +113,12 @@ print('T3:', bt.talib.MA_Type.T3)
 
 ### KAMA（考夫曼移动平均线）
 
-这是第一个示例，因为这是样本直接比较的所有指标中唯一存在差异的：
+这是唯一直接比较中存在差异的指标：
 
 - 样本的初始值不同
 - 在某个时间点，值会趋同，两个KAMA实现具有相同的行为。
 
-分析TA-LIB源码后发现：
+分析 TA-LIB 源码发现：
 
 - TA-LIB的实现为KAMA的初始值做了一个非行业标准的选择。
 - 源代码引用：这里使用昨天的价格作为前一个KAMA。
@@ -131,7 +129,7 @@ backtrader采用了通常的选择，例如Stockcharts：
 
 由于需要一个初始值来开始计算，第一个KAMA只是一个简单移动平均线。因此存在差异。此外：
 
-- TA-LIB的KAMA实现不允许指定用于调整Kaufman定义的可缩放常数的快慢周期。
+- TA-LIB 的 KAMA 实现不允许指定调整 Kaufman 定义中可缩放常数的快慢周期。
 
 样本执行：
 
@@ -178,7 +176,7 @@ $ ./talibtest.py --plot --ind rsi
 
 图像
 
-#### MACD
+### MACD
 
 ```
 $ ./talibtest.py --plot --ind macd
@@ -236,7 +234,7 @@ $ ./talibtest.py --plot --ind adxr
 
 图像
 
-#### DEMA
+### DEMA
 
 ```
 $ ./talibtest.py --plot --ind dema
@@ -265,7 +263,7 @@ $ ./talibtest.py --plot --ind ppo
 
 图像
 
-#### WilliamsR
+### WilliamsR
 
 ```
 $ ./talibtest.py --plot --ind williamsr
@@ -274,7 +272,7 @@ $ ./talibtest.py --plot --ind williamsr
 
 图像
 
-#### ROC
+### ROC
 所有指标应具有相同的形状，但跟踪动量或变化率有多种定义。
 
 ```
@@ -493,4 +491,4 @@ if __name__ == '__main__':
     runstrat()
 ```
 
-这样，您就可以在backtrader中使用TA-LIB的指标，并根据需要进行绘图和比较。
+这样，你就可以在backtrader中使用TA-LIB的指标，并根据需要进行绘图和比较。

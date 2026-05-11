@@ -5,18 +5,18 @@ weight: 1
 
 # 关于回测性能和超大内存执行
 
-最近在 Reddit 上有两个相关的帖子，启发了本文的写作：
+最近 Reddit 上两个相关帖子启发了本文：
 
-1. 一个声称 backtrader 无法处理 160 万根 K线的帖子：reddit/r/algotrading - A performant backtesting system?
-2. 另一个要求一个能回测 8000 支股票的工具：reddit/r/algotrading - Backtesting libs that supports 1000+ stocks?
+1. 声称 backtrader 无法处理 160 万根 K 线的帖子：reddit/r/algotrading - A performant backtesting system?
+2. 需要一个能回测 8000 支股票的工具：reddit/r/algotrading - Backtesting libs that supports 1000+ stocks?
 
-其中有一位作者询问如何使用一个可以回测“超大内存”的框架，“因为显然不能将所有这些数据加载到内存中。”
+其中一位作者问如何使用能回测”超大内存”的框架，”因为显然不能将所有数据加载到内存中。”
 
-我们将会在本文中讨论这些概念，结合 backtrader 来解决。
+本文将通过 backtrader 来讨论这些概念。
 
 ### 2M K线
 
-为了验证这一点，首先需要生成这么多的 K线。考虑到第一个发帖者提到 77 支股票和 160 万根 K线，这意味着每支股票大约有 20,779 根 K线，因此我们将进行以下操作来使数据更加简洁：
+为了验证，首先生成这么多 K 线。第一个帖子提到 77 支股票和 160 万根 K 线，每支约 20,779 根。因此我们简化如下：
 
 - 为 100 支股票生成 K线数据
 - 每支股票生成 20,000 根 K线
@@ -41,7 +41,7 @@ for i in range(STOCKS):
     df.to_csv('candles{:02d}.csv'.format(i))
 ```
 
-该脚本生成了 100 个文件，从 `candles00.csv` 到 `candles99.csv`。实际的数据值不重要，重要的是保持标准的日期时间格式、OHLCV 数据（包括未平仓合约）。
+脚本生成了 100 个文件（`candles00.csv` 到 `candles99.csv`）。数据值并不重要，关键是保持标准的日期时间格式和 OHLCV 数据（含未平仓合约）。
 
 ### 测试系统
 
@@ -60,9 +60,9 @@ Python 版本：CPython 3.6.1 和 pypy3 6.0.0。
 - 先计算所有指标
 - 按步骤执行策略逻辑和经纪人
 
-### 在默认批处理模式下执行挑战
+### 默认批处理模式执行
 
-我们的测试脚本（见下文完整源代码）将打开这 100 个文件并使用 backtrader 的默认配置处理它们。
+测试脚本（见完整源码）将打开 100 个文件并用 backtrader 默认配置处理。
 
 ```bash
 $ ./two-million-candles.py
@@ -92,7 +92,7 @@ Memory Usage: A peak of 348 Mbytes was observed
 
 ### 使用 pypy
 
-既然有线程声称使用 pypy 没有帮助，我们来看看使用 pypy 时的表现。
+既然有帖子说用 pypy 没帮助，来看看实际表现。
 
 ```bash
 $ ./two-million-candles.py
@@ -121,18 +121,18 @@ Length of data feeds:        20000
 
 这也相较于标准 CPython 解释器，内存使用有所改善。
 
-### 处理 2M K线时的超大内存
+### 处理 200 万根 K 线时的超大内存
 
-所有这些都可以通过 backtrader 的几种配置选项进一步优化，其中包括优化缓冲区并只使用最小的数据集（理想情况下，缓冲区大小为 1，这通常发生在理想场景下）。
+可以通过 backtrader 的配置选项进一步优化，包括优化缓冲区、仅使用最小数据集（理想情况下缓冲区大小为 1）。
 
-优化选项为 `exactbars=True`。关于 `exactbars` 的文档中有如下描述：
+优化选项为 `exactbars=True`。文档描述如下：
 
-- `True` 或 `1`：所有“线”对象将减少内存使用至自动计算的最小周期。
-- 如果某个简单移动平均线周期为 30，则底层数据将始终保留一个包含 30 根 K线的运行缓冲区，以便计算该简单移动平均线。
+- `True` 或 `1`：所有”线”对象将内存使用减少到自动计算的最小周期。
+- 如果简单移动平均线周期为 30，底层数据将始终保留 30 根 K 线的运行缓冲区以计算该均线。
 
-这一设置会禁用 `preload` 和 `runonce`。
+此设置会禁用 `preload` 和 `runonce`。
 
-为了进一步优化，并因为绘图会被禁用，以下设置也将被使用：`stdstats=False`，禁用标准观察者（用于现金、资产价值和交易，绘图不再需要）。
+由于绘图会被禁用，还可使用 `stdstats=False` 禁用标准观察器（现金、资产价值和交易）。
 
 ```bash
 $ ./two-million-candles.py --cerebro exactbars=False,stdstats=False

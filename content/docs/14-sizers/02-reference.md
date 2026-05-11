@@ -11,7 +11,7 @@ weight: 2
 class backtrader.sizers.FixedSize()
 ```
 
-此 Sizer 仅为任何操作返回固定大小。通过指定 `tranches` 参数，可以控制系统希望用于逐步进入交易的批次数量。
+此 Sizer 为任何操作返回固定数量。通过指定 `tranches` 参数，可以控制逐步进入交易的批次数量。
 
 **参数：**
 
@@ -24,7 +24,7 @@ class backtrader.sizers.FixedSize()
 class backtrader.sizers.FixedReverser()
 ```
 
-此 Sizer 返回反转已开头寸所需的固定大小或开仓所需的固定大小。
+此 Sizer 返回反转已开头寸或开仓所需的固定数量。
 
 - 开仓：返回参数 `stake`
 - 反转头寸：返回 `2 * stake`
@@ -51,7 +51,7 @@ class backtrader.sizers.PercentSizer()
 class backtrader.sizers.AllInSizer()
 ```
 
-此 Sizer 返回经纪人所有可用现金。
+此 Sizer 返回经纪商的所有可用现金。
 
 **参数：**
 
@@ -75,7 +75,7 @@ class backtrader.sizers.PercentSizerInt()
 class backtrader.sizers.AllInSizerInt()
 ```
 
-此 Sizer 返回经纪人所有可用现金，并将大小截断为整数。
+此 Sizer 返回经纪商的所有可用现金，并将数量截断为整数。
 
 **参数：**
 

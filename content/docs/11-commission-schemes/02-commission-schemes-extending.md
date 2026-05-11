@@ -7,15 +7,15 @@ weight: 2
 
 佣金及相关功能由一个单一的类 `CommissionInfo` 管理，通常通过调用 `broker.setcommission` 实例化。
 
-这个概念限于带有保证金和每合同固定佣金的期货和基于价格/数量百分比佣金的股票。这不是最灵活的方案，但它已经发挥了它的作用。
+这个概念仅限于带有保证金和每份合约固定佣金的期货，以及基于价格/数量百分比佣金的股票。虽然不是最灵活的方案，但它已经发挥了作用。
 
 GitHub 上的一个增强请求（#29）导致了一些重构，以便：
 
 - 保持 `CommissionInfo` 和 `broker.setcommission` 与原始行为兼容
-- 对代码进行一些清理
-- 使佣金方案灵活，以支持增强请求和进一步的可能性
+- 清理一些代码
+- 使佣金方案更灵活，以支持增强需求和更多可能性
 
-在进入示例之前的实际工作：
+实际工作如下：
 
 ```python
 class CommInfoBase(with_metaclass(MetaParams)):
@@ -29,29 +29,29 @@ class CommInfoBase(with_metaclass(MetaParams)):
     )
 ```
 
-引入了一个 `CommissionInfo` 的基类，该类添加了新的参数：
+引入了 `CommissionInfo` 的基类，新增了以下参数：
 
 - `commtype`（默认值：None）
 
-  这是兼容性的关键。如果值为 None，`CommissionInfo` 对象和 `broker.setcommission` 的行为将与以前相同。具体如下：
+  这是兼容性的关键。如果值为 None，`CommissionInfo` 对象和 `broker.setcommission` 的行为与以前相同。具体如下：
 
-  - 如果设置了 `margin`，则佣金方案是期货，每合同有固定佣金
-  - 如果未设置 `margin`，则佣金方案是股票，采用百分比方法
-  - 如果值是 `COMM_PERC` 或 `COMM_FIXED`（或派生类中的任何其他值），则显然决定了佣金是固定的还是基于百分比的
+  - 如果设置了 `margin`，则佣金方案是期货，每份合约固定佣金
+  - 如果未设置 `margin`，则佣金方案是股票，采用百分比方式
+  - 如果值为 `COMM_PERC` 或 `COMM_FIXED`（或派生类中的任何其他值），则决定佣金是固定还是基于百分比
 
 - `stocklike`（默认值：False）
 
   如上所述，旧 `CommissionInfo` 对象中的实际行为由 `margin` 参数决定。
 
-  如果 `commtype` 设置为其他值，则此值指示资产是类似期货的资产（将使用保证金并进行基于条形图的现金调整）还是类似股票的资产。
+  如果 `commtype` 设置为其他值，则此参数指示资产是类似期货（使用保证金并进行基于柱状图的现金调整）还是类似股票。
 
 - `percabs`（默认值：False）
 
-  如果为 False，则百分比必须以相对术语传递（xx%）
+  如果为 False，百分比以相对值传递（xx%）
 
-  如果为 True，则百分比必须以绝对值传递（0.xx）
+  如果为 True，百分比以绝对值传递（0.xx）
 
-`CommissionInfo` 是从 `CommInfoBase` 派生的，将此参数的默认值更改为 True 以保持兼容行为。
+`CommissionInfo` 从 `CommInfoBase` 派生，将此参数的默认值改为 True 以保持兼容行为。
 
 所有这些参数也可以在 `broker.setcommission` 中使用，现在看起来像这样：
 
@@ -62,11 +62,11 @@ def setcommission(self,
                   name=None):
 ```
 
-注意以下几点：
+注意：
 
-- `percabs` 为 True，以保持与上述 `CommissionInfo` 对象的旧调用的兼容行为
+- `percabs` 为 True，以保持与 `CommissionInfo` 旧调用的兼容性
 
-旧的测试佣金方案的示例已重新编写以支持命令行参数和新行为。使用帮助如下：
+旧的测试佣金方案示例已重写，支持命令行参数和新行为。帮助信息如下：
 
 ```shell
 $ ./commission-schemes.py --help
@@ -109,7 +109,7 @@ optional arguments:
                         Plot using numfigs figures (default: 1)
 ```
 
-让我们进行一些运行来重新创建原始佣金方案的原始行为。
+让我们运行几个示例来重现原始佣金方案的行为。
 
 ## 期货佣金（固定且带保证金）
 
@@ -138,7 +138,7 @@ $ ./commission-schemes.py --comm 2.0 --margin 2000.0 --mult 10 --plot
 $ ./commission-schemes.py --comm 0.005 --margin 0 --mult 1 --plot
 ```
 
-为了提高可读性，可以使用相对百分比值：
+为了更直观，可以使用相对百分比值：
 
 ```shell
 $ ./commission-schemes.py --percrel --comm 0.5 --margin 0 --mult 1 --plot
@@ -165,7 +165,7 @@ $ ./commission-schemes.py --percrel --comm 0.5 --margin 0 --mult 1 --plot
 $ ./commission-schemes.py --commtype perc --percrel --comm 0.5 --margin 2000 --mult 10 --plot
 ```
 
-不意外的是，通过改变佣金……最终结果也改变了
+不出所料，改变佣金后……最终结果也随之改变。
 
 输出显示佣金现在是可变的：
 
@@ -178,9 +178,9 @@ $ ./commission-schemes.py --commtype perc --percrel --comm 0.5 --margin 2000 --m
 ...
 ```
 
-在之前的运行中设置了 2.0 货币单位（对于默认 `stake` 为 1）
+之前的运行设置了 2.0 货币单位（默认 `stake` 为 1）。
 
-另一个帖子将详细说明新类和自定义佣金方案的实现。
+下一篇文章将详细说明新类和自定义佣金方案的实现。
 
 ## 示例
 

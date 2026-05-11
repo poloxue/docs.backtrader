@@ -5,15 +5,15 @@ weight: 1
 
 # Strategy
 
-在 backtrader 中，Cerebro 实例是整个系统的核心，而 Strategy 是用户的核心。
+backtrader 中，Cerebro 是系统的核心，Strategy 是用户的核心。
 
 ## Strategy 的生命周期方法
 
-**注意**, 策略可以在创建时通过抛出 `StrategySkipError` 异常来中断，该异常来自 `backtrader.errors` 模块。这将避免在回测期间处理该策略。请参阅“异常”部分。
+策略可在创建时抛出 `backtrader.errors` 模块的 `StrategySkipError` 异常来中断，从而避免在回测中处理该策略。详情请参见”异常”部分。
 
 ### 构建：`__init__`
 
-这是在实例化期间调用的：指标将在此处创建以及其他需要的属性。
+在实例化时调用：在此创建指标和其他所需属性。
 
 示例代码：
 
@@ -24,29 +24,29 @@ def __init__(self):
 
 ### 启动：`start`
 
-Cerebro 实例通知策略是时候开始运行了。存在一个默认的空方法。
+Cerebro 通知策略开始运行。默认有一个空方法。
 
 ### 初期：`prenext`
 
-在创建期间声明的指标将对策略的成熟期施加限制：这称为最小周期。上面的 `__init__` 创建了一个周期为 15 的简单移动平均线 (SMA)。
+在 `__init__` 中声明的指标会决定策略何时进入成熟期，该周期称为最小周期。上述 `__init__` 创建了一个周期为 15 的简单移动平均线 (SMA)。
 
 只要系统看到的 bar 少于 15 个，就会调用 `prenext`（默认实现为空操作）。
 
 ### 成熟：`next`
 
-一旦系统看到 15 个 bar 并且 SMA 有足够的缓冲区开始生成值，策略就足够成熟可以真正执行。
+系统积累 15 个 bar 且 SMA 有足够数据开始生成值后，策略进入成熟期并可执行。
 
-存在一个 `nextstart` 方法，会在从 `prenext` 切换到 `next` 时调用一次。`nextstart` 的默认实现是简单地调用 `next`。
+还有一个 `nextstart` 方法，会在从 `prenext` 切换到 `next` 时调用一次。`nextstart` 的默认实现是直接调用 `next`。
 
 ### 繁衍：无
 
-策略实际上不会繁衍，但从某种意义上来说，它们会，因为系统会在优化时实例化它们多次（使用不同的参数）。
+策略本身不会繁衍，但优化时系统会用不同参数多次实例化它们。
 
 ### 结束：`stop`
 
-系统通知策略是时候重置并整理一切了。存在一个默认的空方法。
+系统通知策略重置并清理。默认有一个空方法。
 
-通常情况下和常规使用模式下，这看起来像这样：
+常规用法如下：
 
 ```python
 class MyStrategy(bt.Strategy):
@@ -73,7 +73,7 @@ class MyStrategy(bt.Strategy):
 
 ## 策略事件通知
 
-策略将每个 `next` 周期收到通知：
+策略在每个 `next` 周期收到通知：
 
 ### notify_order
 
@@ -97,9 +97,9 @@ class MyStrategy(bt.Strategy):
 
 ## 如何买入/卖出/平仓
 
-`buy` 和 `sell` 方法生成订单。调用这些方法时，它们返回一个 Order（或其子类）实例，该实例可用作引用。此订单具有唯一的 `ref` 标识符，可用于比较。
+`buy` 和 `sell` 方法生成订单，返回一个 Order（或其子类）实例作为引用。该订单有唯一的 `ref` 标识符用于比较。
 
-**注意**，特定经纪实现的 Order 子类可能携带经纪提供的其他唯一标识符。
+特定经纪实现的 Order 子类可能携带经纪提供的其他唯一标识符。
 
 要创建订单，请使用以下参数：
 
@@ -113,7 +113,7 @@ class MyStrategy(bt.Strategy):
 `valid`    | None        | 可能的值：<ul style="list-style-type:none; padding-left: 0; margin-left: 0;"><li>- None：生成一个不会过期的订单（即 Good til cancel），并保留在市场上直到匹配或取消。实际上，经纪通常会施加一个时间限制，但通常远远在未来，可以认为它不会过期。</li><li>- `datetime.datetime` 或 `datetime.date` 实例：日期将用于生成有效期至给定日期的订单（即 good til date）。</li><li>- `Order.DAY` 或 0 或 `timedelta()`：生成一个有效期至交易日结束的订单（即日订单）。</li><li>- 数值：假定为 `matplotlib` 编码的 `datetime` 值（`backtrader` 使用的），将用于生成有效期至该时间的订单（即 good til date）。</li>
 `tradeid`  | 0           | `backtrader` 用于跟踪同一资产上重叠交易的内部值。当通知订单状态变化时，此 `tradeid` 会发送回策略。
 
-**示例**：如果 `backtrader` 直接支持的 4 种订单执行类型不够，可以为 Interactive Brokers 传递以下参数：
+例如，如果 `backtrader` 直接支持的 4 种订单执行类型不够，可以为 Interactive Brokers 传递以下参数：
 
 ```python
 orderType='LIT', lmtPrice=10.0, auxPrice=9.8
@@ -142,9 +142,9 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 `_orderspending` | 将在调用 `next` 之前通知策略的订单列表
 `_tradespending` | 将在调用 `next` 之前通知策略的交易列表
 `_orders`        | 已经通知的订单列表。订单可以在列表中多次出现，具有不同的状态和执行部分。列表旨在保留历史记录。
-`_trades`：      | 已经通知的交易列表。交易可以像订单一样多次出现在列表中。
+`_trades`        | 已经通知的交易列表。交易可以像订单一样多次出现在列表中。
 
-**注意：** `prenext`、`nextstart` 和 `next` 可以针对同一时间点多次调用（例如，当使用每日时间框架时，价格更新每日 bar 的 ticks）。
+`prenext`、`nextstart` 和 `next` 可以针对同一时间点多次调用（例如，当使用每日时间框架时，价格更新每日 bar 的 ticks）。
 
 ## 策略参考
 

@@ -5,17 +5,17 @@ weight: 1
 
 # 统计
 
-在 backtrader 中运行的策略主要处理数据源和指标。数据源添加到 Cerebro 实例中，并最终成为策略的输入（解析并作为实例的属性提供），而指标由策略本身声明和管理。
+在 backtrader 中运行的策略主要处理数据源和指标。数据源添加到 `Cerebro` 实例中，最终成为策略的输入（解析后作为实例属性提供），而指标由策略本身声明和管理。
 
-到目前为止，所有 backtrader 示例图表都绘制了三件看似理所当然的东西，因为它们在任何地方都没有声明：
+到目前为止，所有 backtrader 示例图表都绘制了三样看似理所当然的东西，因为它们在任何地方都没有声明：
 
-- 现金和价值（经纪人中的资金情况）
+- 现金和价值（经纪商中的资金情况）
 - 交易（即操作）
 - 买/卖订单
 
-它们是观察器，存在于子模块 backtrader.observers 中。因为 Cerebro 支持一个参数来自动将它们（或不将它们）添加到策略中：`stdstats`（默认：True）。
+它们是观察器，存在于 `backtrader.observers` 子模块中。`Cerebro` 通过参数 `stdstats`（默认：True）自动将它们添加到策略中。
 
-如果遵循默认设置，Cerebro 将执行以下等效用户代码：
+如果使用默认设置，`Cerebro` 会执行以下等效代码：
 
 ```python
 import backtrader as bt
@@ -27,7 +27,7 @@ cerebro.addobserver(bt.observers.Trades)
 cerebro.addobserver(bt.observers.BuySell)
 ```
 
-让我们看看通常带有这三个默认观察器的图表（即使没有发出订单，因此没有交易发生，现金和投资组合价值没有变化）：
+我们先查看带这三个默认观察器的图表（即使没有发出订单，没有交易发生，现金和投资组合价值也没有变化）：
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     cerebro.plot()
 ```
 
-现在让我们在创建 Cerebro 实例时将 `stdstats` 的值更改为 False（也可以在调用 `run` 时完成）：
+现在将 `stdstats` 设置为 False 来创建 `Cerebro` 实例（也可以在调用 `run` 时完成）：
 
 ```python
 cerebro = bt.Cerebro(stdstats=False)
@@ -55,15 +55,15 @@ cerebro = bt.Cerebro(stdstats=False)
 
 ## 访问观察器
 
-如上所示，观察器在默认情况下已经存在并收集信息，这些信息可用于统计目的，因此可以通过策略的一个名为 `stats` 的属性访问观察器。
+如上所示，观察器默认已经存在并收集信息，这些信息可用于统计目的。你可以通过策略的 `stats` 属性访问观察器。
 
-这只是一个占位符。如果我们回顾上面列出的添加一个默认观察器的代码：
+这只是一个占位符。回顾上面添加默认观察器的代码：
 
 ```python
 cerebro.addobserver(backtrader.observers.Broker)
 ```
 
-显而易见的问题是如何访问 Broker 观察器。下面是如何在策略的 `next` 方法中完成的示例：
+显而易见的问题是：如何访问 Broker 观察器。下面是在策略的 `next` 方法中如何做到这一点的示例：
 
 ```python
 class MyStrategy(bt.Strategy):
@@ -75,14 +75,14 @@ class MyStrategy(bt.Strategy):
            print('TIME FOR THE VIRGIN ISLANDS ....!!!')
 ```
 
-Broker 观察器就像数据、指标和策略本身一样也是一个线条对象。在这种情况下，Broker 有两条线：
+`Broker` 观察器与数据、指标和策略本身一样，也是一个线条对象。它包含两条线：
 
 - `cash`
 - `value`
 
 ## 观察器的实现
 
-实现非常类似于指标：
+实现方式与指标非常相似：
 
 ```python
 class Broker(Observer):
@@ -102,24 +102,24 @@ class Broker(Observer):
 2. 根据需要声明线条和参数（Broker 有两条线但没有参数）
 3. 将有一个自动属性 `_owner`，即持有观察器的策略
 
-观察器在以下情况下开始运行：
+观察器在以下条件下开始运行：
 
 - 所有指标都已计算完毕
 - 策略的 `next` 方法已执行完毕
 
-这意味着在周期结束时... 它们观察已发生的情况。在 Broker 的情况下，它只是盲目地记录每个时间点的经纪人现金和投资组合价值。
+这意味着在周期结束时，它们观察已发生的情况。在 `Broker` 的情况下，它只是记录每个时间点的经纪商现金和投资组合价值。
 
 ## 将观察器添加到策略
 
-如上所述，Cerebro 使用 `stdstats` 参数决定是否添加三个默认观察器，从而减轻最终用户的工作负担。
+如上所述，`Cerebro` 使用 `stdstats` 参数决定是否添加三个默认观察器，从而减轻最终用户的工作负担。
 
-可以将其他观察器添加到混合中，无论是与 `stdstats` 一起使用还是移除它们。
+还可以添加其他观察器，无论是与 `stdstats` 一起使用还是替换它们。
 
-让我们来看一个通常的策略，当收盘价高于简单移动平均线时买入，相反则卖出。
+让我们来看一个常规策略：当收盘价高于简单移动平均线时买入，低于时卖出。
 
-有一个“添加”：
+这里”添加”了一个观察器：
 
-- `DrawDown`，这是 backtrader 生态系统中已经存在的观察器
+- `DrawDown`，backtrader 生态系统中已有的观察器
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)
@@ -199,34 +199,34 @@ if __name__ == '__main__':
 
 注意
 
-如文本输出和代码所示，`DrawDown` 观察器实际上有两条线：
+如文本输出和代码所示，`DrawDown` 观察器有两条线：
 
 - `drawdown`
 - `maxdrawdown`
 
-选择不绘制 `maxdrawdown` 线，但它仍然可供用户使用。
+默认不绘制 `maxdrawdown` 线，但它仍然可供使用。
 
-实际上，`maxdrawdown` 的最后一个值也可以通过一个直接属性（不是线条）获取，名称为 `maxdd`。
+实际上，`maxdrawdown` 的最后一个值也可以通过一个名称为 `maxdd` 的直接属性（非线条）获取。
 
 ## 开发观察器
 
-上面展示了 `Broker` 观察器的实现。要生成有意义的观察器，实现可以使用以下信息：
+上面展示了 `Broker` 观察器的实现。要开发有意义的观察器，可以使用以下信息：
 
 - `self._owner` 是当前正在执行的策略
 
 因此策略中的任何内容对观察器都是可用的。
 
-策略中可能有用的默认内部内容：
+策略中可能有用的默认内部属性：
 
-- `broker` -> 属性，提供对策略创建订单的经纪人实例的访问。正如在 `Broker` 中所见，通过调用 `getcash` 和 `getvalue` 方法收集现金和投资组合价值。
-- `_orderspending` -> 列表，策略创建的订单并且经纪人已通知策略一个事件。`BuySell` 观察器遍历列表，查找已执行的订单（全部或部分），以便为给定时间点创建一个平均执行价格（索引 0）。
-- `_tradespending` -> 交易列表（已完成的买/卖或卖/买对），由买/卖订单编译而成。观察器显然可以通过 `self._owner.stats` 路径访问其他观察器。
+- `broker`：提供对策略创建订单的经纪商实例的访问。如在 `Broker` 中所见，通过 `getcash` 和 `getvalue` 方法收集现金和投资组合价值。
+- `_orderspending`：策略创建的订单列表，这些订单经纪商已通知策略。`BuySell` 观察器遍历此列表，查找已执行的订单（全部或部分），为给定时间点创建平均执行价格（索引 0）。
+- `_tradespending`：交易列表（已完成的买入/卖出或卖出/买入对），由订单编译而成。观察器也可以通过 `self._owner.stats` 路径访问其他观察器。
 
 ## 自定义 OrderObserver
 
-标准的 `BuySell` 观察器只关心已执行的操作。我们可以创建一个观察器，显示订单何时创建以及它们是否过期。
+标准的 `BuySell` 观察器只关心已执行的操作。我们可以创建一个显示订单创建和过期状态的观察器。
 
-为了可见性，显示将不会与价格一起绘制，而是在一个单独的轴上。
+为了清晰显示，不会与价格一起绘制，而是在单独的轴上展示。
 
 ```python
 from __future__ import (absolute_import, division, print_function, unicode_literals)
@@ -262,7 +262,7 @@ class OrderObserver(bt.observer.Observer):
                 self.lines.expired[0] = order.created.price
 ```
 
-自定义观察器只关心买入订单，因为这是一个只买入以尝试获利的策略。卖出订单是市场订单，将立即执行。
+自定义观察器只关心买入订单，因为这是一个只做多的策略。卖出订单是市价单，会立即执行。
 
 ## 更新后的策略
 
@@ -357,16 +357,16 @@ if __name__ == '__main__':
     runstrat()
 ```
 
-结果图表显示多个订单已过期，可以在新子图（红色方块）中看到。此外，我们还可以看到“创建”和“执行”之间的几个天数。
+结果图表显示多个订单已过期，可以在新子图（红色方块）中看到。此外，还可以看到”创建”和”执行”之间的天数差异。
 
 ## 保存/保持统计数据
 
-截至目前，backtrader 尚未实现任何机制来跟踪观察器的值并将其存储到文件中。最好的方法是：
+截至目前，backtrader 尚未实现跟踪观察器值并存储到文件的机制。最好的方法是：
 
-- 在策略的 `start` 方法中打开一个文件
-- 在策略的 `next` 方法中写下值
+- 在策略的 `start` 方法中打开文件
+- 在策略的 `next` 方法中写入值
 
-考虑 `DrawDown` 观察器，可以这样做：
+以 `DrawDown` 观察器为例，可以这样做：
 
 ```python
 class MyStrategy(bt.Strategy):
@@ -382,6 +382,6 @@ class MyStrategy(bt.Strategy):
         self.mystats.write('\n')
 ```
 
-要保存索引 0 的值，一旦所有观察器都被处理完，可以将自定义观察器作为系统的最后一个观察器添加，以将值写入 CSV 文件。
+要保存索引 0 的值，可以在所有观察器处理完毕后，将自定义观察器作为系统的最后一个观察器添加，将值写入 CSV 文件。
 
 注意，Writer 功能可以自动执行此任务。

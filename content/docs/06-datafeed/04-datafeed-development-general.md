@@ -3,13 +3,13 @@ title: "开发 Binary 数据源"
 weight: 4
 ---
 
-# 开发 Binary 据源
+# 开发 Binary 数据源
 
 **注意**：示例中使用的 Binary 文件 `goog.fd` 属于 VisualChart，不能与 backtrader 一起分发。
 
 对于那些有兴趣直接使用 Binary 文件的人，可以免费下载 VisualChart。
 
-CSV 数据源开发展示了如何添加新的基于 CSV 的数据源。现有的基类 `CSVDataBase` 提供了框架，减轻了子类的大部分工作，在大多数情况下，它们可以简单地执行：
+CSV 数据源开发展示了如何添加基于 CSV 的数据源。基类 `CSVDataBase` 提供了框架，子类只需执行：
 
 ```python
 def _loadline(self, linetokens):
@@ -19,7 +19,7 @@ def _loadline(self, linetokens):
   return True # 如果数据已解析，否则返回 False
 ```
 
-基类负责参数、初始化、打开文件、读取行、将行拆分为标记以及其他事项，例如跳过不符合日期范围（fromdate，todate）的行，这些行可能由最终用户定义。
+基类负责参数、初始化、打开文件、读取行、标记化等事项，还会跳过不在日期范围（fromdate, todate）内的行。
 
 开发非 CSV 数据源遵循相同的模式，而无需深入到已拆分的行标记。
 
@@ -52,24 +52,24 @@ class DataBase(with_metaclass(MetaDataBase, dataseries.OHLCDateTime)):
 
 这些参数具有以下含义：
 
-- `dataname`：允许数据源识别如何获取数据。在 CSVDataBase 的情况下，此参数表示文件路径或已存在的类似文件的对象。
-- `fromdate` 和 `todate`：定义传递给策略的日期范围。数据源提供的任何超出此范围的值都将被忽略。
-- `name`：用于绘图目的的装饰名称。
-- `timeframe`：表示时间工作参考。潜在值：`Ticks`, `Seconds`, `Minutes`, `Days`, `Weeks`, `Months` 和 `Years`。
-- `compression`（默认值：1）：每条实际条的条数。信息性。仅在数据重采样/重放中有效。
-- `sessionend`：如果传递（`datetime.time` 对象），将添加到数据源日期时间行，允许识别会话结束。
+- `dataname`：数据源识别如何获取数据的依据。在 CSVDataBase 中表示文件路径或类似文件的对象。
+- `fromdate` 和 `todate`：定义传递给策略的日期范围，超出此范围的数据将被忽略。
+- `name`：绘图时使用的名称。
+- `timeframe`：时间框架参考。可选值：`Ticks`, `Seconds`, `Minutes`, `Days`, `Weeks`, `Months`, `Years`。
+- `compression`（默认值：1）：每个实际条的压缩条数。仅在数据重采样/重放中有效。
+- `sessionend`：如果传入 `datetime.time` 对象，将添加到数据源的日期时间行，用于标识会话结束。
 
 ## 示例二进制数据源
 
-backtrader 已经定义了一个 CSV 数据源（VChartCSVData）用于 VisualChart 的导出数据，但也可以直接读取二进制数据文件。
+backtrader 已经定义了 VChartCSVData 用于 VisualChart 的导出数据，但也可以直接读取二进制数据文件。
 
-让我们来实现（完整的数据源代码可以在文末找到）。
+下面来实现（完整代码见文末）。
 
 ### 初始化
 
-二进制 VisualChart 数据文件可以包含每日数据（.fd 扩展名）或日内数据（.min 扩展名）。这里使用参数 `timeframe` 来区分读取的文件类型。
+二进制 VisualChart 数据文件包含每日数据（.fd 扩展名）或日内数据（.min 扩展名），通过参数 `timeframe` 区分文件类型。
 
-在 `__init__` 中，设置每种类型不同的常量。
+在 `__init__` 中为每种类型设置不同的常量。
 
 ```python
 def __init__(self):
@@ -89,7 +89,7 @@ def __init__(self):
 
 ### 开始
 
-数据源将在回测开始时启动（在优化期间实际上可以启动多次）。
+数据源在回测开始时启动（优化期间可能启动多次）。
 
 在 `start` 方法中，除非传递了类似文件的对象，否则二进制文件会被打开。
 
@@ -121,17 +121,13 @@ def stop(self):
 
 ### 实际加载
 
-实际工作在 `_load` 中完成。调用以加载下一组数据，在这种情况下是下一个：datetime、open、high、low、close、volume、openinterest。在 backtrader 中，“实际”时刻对应于索引 0。
+实际工作在 `_load` 中完成，用于加载下一组数据：datetime、open、high、low、close、volume、openinterest。在 backtrader 中，"当前"时刻对应于索引 0。
 
-将从打开的文件中读取一些字节（由 `__init__` 中设置的常量确定），使用 `struct` 模块解析，如果需要进一步处理（如日期和时间的 divmod 操作），并存储在数据源的行中：datetime、open、high、low、close、volume、openinterest。
+从文件中读取指定数量的字节（由 `__init__` 中的常量确定），使用 `struct` 模块解析，进行必要的处理（如日期时间的 divmod 操作），并存入数据源的行中。
 
-如果无法从文件中读取数据，则假定已达到文件末尾（EOF）
+如果无法读取数据，视为文件末尾（EOF），返回 `False`。
 
-返回 `False` 以指示没有更多数据可用
-
-如果数据已加载并解析：
-
-返回 `True` 以指示数据集加载成功
+如果数据加载并解析成功，返回 `True`。
 
 ```python
 def _load(self):
@@ -179,18 +175,18 @@ def _load(self):
 
 ## 其他二进制格式
 
-同样的模型可以应用于任何其他二进制源：
+同样的模式适用于其他二进制源：
 
 - 数据库
 - 分层数据存储
 - 在线来源
 
-步骤再次说明：
+步骤总结：
 
-- `__init__` -> 实例的任何初始化代码，仅一次
-- `start` -> 回测开始时（如果将进行优化则会多次运行）
-- `stop` -> 清理，例如关闭数据库连接或打开的套接字
-- `_load` -> 查询数据库或在线源以获取下一组数据并将其加载到对象的行中。标准字段为：datetime、open、high、low、close、volume、openinterest
+- `__init__` -> 实例的初始化代码，只执行一次
+- `start` -> 回测开始时执行（优化时将多次运行）
+- `stop` -> 清理工作，如关闭数据库连接或套接字
+- `_load` -> 从数据库或在线源获取下一组数据，加载到行对象中。标准字段：datetime、open、high、low、close、volume、openinterest
 
 ## VChartData 测试
 

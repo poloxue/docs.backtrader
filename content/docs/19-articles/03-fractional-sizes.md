@@ -3,32 +3,32 @@ title: "加密货币中的分位仓位"
 weight: 3
 ---
 
-**在 backtrader 中交易加密货币的分数仓位**
+# 在 Backtrader 中交易加密货币的分数仓位
 
-首先，让我们用两句话总结一下 backtrader 的工作方式：
+首先，用两句话总结 backtrader 的工作方式：
 
-它像一个构建工具包，包含一个基本构建模块（Cerebro），可以将许多不同的模块插入其中。
+它像一个构建工具包，核心模块（Cerebro）可以插入各种不同模块。
 
-基本分发版包含许多模块，如指标、分析器、观察者、仓位大小计算器、过滤器、数据源、经纪商、佣金/资产信息方案等...
+基础发行版包含指标、分析器、观察器、仓位计算器、过滤器、数据源、经纪商、佣金/资产信息方案等模块。
 
-可以轻松地从头开始构建新的模块，或者基于现有模块进行构建。
+可以轻松从头创建新模块，或基于现有模块扩展。
 
-基本模块（Cerebro）已经实现了一些自动“插拔”，使得用户可以更轻松地使用框架，而不需要关注所有细节。
+Cerebro 已实现自动”插拔”，使用户无需关注所有细节就能快速上手。
 
-因此，该框架已预配置以提供默认行为，例如：
+框架预配置了默认行为，例如：
 
-- 使用单一的主数据源
-- 1天的时间框架/压缩组合
-- 10,000 单位的货币
+- 使用单一主数据源
+- 1 天时间框架/压缩
+- 10,000 单位货币
 - 股票交易
 
-这些设置可能并不适合每个人，但重要的是：它可以根据每个交易者/程序员的需求进行定制。
+这些设置不一定适合所有人，但重要的是：一切都可以根据需求定制。
 
 **交易股票：整数**
 
-如上所述，默认配置是用于股票交易，当交易股票时，买入/卖出的是完整的股票份额（即：1、2、50、1000 等，而不是像 1.5 或 1001.7589 这样的数量）。
+如上所述，默认配置用于股票交易，买入/卖出的是完整的股票份额（如 1、2、50、1000，而非 1.5 或 1001.7589）。
 
-这意味着，当用户在默认配置下执行以下代码时：
+在默认配置下执行以下代码时：
 
 ```python
 def next(self):
@@ -36,11 +36,9 @@ def next(self):
     self.order_target_percent(target=0.5)
 ```
 
-发生的情况是：
+系统会计算所需的股票数量，以使该资产在投资组合中的价值尽可能接近 50%。
 
-系统会计算出需要多少股票份额，以便该资产在投资组合中的价值尽可能接近 50%。
-
-但是，由于默认配置是与股票交易配合使用，结果股票的数量将是一个整数。
+但由于默认配置针对股票交易，最终股票数量为整数。
 
 **注意**
 
@@ -48,31 +46,31 @@ def next(self):
 
 **交易加密货币：分数**
 
-显然，在交易加密货币时，即使是小数点后有 20 位数字，也可以购买“半个比特币”。
+显然，加密货币交易可以购买”半个比特币”，哪怕小数点后有 20 位数字。
 
-好消息是，你可以更改与资产相关的信息。这是通过 `CommissionInfo` 家族的可插拔模块实现的。
+好消息是，可以通过 `CommissionInfo` 可插拔模块更改资产相关信息。
 
-一些文档：[Docs - Commission Schemes](https://www.backtrader.com/docu/commission-schemes/commission-schemes/)
+文档：[Docs - Commission Schemes](https://www.backtrader.com/docu/commission-schemes/commission-schemes/)
 
 **注意**
 
-不得不承认，名字不太合适，因为这些方案不仅仅包含佣金信息，还包含其他内容。
+不得不承认，命名不太准确，因为这些方案不仅包含佣金信息。
 
-在分数方案中，关注的是该方案的 `getsize(price, cash)` 方法，它有如下文档字符串：
+在分数方案中，关注的是 `getsize(price, cash)` 方法，其文档说明为：
 
 ```python
 返回在给定价格下执行现金操作所需的仓位大小
 ```
 
-这些方案与经纪商密切相关，并且可以通过经纪商 API 将这些方案添加到系统中。
+这些方案与经纪商紧密相关，可通过经纪商 API 添加到系统中。
 
-经纪商文档在这里：[Docs - Broker](https://www.backtrader.com/docu/broker/)
+经纪商文档：[Docs - Broker](https://www.backtrader.com/docu/broker/)
 
-相关方法是：`addcommissioninfo(comminfo, name=None)`。当 `name` 为 None 时，方案会应用到所有资产；如果指定了名称，则方案仅应用于具有特定名称的资产。
+相关方法：`addcommissioninfo(comminfo, name=None)`。当 `name` 为 None 时，方案应用于所有资产；指定名称时仅应用于该资产。
 
 **实现分数方案**
 
-这可以通过扩展现有的基础方案（即 `CommissionInfo`）轻松实现。
+通过扩展基础方案 `CommissionInfo` 即可轻松实现。
 
 ```python
 class CommInfoFractional(bt.CommissionInfo):
@@ -94,9 +92,9 @@ if args.fractional:  # 如果需要使用分数方案
 
 **测试效果**
 
-下面是一个实现了简单的移动平均交叉策略（用于多头/空头仓位）的完整脚本，可以直接在 shell 中使用。测试的默认数据源来自 backtrader 仓库中的数据源之一。
+以下是一个实现移动平均交叉策略（多空仓位）的完整脚本，可直接在 shell 中使用。默认数据源来自 backtrader 仓库。
 
-**整数模式：没有分数 - 没有乐趣**
+**整数模式：没有分数**
 
 ```bash
 $ ./fractional-sizes.py --plot
@@ -193,9 +191,7 @@ class St(bt.Strategy):
             self.loginfo('Trade Opened  - Size {} @Price {}',
                          trade.size, trade.price)
         elif trade.isclosed:
-            self.loginfo('Trade Closed
-
- - Size {} @Price {} Comm: {:.2f}',
+            self.loginfo('Trade Closed - Size {} @Price {} Comm: {:.2f}',
                          trade.size, trade.price, trade.commission)
 
     def logdata(self):

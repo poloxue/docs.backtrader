@@ -5,9 +5,9 @@ weight: 6
 
 # 重采样
 
-当数据只有单一时间框架可用，而分析要在不同时间框架上进行，就需要进行数据重采样。"重采样" 实际应称为 "上采样"，因为它是从源时间框架到更大的时间框架（如：从天到周）。
+当只有单一时间框架的数据可用，而分析需要在不同时间框架上进行时，就需要重采样。"重采样" 实际应称为 "上采样"，因为它是从源时间框架转换到更大的时间框架（如从天到周）。
 
-**Backtrader** 内置了通过过滤器对象进行重采样的支持。有几种方法可以实现这一点，但有一个简单的接口可以实现，它代替通过 `cerebro.adddata(data)` 将数据放入系统中，使用 `resampledata`。
+**Backtrader** 内置了通过过滤器对象进行重采样的支持。有几种实现方式，但最简单的接口是使用 `resampledata` 代替 `cerebro.adddata(data)`。
 
 ```python
 cerebro.resampledata(data, **kwargs)
@@ -35,10 +35,10 @@ $ ./resampling-example.py --timeframe weekly --compression 1
 $ ./resampling-example.py --timeframe daily --compression 1
 ```
 
-实现这些功能的步骤有：
+实现步骤如下：
 
 1. 先用 `cerebro.adddata` 加载原始数据；
-2. 使用带参数的`resampledata` 传递数据给`cerebro`：`timeframe` 和 `compression`；
+2. 用带 `timeframe` 和 `compression` 参数的 `resampledata` 将数据传递给 `cerebro`；
 
 示例代码：
 
@@ -59,7 +59,7 @@ cerebro.resampledata(data,
                      compression=args.compression)
 ```
 
-假设，将时间框架从每日更改为每周，然后将 3 条压缩为 1 条。
+假设将时间框架从每日改为每周，且将 3 条压缩为 1 条。
 
 ```bash
 $ ./resampling-example.py --timeframe weekly --compression 3

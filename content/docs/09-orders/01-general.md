@@ -7,9 +7,9 @@ weight: 1
 
 {{< youtube nvim FRFs28J14Gs >}}
 
-Cerebro 是 backtrader 中的关键控制系统，而 Strategy（一个子类）是终端用户的关键控制点。后者需要一个连接系统其他部分的方法，这就是订单发挥关键作用的地方。
+Cerebro 是 backtrader 的核心控制系统，而 Strategy（由用户子类化）是用户的主要操作入口。策略需要连接系统的其他部分，订单正是为此而生。
 
-订单将策略中的逻辑决策转化为适合 Broker 执行操作的消息。这是通过以下方式完成的：
+订单将策略的逻辑决策转化为 Broker 可执行的消息，通过以下方式完成：
 
 ## 创建
 
@@ -19,7 +19,7 @@ Cerebro 是 backtrader 中的关键控制系统，而 Strategy（一个子类）
 
 通过 Strategy 的方法：`cancel`（Strategy），该方法需要一个订单实例来操作。
 
-订单也作为一种通信方式反馈给用户，通知 Broker 中的执行情况。
+订单也用于向用户反馈 Broker 中的执行情况。
 
 ## 通知
 
@@ -27,7 +27,7 @@ Cerebro 是 backtrader 中的关键控制系统，而 Strategy（一个子类）
 
 ## 订单创建
 
-调用 `buy`、`sell` 和 `close` 时，以下参数适用于创建：
+调用 `buy`、`sell` 和 `close` 时，可用以下参数：
 
 参数名          | 默认值         | 描述
 --------------- | -------------- | -------------------
@@ -42,7 +42,7 @@ Cerebro 是 backtrader 中的关键控制系统，而 Strategy（一个子类）
 
 ## 示例
 
-如果 backtrader 直接支持的 4 种订单执行类型不够，例如对于 Interactive Brokers，可以传递如下参数：
+如果 backtrader 默认的 4 种订单执行类型不够用，例如对接 Interactive Brokers 时，可以传递如下参数：
 
 ```python
 orderType='LIT', lmtPrice=10.0, auxPrice=9.8
@@ -52,56 +52,56 @@ orderType='LIT', lmtPrice=10.0, auxPrice=9.8
 
 **注意：**
 
-`close` 方法将检查当前仓位，并相应地使用 `buy` 或 `sell` 有效地关闭仓位。除非参数由用户输入，否则大小也将自动计算，在这种情况下可以实现部分关闭或反转。
+`close` 方法会检查当前仓位，自动使用 `buy` 或 `sell` 平仓。如果不传参数，大小会自动计算；传入参数则可实现部分平仓或反向开仓。
 
 ## 订单通知
 
-要接收通知，必须在用户子类的 Strategy 中重写 `notify_order` 方法（默认行为是什么都不做）。以下适用于这些通知：
+要接收通知，需要在自定义的 Strategy 子类中重写 `notify_order` 方法（默认什么都不做）。通知规则如下：
 
-- 在策略的 `next` 方法调用之前发出。
-- 在同一个 `next` 循环中，可能（并且会）多次发生相同或不同状态的相同订单通知。
-- 订单可能会被提交给 Broker，被接受并在 `next` 再次调用之前完成执行。
+- 在策略的 `next` 方法之前发出。
+- 在同一个 `next` 循环中，同一订单可能（且通常会）多次通知不同状态。
+- 订单可能被提交、接受并在下一次 `next` 调用前完成执行。
 
-在这种情况下，至少会发生 3 次通知，状态值如下：
+这种情况下至少会有 3 次通知，状态依次为：
 
-- `Order.Submitted` 因为订单已发送给 Broker。
-- `Order.Accepted` 因为订单已被 Broker 接受并等待执行。
-- `Order.Completed` 因为在示例中订单已快速匹配并完全成交（通常适用于 Market 订单）。
+- `Order.Submitted`：订单已发送给 Broker。
+- `Order.Accepted`：Broker 已接受订单，等待执行。
+- `Order.Completed`：订单已快速匹配并完全成交（常见于 Market 订单）。
 
-对于 `Order.Partial` 状态，即使在回测 Broker 中（不考虑匹配量）不会看到，但在实际 Broker 中肯定会看到。
+`Order.Partial` 状态在回测 Broker 中不会出现（不考虑部分成交），但在实际 Broker 中很常见。
 
-实际 Broker 可能会在更新仓位之前发出一次或多次执行通知，这些执行将构成一个 `Order.Partial` 通知。
+实际 Broker 可能在更新仓位前发出一次或多次执行通知，这些执行构成一个 `Order.Partial` 通知。
 
-实际执行数据在属性：`order.executed` 中，这是一个 `OrderData` 类型的对象，具有常见的字段如大小和价格。
+实际执行数据保存在 `order.executed` 属性中，这是一个 `OrderData` 类型对象，包含大小、价格等常见字段。
 
-创建时的值存储在 `order.created` 中，在订单生命周期中保持不变。
+创建时的值保存在 `order.created` 中，在整个订单生命周期内保持不变。
 
 ## 订单状态值
 
 以下定义：
 
-- `Order.Created`：在创建订单实例时设置。除非手动创建订单实例，否则终端用户不会看到该状态。
-- `Order.Submitted`：在订单实例已传输给 Broker 时设置。这只是意味着已发送。在回测模式中这是立即的，但在实际 Broker 中可能需要时间，可能在转发给交易所时才通知。
-- `Order.Accepted`：Broker 已接受订单，并在系统中（或已在交易所）等待执行，参数如执行类型、大小、价格和有效期。
-- `Order.Partial`：订单已部分执行。`order.executed` 包含当前填充的大小和平均价格。
-  - `order.executed.exbits` 包含部分填充的完整执行位列表。
-- `Order.Complete`：订单已完全填充平均价格。
-- `Order.Rejected`：Broker 拒绝了订单。可能是某个参数（如有效期）不被接受，订单无法接受。
-  - 原因会通过策略的 `notify_store` 方法通知。虽然这可能显得奇怪，但实际 Broker 会通过事件通知，这可能与订单直接相关或无关。但可以在 `notify_store` 中看到 Broker 的通知。
-  - 在回测 Broker 中不会看到此状态。
-- `Order.Margin`：订单执行将导致保证金要求，之前接受的订单已从系统中移除。
-- `Order.Cancelled`（或 `Order.Canceled`）：用户请求取消的确认。
-  - 必须考虑，通过策略的 `cancel` 方法请求取消订单并不保证取消。订单可能已经执行，但此执行可能尚未被 Broker 通知，并且通知可能尚未传递给策略。
-- `Order.Expired`：之前接受的订单具有时间有效性，已过期并被从系统中移除。
+- `Order.Created`：创建订单实例时设置。除非手动创建，否则用户不会看到此状态。
+- `Order.Submitted`：订单已发送给 Broker。回测模式会立即触发，但实际 Broker 可能需要时间，可能在转发给交易所时才通知。
+- `Order.Accepted`：Broker 已接受订单，正在系统中（或交易所）等待执行，包含执行类型、大小、价格和有效期等参数。
+- `Order.Partial`：订单已部分执行。`order.executed` 包含当前成交的大小和平均价格。
+  - `order.executed.exbits` 包含部分成交的完整执行位列表。
+- `Order.Complete`：订单已完全成交。
+- `Order.Rejected`：Broker 拒绝了订单，可能因为某个参数（如有效期）不被接受。
+  - 原因通过策略的 `notify_store` 方法通知。实际 Broker 会通过事件通知，可能与订单直接相关也可能不相关。
+  - 回测 Broker 中不会出现此状态。
+- `Order.Margin`：订单执行会导致保证金不足，之前接受的订单已从系统中移除。
+- `Order.Cancelled`（或 `Order.Canceled`）：用户取消请求的确认。
+  - 注意，调用 `cancel` 方法并不保证订单一定会被取消。订单可能已执行，但 Broker 尚未通知策略。
+- `Order.Expired`：之前接受的订单已过期，已被从系统中移除。
 
 ## 引用：Order 及相关类
-这些对象是 backtrader 生态系统中的通用类。在与其他 Broker 操作时，它们可能已扩展和/或包含额外的嵌入信息。请参阅相应 Broker 的参考。
+这些是 backtrader 生态系统中的通用类。与不同 Broker 集成时，它们可能被扩展或包含额外信息，请参阅相应 Broker 的文档。
 
 ```python
 class backtrader.order.Order()
 ```
 
-持有创建/执行数据和订单类型的类。
+包含创建和执行数据以及订单类型的类。
 
 订单可能具有以下状态：
 
@@ -113,20 +113,20 @@ class backtrader.order.Order()
 - `Expired`：过期。
 - `Margin`：没有足够的现金执行订单。
 - `Rejected`：被 Broker 拒绝。
-  - 这可能发生在订单提交期间（因此订单不会达到 `Accepted` 状态），或者在执行前因每根新K线价格变化，现金被其他来源（如期货类工具）抽取导致拒绝。
+  - 可能发生在订单提交期间（因此不会达到 `Accepted` 状态），或执行前因价格变动导致现金被其他用途（如期货保证金）占用。
 
 成员属性：
 
 - `ref`：唯一订单标识符。
 - `created`：持有创建数据的 `OrderData`。
 - `executed`：持有执行数据的 `OrderData`。
-- `info`：通过 `addinfo()` 方法传递的自定义信息。以子类化的 `OrderedDict` 形式保存，键也可以使用`.`符号指定。
+- `info`：通过 `addinfo()` 方法传递的自定义信息。以 `OrderedDict` 子类形式保存，键也可用 `.` 符号访问。
 
 用户方法：
 
-- `isbuy()`：返回一个布尔值，指示订单是否买入。
-- `issell()`：返回一个布尔值，指示订单是否卖出。
-- `alive()`：返回一个布尔值，如果订单状态为 `Partial` 或 `Accepted`。
+- `isbuy()`：返回布尔值，判断是否为买入订单。
+- `issell()`：返回布尔值，判断是否为卖出订单。
+- `alive()`：如果订单状态为 `Partial` 或 `Accepted`，返回 `True`。
 
 ```python
 class backtrader.order.OrderData(dt=None, size=0, price=0.0, pricelimit=0.0, remsize
@@ -134,9 +134,9 @@ class backtrader.order.OrderData(dt=None, size=0, price=0.0, pricelimit=0.0, rem
 =0, pclose=0.0, trailamount=0.0, trailpercent=0.0)
 ```
 
-持有创建和执行实际订单数据。
+包含订单创建和执行的实际数据。
 
-在创建情况下，请求的数据，在执行情况下，实际结果。
+创建时保存的是请求参数，执行时保存的是实际结果。
 
 成员属性：
 

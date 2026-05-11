@@ -7,20 +7,20 @@ weight: 10
 
 {{< youtube CPs4IuEvcxM >}}
 
-本节将介绍如何使用技术指标，将技术指标作为入场和出场信号。我们将用简单移动平均线（Simple Moving Average），或称 SMA，作为演示指标。SMA 是一个非常简单的技术指标，计算一定周期的价格均值。
+本节介绍如何使用技术指标作为入场和出场信号。我们将用简单移动平均线（SMA）作为演示指标。
 
 ## 交易规则
 
-基于 SMA 交易规则，定义如下所示：
+交易规则如下：
 
-- **入场条件：** 当收盘价大于最新的 SMA，则入场买入。  
-- **出场条件：** 当持有头寸，当收盘价小于 SMA，则出场卖出。
+- **入场条件：** 收盘价大于最新 SMA 值时买入
+- **出场条件：** 持有头寸时，若收盘价小于 SMA 则卖出
 
-前面章节的策略代码大部分可复用，现在重点关注如何计算技术指标。
+前面章节的策略代码大部分可复用，本节重点关注如何计算技术指标。
 
 ## 指标计算
 
-backtrader 下的 `indicators` 模块内置了大量技术指标的计算方法，如 SMA 简单移动均线的计算。
+backtrader 的 `indicators` 模块内置了大量技术指标，如 SMA 的计算：
 
 ```python
 self.sma = bt.indicators.MovingAverageSimple(self.datas[0], period=self.params.maperiod)
@@ -28,7 +28,7 @@ self.sma = bt.indicators.MovingAverageSimple(self.datas[0], period=self.params.m
 
 如上代码中参数 `self.params.maperiod` 就是 SMA 的均线周期。
 
-注：如果安装了 talib，backtrader 也集成了 talib 的支持，详情文档 [指标-TALib](/backtrader/docs/08-indicators/04-talib/)。
+注：如果安装了 TA-Lib，backtrader 也集成了其支持，详见 [指标-TALib](/backtrader/docs/08-indicators/04-talib/)。
 
 ## 条件判断
 
@@ -182,5 +182,5 @@ Starting Portfolio Value: 1000.00
 Final Portfolio Value: 973.90
 ```
 
-现在，投资组合变得亏损了。
+这次投资组合亏损了。
 

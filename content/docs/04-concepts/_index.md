@@ -6,4 +6,4 @@ bookCollapseSection: true
 
 # 概念
 
-本节将介绍 `backtrader` 的一些核心概念，以求助我们更轻松地使用 `backtrader`。
+本节介绍 `backtrader` 的一些核心概念，帮助你更轻松地使用 `backtrader`。

@@ -7,24 +7,25 @@ weight: 11
 
 {{< youtube fsHzlg9tmik >}}
 
-通过 `print` 输出每个 bar 的信息不利于我们阅读，我们还是更倾向于图表的视觉效果。backtrader 内置了图表绘制的能力，一行代码即可绘图。
+通过 `print` 输出每个 bar 的信息不利于阅读，图表视觉效果更直观。backtrader 内置了绘图能力，一行代码即可：
 
 ```python
 cerebro.plot()
 ```
-请确保在调用`cerebro.run()`之后执行，还有，`backtrader` 的绘图能力依赖 matplotlib。
+
+需在 `cerebro.run()` 之后调用，且绘图功能依赖 matplotlib。
 
 ## 演示
 
-为了展示出基本的价格和收益外，我们将执行以下操作以展示绘图的功能和配置。
+为了展示绘图功能，我们将添加以下指标：
 
-- 添加一个 EMA（指数移动平均线），默认情况下，它会与数据一起绘制。
-- 添加一个 WMA（移动平均线加权），配置在子图绘制（即使没有意义）。
-- 添加一个 StochasticSlow（慢速随机指标），不更改默认设置。
-- 添加一个 MACD，不更改默认设置。
-- 添加一个ATR，更改默认设置以避免绘图。
-- 添加一个 RSI，不更改默认设置。
-- 在 RSI 上添加一个 SMA 指标，不更改默认设置，且与RSI一起绘制。
+- EMA（指数移动平均线），默认与数据一起绘制
+- WMA（加权移动平均线），配置在子图绘制
+- StochasticSlow（慢速随机指标），使用默认设置
+- MACD，使用默认设置
+- ATR，配置为不绘制
+- RSI，使用默认设置
+- 在 RSI 上叠加 SMA 指标
 
 在策略的 `__init__` 方法中添加的所有内容：
 
@@ -39,7 +40,7 @@ bt.indicators.SmoothedMovingAverage(rsi, period=10)
 bt.indicators.ATR(self.datas[0]).plot = False
 ```
 
-即使将指标没有赋值到策略成员变量（如`self.sma = MovingAverageSimple…`），它们也会被注册到策略中，成为图表的一部分。
+即使指标没有赋值到策略成员变量（如 `self.sma = ...`），它们也会被注册到策略中，成为图表的一部分。
 
 示例中，只有RSI被添加到临时变量rsi中，其目的是要在其上创建一个 SmoothedMovingAverage。
 
@@ -174,6 +175,6 @@ Starting Portfolio Value: 1000.00
 Final Portfolio Value: 981.00
 ```
 
-因为交易逻辑没有修改，故而结果和上节一样，图表如下：
+交易逻辑未修改，结果与上节一样，图表如下：
 
 ![](https://www.backtrader.com/docu/quickstart/quickstart10.png)

@@ -5,7 +5,7 @@ weight: 3
 
 # 周期混合
 
-如果提供值的数据源有不同的时间框架，在 `Cerebro` 引擎中有不同的长度，指标将会出错。
+如果数据源的时间框架不同，在 `Cerebro` 引擎中的长度也不同，指标就会出错。
 
 示例计算中，`data0` 有天的时间框架，`data1` 有月的时间框架：
 
@@ -16,9 +16,7 @@ sellsignal = self.data0.close < pivotpoint.s1
 
 在这里，当收盘价低于 s1 线（第一个支撑）时，寻求卖出信号。
 
-**注意**
-
-`PivotPoint` 定义上在较大的时间框架中工作。
+`PivotPoint` 本身工作于较大的时间框架。
 
 过去，这会导致以下错误：
 
@@ -27,7 +25,7 @@ return self.array[self.idx + ago]
 IndexError: array index out of range
 ```
 
-原因很简单：`self.data.close` 从第一个时刻提供值，但 `PivotPoint`（以及 s1 线）只有在整个月过去后才会提供值，这大约相当于 22 个 `self.data0.close` 的值。在这 22 个收盘价期间，s1 还没有值，尝试从底层数组获取它会失败。
+原因很简单：`self.data.close` 从一开始就提供值，但 `PivotPoint`（及 s1 线）要等整月结束后才有值，大约对应 22 个 `self.data0.close` 值。这 22 个收盘价期间 s1 还没有值，访问底层数组就会失败。
 
 线条对象支持 `(ago)` 操作符（Python 中的 `__call__` 特殊方法）以提供其延迟版本：
 
@@ -35,16 +33,16 @@ IndexError: array index out of range
 close1 = self.data.close(-1)
 ```
 
-在这个例子中，对象 `close1`（通过 `[0]` 访问时）始终包含由 `close` 提供的前一个值（-1）。此语法已被重用以适应时间框架。让我们重写上述的 `pivotpoint` 代码片段：
+在这个例子中，对象 `close1`（通过 `[0]` 访问时）始终包含由 `close` 提供的前一个值（-1）。该语法也被扩展用于时间框架混用。让我们重写上面的 `pivotpoint` 代码：
 
 ```python
 pivotpoint = btind.PivotPoint(self.data1)
 sellsignal = self.data0.close < pivotpoint.s1()
 ```
 
-请注意，`()` 无参数执行（在后台提供了一个 `None`）。正在发生以下情况：
+`()` 无参数执行（后台传入 `None`）。实际发生的情况如下：
 
-`pivotpoint.s1()` 返回一个内部 `LinesCoupler` 对象，该对象遵循较大范围的节奏。该耦合器使用来自实际 s1 的最新提供的值填充自身（以 `NaN` 为默认值开始）。
+`pivotpoint.s1()` 返回一个内部 `LinesCoupler` 对象，跟随较大时间框架的节奏。该耦合器用实际 s1 的最新值填充自身（默认以 `NaN` 开始）。
 
 但为了实现这一魔法，还需要额外的东西。`Cerebro` 必须这样创建：
 
@@ -58,7 +56,7 @@ cerebro = bt.Cerebro(runonce=False)
 cerebro.run(runonce=False)
 ```
 
-在这种模式下，指标和延迟评估的自动线条对象按步执行，而不是在紧密循环中执行。这使整个操作变得更慢，但它使其成为可能。
+这种模式下，指标和延迟求值的线条对象逐步执行，而非在紧密循环中执行。这会降低整体速度，但使操作成为可能。
 
 底部的示例脚本现在可以运行：
 
@@ -145,7 +143,7 @@ obj(clockref=None)（见上文的 `clockref`）
 
 ## 结论
 
-在常规的 `()` 语法中，来自不同时间框架的数据源可以混合在指标中，始终考虑到 `cerebro` 需要使用 `runonce=False` 实例化或创建。
+使用 `()` 语法可以在指标中混合不同时间框架的数据源，但需注意 `cerebro` 需要用 `runonce=False` 创建。
 
 ## 脚本代码和用法
 

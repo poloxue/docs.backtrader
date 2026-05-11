@@ -7,7 +7,7 @@ weight: 8
 
 {{< youtube NMvRzpyzlFM >}}
 
-我们已经知道如何使用 backtrader 买卖交易了。本节将介绍 backtrader 如何监控它每笔交易，如成本、利润和佣金。由于佣金的存在，利润还分为毛利润和净利润
+我们已经知道如何使用 backtrader 买卖交易了。本节介绍如何监控每笔交易的成本、利润和佣金。由于佣金的存在，利润分为毛利润和净利润。
 
 ## 设置佣金
 
@@ -20,7 +20,7 @@ cerebro.broker.setcommission(commission=0.001)
 
 ## 订单的成本和佣金
 
-订单的成本和佣金可从订单回调 `notify_order` 中获取，它的 Order 参数 `order.executed.comm` 即为订单的已执行佣金，`order.executed.value` 即投入的成本。
+订单的成本和佣金可从 `notify_order` 回调中获取，`order.executed.comm` 为已执行佣金，`order.executed.value` 为投入的成本。
 
 ```python
 class TestStrategy(bt.Strategy):
@@ -39,9 +39,9 @@ class TestStrategy(bt.Strategy):
                           order.executed.comm))
 ```
 
-## 交易记录计算利润
+## 交易利润计算
 
-对于利润的计算，使用交易记录会更简单，所谓成交记录，即成交撮合一笔记录一次。与订单类似，我们可通过 `notify_trade` 获取成交记录。它的回调参数是 Trade 类对象，利润相关属性有 `trade.pnl`（毛利润）和 `trade.pnlcomm`（净利润）。
+利润的计算使用交易记录更简单。与订单类似，可通过 `notify_trade` 获取交易记录。`trade.pnl` 为毛利润，`trade.pnlcomm` 为净利润。
 
 ```python
 class TestStrategy(bt.Strategy):
@@ -53,7 +53,7 @@ class TestStrategy(bt.Strategy):
                  (trade.pnl, trade.pnlcomm))
 ```
 
-因为只有是平仓交易，才有利润的说法，故通过 `trade.isclosed` 判断在平仓交易的情况才输出利润信息。
+只有平仓交易才有利润，故通过 `trade.isclosed` 判断只在平仓时输出利润信息。
 
 ## 完整示例
 
@@ -119,8 +119,7 @@ class TestStrategy(bt.Strategy):
             if self.dataclose[0] < self.dataclose[-1]:
                 if self.dataclose[-1] < self.dataclose[-2]:
                     self.log('创建买入订单，%.2f' % self.dataclose[0])
-                      self.order = self.buy()
-        else:
+                    self.order = self.buy()        else:
             if len(self) >= (self.bar_executed + 5):
                 self.log('创建卖出订单，%.2f' % self.dataclose[0])
                 self.order = self.sell()
@@ -216,9 +215,9 @@ if __name__ == '__main__':
 
 将这些 "净利润" 相加，最终的数字是 `15.83`。但系统告诉我们最终投资组合价值是 `100016.98`。显然，`15.83` 并不等于 `16.98`。
 
-这其实并没有任何错误，净利润 `15.83` 是已平仓的交易利润。而最后一天实际还有一个未平仓头寸。虽然已发送了卖出操作，还要等待下个 bar 才能成交。最终投资组合价值止于 2000-12-29 的收盘价。这个订单的成交价格将会在下一个交易日（即 2001-01-02）被设定。
+这并非错误，净利润 `15.83` 是已平仓交易的利润。最后一天还有一个未平仓头寸——虽然已发送卖出操作，还要等待下个 bar 才能成交。最终投资组合价值止于 2000-12-29 的收盘价。该订单的成交价格将在下一个交易日（2001-01-02）设定。
 
-假设，我们将数据源提供到下一个交易日。
+假设我们将数据源扩展到下一个交易日：
 
 ```
 2001-01-02T00:00:00, 卖出执行，价格：27.87，成本：27.87，佣金 0.03
@@ -234,4 +233,4 @@ if __name__ == '__main__':
 15.83 + 1.59 = 17.42
 ```
 
-忽略四舍五入的误差，现在一切就对上了。
+忽略四舍五入误差，现在就对上了。

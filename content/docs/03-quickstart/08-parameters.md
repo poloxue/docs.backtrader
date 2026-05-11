@@ -7,11 +7,11 @@ weight: 9
 
 {{< youtube L8NjD0eLkHc >}}
 
-前面的案例中，参数都是硬编码在策略中。本节将介绍如何在 backtrader 自定义参数。
+前面的案例中，参数都硬编码在策略中。本节介绍如何在 backtrader 中自定义参数。
 
 ## 定义参数
 
-策略参数的定义非常简单，如在策略中定义两个参数：`myparam` 和 `exitbars`。
+在策略中通过 `params` 属性定义参数，例如：
 
 ```python
 class TestStrategy:
@@ -25,13 +25,13 @@ class TestStrategy:
 我们可以在添加策略时修改参数默认值。
 
 ```python
-# Add a strategy
+# 添加策略时覆盖默认参数
 cerebro.addstrategy(TestStrategy, myparam=20, exitbars=7)
 ```
 
 ## 使用参数
 
-策略代码中直接通过 `self.params.param_name ` 即可调用参数。
+策略代码中通过 `self.params.param_name` 访问参数。
 
 如下代码，通过参数 `exitbars` 修改退出逻辑：
 
@@ -86,9 +86,7 @@ class TestStrategy(bt.Strategy):
     def notify_trade(self, trade):
         if not trade.isclosed:
             return
-        self.log('OPERATION PROFIT, GROSS
-
- %.2f, NET %.2f' %
+        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
                  (trade.pnl, trade.pnlcomm))
 
     def next(self):

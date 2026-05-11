@@ -5,16 +5,16 @@ weight: 8
 
 # 滚动
 
-并非所有提供商都提供连续期货合约数据。有时提供的数据是仍在交易的到期合约的有效数据。这种情况下，进行回测会变得很不方便，因为数据分散在多个不同的合约上，并且这些合约还会在时间上重叠。
+并非所有提供商都提供连续期货合约数据。有时提供的是仍在交易中的到期合约数据，这使得回测很不方便，因为数据分散在多个合约上，且合约在时间上重叠。
 
-如果能够正确地将这些过去的合约数据连接成一个连续的数据流，可以缓解这种痛苦。问题在于：
+将过去的合约数据连接成连续数据流可以缓解这个问题。但：
 
-- 没有一种最佳方法将不同到期日期的数据连接成一个连续的期货数据
-- 有些文献，如 [SierraChart的文章](http://www.sierrachart.com/index.php?page=doc/ChangingFuturesContract.html)
+- 没有唯一的最佳方法将不同到期日的数据连接成连续期货数据
+- 可参考一些文献，如 [SierraChart 的文章](http://www.sierrachart.com/index.php?page=doc/ChangingFuturesContract.html)
 
 ## 滚动数据源
 
-从backtrader 1.8.10.99开始，增加了将不同到期日期的期货数据连接成连续期货的功能：
+从 backtrader 1.8.10.99 开始，增加了将不同到期日的期货数据连接成连续期货的功能：
 
 ```python
 import backtrader as bt
@@ -31,8 +31,8 @@ cerebro.run()
 ```
 
 > **注意：** 
-> - `**kwargs`将在下文解释
-> - 也可以直接访问RollOver数据源（如果需要子类化，这是很有帮助的）：
+> - `**kwargs` 将在下文解释
+> - 也可以直接使用 RollOver 数据源（子类化时需要）：
 
 ```python
 import backtrader as bt
@@ -50,15 +50,15 @@ cerebro.run()
 ```
 
 > **注意：**
-> - 使用RollOver时，使用`dataname`参数分配名称，这是所有数据源用于传递名称/代码的标准参数。在这种情况下，它被重用以给整个滚动的期货集分配一个通用名称。
-> - 对于`cerebro.rolloverdata`，使用`name`参数为数据源分配名称，这是该方法的一个命名参数。
+> - 使用 RollOver 时，通过 `dataname` 参数分配名称，这是所有数据源用于传递名称/代码的标准参数。这里被重用于给整个滚动期货集分配一个通用名称。
+> - 对于 `cerebro.rolloverdata`，使用 `name` 参数为该数据源分配名称。
 
-Rollover 的使用可概括为：
+Rollover 的使用概括如下：
 
-1. 按通常方式创建数据源，但**不要**将它们添加到cerebro
-2. 将这些数据源作为输入传递给`bt.feeds.RollOver`
-3. 也传递一个`dataname`，主要用于识别目的
-4. 然后将这个滚动的数据源添加到cerebro
+1. 按通常方式创建数据源，但**不要**添加到 cerebro
+2. 将这些数据源作为输入传递给 `bt.feeds.RollOver`
+3. 同时传递一个 `dataname` 用于标识
+4. 然后将滚动数据源添加到 cerebro
 
 ## 滚动的选项
 
@@ -71,7 +71,7 @@ Rollover 的使用可概括为：
 
 ## 子类化RollOver
 
-如果指定的可调用对象还不够用，可以子类化`RollOver`。需要子类化的方法有：
+如果指定的可调用对象仍不够用，可以子类化 `RollOver`。需要子类化的方法有：
 
 ```python
 def _checkdate(self, dt, d)
@@ -87,9 +87,9 @@ def _checkcondition(self, d0, d1)
 
 ## 示例用法
 
-**注意：** 示例中的默认行为是使用`cerebro.rolloverdata`。可以通过传递`-no-cerebro`标志来更改。在这种情况下，示例使用`RollOver`和`cerebro.adddata`。
+**注意：** 示例默认使用 `cerebro.rolloverdata`，可以通过 `-no-cerebro` 标志改用 `RollOver` 加 `cerebro.adddata`。
 
-实现包括一个可在backtrader源代码中找到的示例。
+示例代码可在 backtrader 源代码中找到。
 
 期货拼接
 
@@ -122,13 +122,13 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 0427, FESX, 199FESXM5, 2015-06-19, Fri, 3443.0, 3499.0, 3440.0, 3488.0, 104096.0, 516792.0
 ```
 
-可以看到，当数据源结束时，下一个数据源接管。
+可以看到，当一个数据源结束时，下一个数据源接管。
 
-这总是在一个星期五和下一个星期一之间发生：示例中的期货合约总是在星期五到期。
+切换总是在周五和周一之间发生：示例中的期货合约总是在周五到期。
 
-期货滚动无检查
+## 期货滚动（无检查）
 
-运行带有`--rollover`参数的示例：
+运行带 `--rollover` 参数的示例：
 
 ```bash
 $ ./rollover.py --rollover --plot
@@ -159,15 +159,15 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 0427, FESX, 199FESXM5, 2015-06-19, Fri, 3443.0, 3499.0, 3440.0, 3488.0, 104096.0, 516792.0
 ```
 
-可以清楚地看到，合约的更换是在3月、6月、9月和12月的第三个星期五。
+可以看到，合约在 3 月、6 月、9 月和 12 月的第三个星期五更换。
 
-这大部分是错误的。虽然backtrader无法知道，但作者知道EuroStoxx 50期货在到期月的第三个星期五中午12:00 CET停止交易。因此，即使在到期月的第三个星期五有一个每日条，更换也是太晚了。
+但这基本是错误的。虽然 backtrader 无法知道，但 EuroStoxx 50 期货在到期月的第三个星期五中午 12:00 CET 停止交易。因此在到期月的第三个星期五仍有一个每日条时更换合约，已经太晚了。
 
 ## 在周内更换
 
-在示例中实现了一个`checkdate`可调用对象，它计算当前活跃合约的到期日期。
+示例中实现了一个 `checkdate` 可调用对象，用于计算当前活跃合约的到期日期。
 
-`checkdate`会在到期周一旦到达时允许进行滚动（如果例如星期一是银行假日，可能会是星期二）。
+`checkdate` 在到期周到达时允许滚动（如果周一为银行假日，滚动可能发生在周二）。
 
 运行带有`--rollover`和`--checkdate`参数的示例：
 
@@ -198,11 +198,11 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 0427, FESX, 199FESXM5, 2015-06-19, Fri, 3443.0, 3499.0, 3440.0, 3488.0, 104096.0, 516792.0
 ```
 
-效果要好得多。滚动现在发生在到期月的第三个星期五之前的星期一。
+效果更好。滚动现在发生在到期月第三个星期五之前的周一。
 
 ## 添加交易量条件
 
-即使有了改进，还可以进一步改善，通过考虑日期和交易量来决定是否滚动。仅在新合约的交易量超过当前活跃合约时进行切换。
+还可以通过结合日期和交易量条件进一步改善，仅在新合约交易量超过当前活跃合约时切换。
 
 运行带有`--rollover`、`--checkdate`和`--checkcondition`参数的示例：
 
@@ -235,11 +235,11 @@ Len, Name, RollName, Datetime, WeekDay, Open, High, Low, Close, Volume, OpenInte
 0427, FESX, 199FESXM5, 2015-06-19, Fri, 3443.0, 3499.0, 3440.0, 3488.0, 104096.0, 516792.0
 ```
 
-效果更好。我们已将切换日期移至到期月第三个星期五之前的星期四。
+效果更好。切换日期移至到期月第三个星期五之前的周四。
 
 ## 结论
 
-backtrader 现在包含一个灵活的机制，用于创建连续期货数据流。
+backtrader 提供了一个灵活的机制来创建连续期货数据流。
 
 ## 示例用法
 

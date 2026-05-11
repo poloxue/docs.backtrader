@@ -7,9 +7,9 @@ weight: 6
 
 {{< youtube WFeAgO2X3oc >}}
 
-本节，我们将演示一个简单的策略，让策略执行交易操作，如果出现连续两个交易日下跌即 - 买入！买入！买入！
+本节演示一个简单策略：如果出现连续两个交易日下跌，则执行买入操作。
 
-我们将基于上节的策略类 TestStrategy 继续开发，策略逻辑部分要在 `next` 方法中实现。
+基于上节的策略类 TestStrategy 继续开发，策略逻辑在 `next` 方法中实现。
 
 ```python
 class TestStrategy(bt.Strategy):
@@ -24,21 +24,19 @@ class TestStrategy(bt.Strategy):
         self.log('Close, %.2f' % self.dataclose[0])
 ```
 
-首先是买入条件，如何判断两日连续下跌呢？
-
-简单而言，就是 `close[0] < close[-1]` 和 `close[-1] < close[-2]`，即当前收盘价小于昨日收盘价，昨日收盘价小于大前日收盘价。
+如何判断两日连续下跌？简单来说就是 `close[0] < close[-1]` 且 `close[-1] < close[-2]`，即当前收盘价小于昨日收盘价，昨日收盘价小于前日收盘价。
 
 ```python
 self.dataclose[0] < self.dataclose[-1] and self.dataclose[-1] < self.dataclose[-2]
 ```
 
-而买入操作使用 `self.buy` 皆可。
+买入操作使用 `self.buy()` 即可：
 
 ```python
 self.buy()
 ```
 
-默认情况下，如果存在多个数据源，`self.buy` 买入的是第一个数据资产。
+默认情况下，`self.buy` 买入的是第一个数据源的资产。
 
 ## 完整示例
 
@@ -112,6 +110,6 @@ Starting Portfolio Value: 100000.00
 Final Portfolio Value: 99725.08
 ```
 
-多个“买入”创建订单被发出，我们的组合价值减少了。显然缺少了一些重要的内容，订单已创建，但尚未确定其执行时间和价格。
+多个买入订单被发出，组合价值减少了。显然缺少了重要环节：订单已创建，但尚未确定执行时间和价格。
 
-下个示例将监听订单状态通知来完善这个过程。
+下个示例将通过监听订单状态通知来完善这个过程。

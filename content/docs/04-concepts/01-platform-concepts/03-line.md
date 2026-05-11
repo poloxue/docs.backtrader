@@ -5,13 +5,13 @@ weight: 3
 
 # 线 Line 类
 
-在 `Backtrader` 中，许多对象都会生成 `Line` 对象，而每个 `Line` 代表的是一个时间序列数据，可以是价格、指标或其他数据。策略逻辑基本都离不开操作 `Line` 对象。
+在 `Backtrader` 中，许多对象都会生成 `Line` 对象，每个 `Line` 代表一个时间序列数据，可以是价格、指标或其他数据。策略逻辑基本都离不开 `Line` 对象的操作。
 
-## **`Line` 的访问**
+## `Line` 的访问
 
-### **数据源中的 `Line`**
+### 数据源中的 `Line`
 
-数据源中包含了多个 `Line`，如 `close`、`open`、`high`、`low` ，通过 `self.data.lines` 访问它们。
+数据源中包含多个 `Line`，如 `close`、`open`、`high`、`low`，通过 `self.data.lines` 访问它们。
 
 ```python
 class MyStrategy(bt.Strategy):
@@ -19,7 +19,7 @@ class MyStrategy(bt.Strategy):
        self.close_line = self.data.lines.close  # 访问收盘价线
 ```
 
-### **指标中的 `Line`**
+### 指标中的 `Line`
 
 指标同样会生成 `Line`，如 `SimpleMovingAverage` 的 `sma`，通过 `self.movav.lines.sma` 访问。
 
@@ -33,9 +33,9 @@ class MyStrategy(bt.Strategy):
            print('移动平均大于收盘价')
 ```
 
-### **访问线的快捷方式**
+### 访问线的快捷方式
 
-前面的语法和我们平时使用的不一样，因为我们平时都是通过简写访问，如 `self.data.close` 实际上是 `self.data.lines.close` 的快捷方式。
+前面的写法和我们平时使用的不一样，平时都是通过简写访问，如 `self.data.close` 实际上是 `self.data.lines.close` 的快捷方式。
 
 `Backtrader` 提供了多种简化访问 `Line` 的方式：
 
@@ -56,17 +56,17 @@ class MyStrategy(bt.Strategy):
 - `self.movav.sma` 或 `self.movav_sma` 直接访问 `sma` 数据行。
 - `self.movav` 也可直接访问 `sma` 数据行；
 
-这种访问方式很简洁，但不如原始方法清晰，特别是在区分访问的是否 `Line` 时。
+这种方式很简洁，但不如原始写法清晰，特别是在区分访问的是否 `Line` 时。
 
-## **线的声明**
+## 线的声明
 
 在 `Backtrader` 中，`Line` 是指标和策略中非常重要的部分。每个自定义指标都要声明自己的线，以便在策略中使用。
 
-### **如何声明线**
+### 如何声明线
 
 如何在自定义指标中声明线？
 
-当你创建一个自定义指标时，需要通过 `lines` 属性声明该指标会输出的线。通常使用元组声明，元组中的每个元素表示一个线的名称。
+创建自定义指标时，需要通过 `lines` 属性声明该指标输出的线，通常使用元组声明。
 
 如在 `SimpleMovingAverage` 指标中，我们声明了一个名为 `sma` 的线：
 
@@ -78,7 +78,7 @@ class SimpleMovingAverage(bt.Indicator):
        self.lines.sma = self.data.close(-1)  # 计算并赋值给 sma 线
 ```
 
-如你想声明多条线，如一个包含两条均线的指标，只需在 `lines` 中列出多个元素：
+如需声明多条线，只需在 `lines` 中列出多个元素：
 
 ```python
 class MyIndicator(bt.Indicator):
@@ -89,19 +89,19 @@ class MyIndicator(bt.Indicator):
        self.lines.sma2 = btind.SimpleMovingAverage(self.data, period=50)
 ```
 
-**注意事项**：当声明 `Line` 时，确保使用元组声明，即使只有一条线也要加上逗号：`('sma',)`。
+**注意**：声明 `Line` 时务必使用元组，即使只有一条线也要加逗号：`('sma',)`。
 
-现在，指标的计算结果会被保存在 `Line` 中，策略可以直接访问这些 `Line` 计算交易逻辑。
+指标的计算结果保存在 `Line` 中，策略可以直接访问这些 `Line` 进行交易逻辑判断。
 
 ---
 
-## **`Line` 的长度**
+## `Line` 的长度
 
 在 `Backtrader` 中，每条线都包含一个动态增长的点集合。你可以随时获取线的长度，以了解当前的数据处理情况。
 
-### **如何获取线的长度：**
+### 如何获取线的长度：
 
-**使用 `len()` 函数**：使用标准 Python `len()` 函数即可获取 `Line` 的长度，这会返回已处理的数据点数。
+**使用 `len()` 函数**：使用标准 Python `len()` 函数获取 `Line` 的长度，返回已处理的数据点数。
 
 ```python
 class MyStrategy(bt.Strategy):
@@ -110,7 +110,7 @@ class MyStrategy(bt.Strategy):
        print(f"数据源的线长: {length}")
 ```
 
-**使用 `buflen` 属性**：`buflen` 返回数据源可用的总数据条数，也就是数据源在加载时的总长度。
+**使用 `buflen` 属性**：`buflen` 返回数据源加载时的总数据条数。
 
 ```python
 class MyStrategy(bt.Strategy):
@@ -119,7 +119,7 @@ class MyStrategy(bt.Strategy):
        print(f"数据源的总长度: {buflen}")
 ```
 
-实盘交易时，对于实时数据源很有用，因为它能让我们显示数据源的实际可用数量。
+实盘交易时，`buflen` 对实时数据源很有用，能显示数据源的实际可用数量。
 
 **`len()` 和 `buflen` 的区别**：
 
@@ -130,9 +130,9 @@ class MyStrategy(bt.Strategy):
 
 ---
 
-## **`Line` 的继承**
+## `Line` 的继承
 
-`Backtrader` 支持 `Line` 的继承，我们可以在子类中继承父类的线，且可以在子类中修改。
+`Backtrader` 支持 `Line` 的继承，子类可以继承父类的线，也可以在子类中修改。
 
 示例代码：
 
@@ -144,16 +144,16 @@ class MyIndicator(BaseIndicator):
     lines = ('sma', 'ema')  # 在子类中继承并扩展线
 ```
 
-如果多个父类定义了相同名称的线，子类只会继承一个版本的线，因此要避免同名的线定义冲突。
+如果多个父类定义了同名线，子类只会继承一个版本，因此要避免线定义冲突。
 
 
-## **`Line` 耦合**
+## `Line` 耦合
 
-`Backtrader` 允许你在多个时间框架下使用数据源，并支持将它们的线进行耦合。线耦合是指将不同时间周期的数据结合起来，以便在策略中进行跨时间框架的计算和分析。
+`Backtrader` 允许在多个时间框架下使用数据源，并支持将它们的线进行耦合。线耦合是指将不同时间周期的数据结合起来，用于跨时间框架的计算和分析。
 
-### **如何使用线耦合：**
+### 如何使用线耦合：
 
-你可以在策略中同时使用多个数据源，每个数据源可能有不同的时间周期。例如，一个数据源是日线数据，另一个是周线数据：
+可以在策略中同时使用多个数据源，每个数据源可有不同时间周期。例如，一个数据源是日线，另一个是周线：
 ```python
 class MyStrategy(bt.Strategy):
     def __init__(self):
@@ -174,7 +174,7 @@ class MyStrategy(bt.Strategy):
         self.buysig = sma0 > sma1()  # 通过运算符将两个时间框架的线耦合
 ```
 
-上面的例子中，`sma0` 和 `sma1` 分别是基于日线和周线数据计算的简单移动平均线。`sma1()` 用于将周线数据转换成日线数据的长度，从而进行跨时间框架的计算。
+上面的例子中，`sma0` 和 `sma1` 分别是基于日线和周线数据计算的简单移动平均线。`sma1()` 用于将周线数据转换为日线数据长度，从而进行跨时间框架比较。
 
-`Line` 耦合使得我们能更灵活地在策略中使用多个时间框架的数据，进行更复杂的分析和决策。
+`Line` 耦合让我们能更灵活地在策略中使用多时间框架数据，进行更复杂的分析和决策。
 

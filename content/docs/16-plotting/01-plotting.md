@@ -5,9 +5,9 @@ weight: 1
 
 # 绘图
 
-尽管回测主要是基于数学计算的自动化过程，但人们常常希望能够实际可视化所发生的一切。不论是使用已经经过回测的现有算法，还是查看数据所产生的内置或自定义指标，绘图都能帮助人们更好地理解所发生的事情，剔除、修改或创建新的想法。
+回测虽然是基于计算的自动化过程，但可视化仍然非常重要。无论是已有算法的回测结果，还是数据产生的各种指标，绘图都能帮助你理解发生了什么，进而优化或产生新想法。
 
-由于所有操作背后都是人类，绘制数据馈送、指标、操作、现金流动和投资组合价值的演变图表有助于人们更好地理解过程，从而做出更明智的决策。因此，backtrader 使用 matplotlib 提供的功能，内置了绘图设施。
+因此，backtrader 利用 matplotlib 内置了绘图功能，可以绘制数据馈送、指标、交易操作、现金流和投资组合价值的变化。
 
 ## 如何绘图
 
@@ -43,11 +43,11 @@ cerebro.plot()
 
 图表包含了 3 个观察器，由于缺乏任何交易，它们在这种情况下几乎没有意义：
 
-1. **CashValue** 观察器：跟踪回测运行期间的现金和总投资组合价值（包括现金）。
-2. **Trade** 观察器：在交易结束时显示实际的利润和亏损。交易定义为开仓并将仓位归零（直接或从多头转为空头或从空头转为多头）。
-3. **BuySell** 观察器：在价格图上绘制买入和卖出操作的位置。
+1. **CashValue** 观察器：跟踪回测期间的现金和投资组合总价值（含现金）。
+2. **Trade** 观察器：交易结束时显示实际盈亏。交易定义为开仓后仓位归零（包括多空转换）。
+3. **BuySell** 观察器：在价格图上标记买入和卖出操作的位置。
 
-这 3 个观察器由 cerebro 自动添加，可以通过 `stdstats` 参数控制（默认：True）。如果希望禁用它们，可以如下操作：
+这 3 个观察器由 cerebro 自动添加，可通过 `stdstats` 参数控制（默认：True）。如需禁用：
 
 ```python
 cerebro = bt.Cerebro(stdstats=False)
@@ -63,13 +63,13 @@ cerebro.run(stdstats=False)
 
 ## 绘图元素
 
-尽管前面提到了观察器，它们并不是唯一被绘制的元素。以下 3 种元素会被绘制：
+除观察器外，以下 3 种元素也会被绘制：
 
-1. 使用 `adddata`、`replaydata` 和 `resampledata` 添加到 Cerebro 的数据馈送。
-2. 在策略级别声明的指标（或通过 `addindicator` 添加到 cerebro 的指标，这纯粹用于实验目的，并将指标添加到一个虚拟策略中）。
-3. 使用 `addobserver` 添加到 cerebro 的观察器。
+1. 通过 `adddata`、`replaydata` 和 `resampledata` 添加到 Cerebro 的数据馈送。
+2. 在策略中声明的指标（或通过 `addindicator` 添加到 cerebro 的指标，用于实验目的）。
+3. 通过 `addobserver` 添加到 cerebro 的观察器。
 
-观察器是与策略同步运行的线性对象，并且可以访问整个生态系统，以便跟踪现金和价值等内容。
+观察器是与策略同步运行的线性对象，可访问整个生态系统，用于跟踪现金和价值等指标。
 
 ## 绘图选项
 
@@ -103,9 +103,9 @@ plotinfo = dict(
 )
 ```
 
-尽管 `plotinfo` 在类定义时显示为字典，但 backtrader 的元类机制将其转变为一个可以继承的对象，并且可以进行多重继承。例如：
+虽然 `plotinfo` 在类定义中显示为字典，但 backtrader 的元类机制会将其转换为可继承的对象，支持多重继承。例如：
 
-如果子类将 `subplot=True` 更改为 `subplot=False`，则层级结构中的进一步子类将具有后者作为 `subplot` 的默认值。
+如果子类将 `subplot=True` 改为 `subplot=False`，则后续子类会以 `False` 作为 `subplot` 的默认值。
 
 有两种方法为这些参数赋值。让我们看一下 `SimpleMovingAverage` 实例化的第一种方法：
 
@@ -113,7 +113,7 @@ plotinfo = dict(
 sma = bt.indicators.SimpleMovingAverage(self.data, period=15, plotname='mysma')
 ```
 
-从示例中可以推断，`SimpleMovingAverage` 构造函数未消耗的任何 **kwargs 都将被解析（如果可能）为 `plotinfo` 值。`SimpleMovingAverage` 只有一个定义的参数，即 `period`。这意味着 `plotname` 将匹配 `plotinfo` 中同名的参数。
+从示例可知，`SimpleMovingAverage` 构造函数未使用的 **kwargs 会尝试解析为 `plotinfo` 值。`SimpleMovingAverage` 只定义了一个参数 `period`，因此 `plotname` 会匹配 `plotinfo` 中同名参数。
 
 第二种方法：
 
@@ -122,7 +122,7 @@ sma = bt.indicators.SimpleMovingAverage(self.data, period=15)
 sma.plotinfo.plotname = 'mysma'
 ```
 
-与 `SimpleMovingAverage` 一起实例化的 `plotinfo` 对象可以被访问，并且其中的参数也可以通过标准的 Python 点符号访问。与上面的语法相比，这种方法更容易理解。
+与 `SimpleMovingAverage` 一起实例化的 `plotinfo` 对象可以被访问，并且其中的参数也可以通过标准的 Python 点符号访问。这种语法更易于理解。
 
 ## 参数含义
 
@@ -160,9 +160,7 @@ sma.plotinfo.plotname = 'mysma'
 
 示例：
 
-- **MACDHisto** 使用 `_
-
-method='bar'` 绘制直方图。
+- **MACDHisto** 使用 `_method='bar'` 绘制直方图。
 
 - **BuySell** 观察器：
 ```python

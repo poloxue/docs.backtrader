@@ -5,30 +5,30 @@ weight: 5
 
 # Bracket Orders
 
-1.9.37.116版本增加了Bracket订单，为回测经纪商提供了广泛的订单支持（Market、Limit、Close、Stop、StopLimit、StopTrail、StopTrailLimit、OCO）。
+1.9.37.116 版本增加了 Bracket 订单，为回测 Broker 提供了广泛的订单支持（Market、Limit、Close、Stop、StopLimit、StopTrail、StopTrailLimit、OCO）。
 
-**注意**，这是为回测和 Interactive Brokers 实现的。
+**注意**，目前已在回测和 Interactive Brokers 中实现。
 
-Bracket订单不是单个订单，而是由3个订单组成。
+Bracket 订单不是单个订单，而是由 3 个订单组成。
 
 以做多为例：
 
-1. 一个主要的买单，通常设置为 Limit 或 StopLimit 订单。
-2. 一个低价卖单，通常设置为 Stop 订单以限制损失。
-3. 一个高价卖单，通常设置为 Limit 订单以获取利润。
+1. 主要买单，通常设置为 Limit 或 StopLimit 订单。
+2. 低价卖单，通常设置为 Stop 订单以限制损失。
+3. 高价卖单，通常设置为 Limit 订单以获取利润。
 
-做空也有对应的卖单和 2 个买单。
+做空则相反：一个主要卖单加 2 个买单。
 
-低价/高价卖单实际上形成了一个围绕主要订单的 Bracket。
+低价/高价卖单围绕主要订单形成一个 Bracket。
 
-为了使其合理，以下规则适用：
+规则如下：
 
-- 3个订单一起提交，以避免其中任何一个独立触发。
+- 3 个订单同时提交，避免任何订单独立触发。
 - 低价/高价卖单被标记为主要订单的子订单。
-- 子订单在主要订单执行之前不活跃。
-- 取消主要订单会取消低价和高价卖单。
+- 子订单在主要订单执行前不活跃。
+- 取消主要订单会同时取消低价和高价卖单。
 - 执行主要订单会激活低价和高价卖单。
-- 一旦活跃，低价/高价卖单的执行或取消会自动取消另一个订单。
+- 激活后，低价/高价卖单中任一执行或取消，会自动取消另一个。
 
 ## 使用模式
 
@@ -37,15 +37,13 @@ Bracket订单不是单个订单，而是由3个订单组成。
 1. 单次发布3个订单。
 2. 手动发布3个订单。
 
-### 单次发布Bracket
+### 单次发布 Bracket
 
-backtrader在Strategy中提供了两个新方法来控制Bracket订单：`buy_bracket`和`sell_bracket`。
+backtrader 在 Strategy 中提供了两个新方法：`buy_bracket` 和 `sell_bracket`。
 
-**注意**
+**注意**：签名和信息见下文或 Strategy 参考部分。
 
-签名和信息见下文或Strategy参考部分。
-
-通过单个语句完成3个订单的设置。示例如下：
+通过单个语句完成 3 个订单的设置，示例如下：
 
 ```python
 brackets = self.buy_bracket(limitprice=14.00, price=13.50, stopprice=13.00)
@@ -53,20 +51,20 @@ brackets = self.buy_bracket(limitprice=14.00, price=13.50, stopprice=13.00)
 
 注意，`stopprice`和`limitprice`围绕`price`设定。这应该足够了。
 
-实际的目标数据将是 data0，大小将由默认的sizer自动确定。当然，可以指定其他参数来精细控制执行。
+目标数据为 data0，大小由默认 sizer 自动确定。也可以指定其他参数来精细控制执行。
 
 返回值是一个包含3个订单的列表：[主要订单，stop订单，limit订单]。
 
-因为在发布 `sell_bracket` 订单时，低价和高价将翻转，所以参数命名遵循约定：`stop` 用于止损（在做多操作中是低价，在做空操作中是高价），`limit` 用于获取利润（在做多操作中是高价，在做空操作中是低价）。
+因为发布 `sell_bracket` 时低价和高价会翻转，参数命名约定：`stop` 用于止损（做多时是低价，做空时是高价），`limit` 用于获利（做多时是高价，做空时是低价）。
 
 ### 手动发布Bracket
 
-这涉及生成3个订单，并处理`transmit`和`parent`参数。规则如下：
+手动方式需要生成 3 个订单，并处理 `transmit` 和 `parent` 参数。规则如下：
 
-1. 必须首先创建主要订单并设置`transmit=False`。
-2. 低价/高价订单必须有`parent=main_side_order`。
-3. 第一个创建的低价/高价订单必须设置`transmit=False`。
-4. 最后一个创建的订单（无论是低价还是高价）设置`transmit=True`。
+1. 先创建主要订单，设置 `transmit=False`。
+2. 低价/高价订单必须指定 `parent=main_side_order`。
+3. 第一个创建的低价/高价订单设置 `transmit=False`。
+4. 最后一个创建的订单（低价或高价）设置 `transmit=True`。
 
 以下示例实现了与上述单次命令相同的效果：
 
@@ -76,14 +74,14 @@ lowside  = self.sell(price=13.00, size=mainside.size, exectype=bt.Order.Stop, tr
 highside = self.sell(price=14.00, size=mainside.size, exectype=bt.Order.Limit, transmit=True, parent=mainside)
 ```
 
-需要做更多的事情：
+需要额外处理：
 
-- 跟踪主要订单，指示它是其他订单的父订单。
-- 控制`transmit`以确保只有最后一个订单触发联合传输。
+- 让主要订单成为其他订单的父订单。
+- 控制 `transmit`，确保只有最后一个订单触发提交。
 - 指定执行类型。
 - 为低价和高价订单指定大小。
 
-因为大小必须相同。如果未手动指定大小且用户引入了sizer，sizer可能会为订单指示不同的值。因此，需要在调用时手动添加大小。
+三个订单的大小必须相同。如果未手动指定，sizer 可能为不同订单计算不同的大小，因此需要在调用时手动指定。
 
 ## 示例
 
@@ -133,17 +131,17 @@ $ ./bracket.py --plot
 ...
 ```
 
-显示了 3 种不同的结果：
+展示了 3 种不同结果：
 
-1. 第一种情况下，主要订单过期，自动取消了其他两个订单。
-2. 第二种情况下，主要订单完成，低价订单（买入情况下的止损）执行，限制了损失。
-3. 第三种情况下，主要订单完成，高价订单（限价）执行。
+1. 主要订单过期，自动取消其他两个订单。
+2. 主要订单完成，低价止损订单执行，限制了损失。
+3. 主要订单完成，高价限价订单执行。
 
-可以注意到，已完成的订单id是22和24，高价订单最后发布，未执行的低价订单id是23。
+注意，完成的订单 id 是 22 和 24（高价订单最后发布），未执行的低价订单 id 是 23。
 
 **图示**
 
-可以立即看到，亏损交易集中在相同的值附近，而盈利交易也是如此，这是 Bracket 的目的。控制两侧。
+可以看出亏损和盈利交易分别集中在相近的价位，这正是 Bracket 的目的——控制两侧风险。
 
 运行的示例手动发布3个订单，但可以使用`buy_bracket`。输出如下：
 
@@ -155,7 +153,7 @@ $ ./bracket.py --strat usebracket=True
 
 ## 参考
 
-请参阅新的`buy_bracket`和`sell_bracket`方法
+请参阅新的 `buy_bracket` 和 `sell_bracket` 方法
 
 ```python
 def buy_bracket(self, data=None, size=None, price=None, plimit=None,

@@ -3,9 +3,9 @@ title: "数据源参考"
 weight: 12
 ---
 
-### 数据源参考
+# 数据源参考
 
-#### AbstractDataBase
+## AbstractDataBase
 
 **数据行（Lines）:**
 - close
@@ -33,7 +33,7 @@ weight: 12
 
 ---
 
-#### BacktraderCSVData
+## BacktraderCSVData
 
 解析用于测试的自定义 CSV 数据。
 
@@ -68,11 +68,11 @@ weight: 12
 
 ---
 
-#### CSVDataBase
+## CSVDataBase
 
 用于实现 CSV 数据源的基类。
 
-该类负责打开文件、读取行并将其标记化。子类只需重写 `_loadline(tokens)` 方法。
+负责打开文件、读取行并将其标记化。子类只需重写 `_loadline(tokens)` 方法。
 
 **数据行：**
 - close
@@ -102,37 +102,9 @@ weight: 12
 
 ---
 
-#### Chainer
+## Chainer
 
-用于链式连接数据的类。
-
-**数据行：**
-- close
-- low
-- high
-- open
-- volume
-- openinterest
-- datetime
-
-**参数：**
-- dataname (None)
-- name ()
-- compression (1)
-- timeframe (5)
-- fromdate (None)
-- todate (None)
-- sessionstart (None)
-- sessionend (None)
-- filters ([])
-- tz (None)
-- tzinput (None)
-- qcheck (0.0)
-- calendar (None)
-
----
-
-#### DataClone
+用于链式连接数据。
 
 **数据行：**
 - close
@@ -160,9 +132,37 @@ weight: 12
 
 ---
 
-#### DataFiller
+## DataClone
 
-该类将使用基础数据源的信息填充数据中的空隙。
+**数据行：**
+- close
+- low
+- high
+- open
+- volume
+- openinterest
+- datetime
+
+**参数：**
+- dataname (None)
+- name ()
+- compression (1)
+- timeframe (5)
+- fromdate (None)
+- todate (None)
+- sessionstart (None)
+- sessionend (None)
+- filters ([])
+- tz (None)
+- tzinput (None)
+- qcheck (0.0)
+- calendar (None)
+
+---
+
+## DataFiller
+
+使用基础数据源的信息填充数据中的空隙。
 
 **参数：**
 - `fill_price` (def: None): 如果为 None，将使用上一条数据的收盘价；否则使用传递的值（例如 ‘NaN’）
@@ -198,15 +198,14 @@ weight: 12
 
 ---
 
-#### DataFilter
+## DataFilter
 
-此类过滤给定数据源中的数据行。除了 DataBase 的标准参数外，它还接受 `funcfilter` 参数，该参数可以是任何可调用对象。
+过滤给定数据源中的数据行。除 DataBase 的标准参数外，还接受 `funcfilter` 参数（任何可调用对象）。
 
 **逻辑：**
-- `funcfilter` 将与基础数据源一起调用
-- 它可以是任何可调用对象
-- 返回值 True：当前数据源的数据行值将被使用
-- 返回值 False：当前数据源的数据行值将被丢弃
+- `funcfilter` 随基础数据源一起调用
+- 返回值 `True`：当前数据行将被使用
+- 返回值 `False`：当前数据行将被丢弃
 
 **数据行：**
 - close
@@ -235,24 +234,24 @@ weight: 12
 
 ---
 
-#### GenericCSVData
+## GenericCSVData
 
 根据定义的参数解析 CSV 文件。
 
 **特定参数（或特定含义）：**
 - dataname: 要解析的文件名或类文件对象
-- `lines` 参数（datetime, open, high …）取数值
+- `lines` 参数（datetime, open, high...）取数值
 - 值为 -1 表示 CSV 源中不存在该字段
-- 如果 time 存在（参数 time >=0），源包含分开的日期和时间字段，将合并
+- 如果 time 存在（参数 time >= 0），源包含分开的日期和时间字段，将合并
 
 **参数：**
-- nullvalue: 如果缺少值（CSV 字段为空），将使用的值
-- dtformat: 用于解析 datetime CSV 字段的格式。请参阅 python strptime/strftime 文档以了解格式。
-- 如果指定了数值，它将按以下方式解释：
-  - 1: 值为代表自 1970 年 1 月 1 日以来的秒数的 Unix 时间戳（int 型）
-  - 2: 值为代表自 1970 年 1 月 1 日以来的秒数的 Unix 时间戳（float 型）
-- 如果传递了一个可调用对象，它将接受一个字符串并返回一个 datetime.datetime 实例
-- tmformat: 用于解析 time CSV 字段的格式（如果存在）（time 字段默认不存在）
+- nullvalue: CSV 字段为空时使用的值
+- dtformat: 解析 datetime CSV 字段的格式。参见 Python strptime/strftime 文档了解格式说明
+- 如果指定数值：
+  - 1: Unix 时间戳（int），自 1970-01-01 以来的秒数
+  - 2: Unix 时间戳（float），自 1970-01-01 以来的秒数
+- 如果传递可调用对象，它将接受一个字符串并返回 datetime.datetime 实例
+- tmformat: 解析 time CSV 字段的格式（默认不存在）
 
 **数据行：**
 - close
@@ -293,9 +292,9 @@ weight: 12
 
 ---
 
-#### IBData
+## IBData
 
-**交互式经纪商数据源（Interactive Brokers Data Feed）**
+**Interactive Brokers 数据源**
 
 支持参数 `dataname` 中的合约规格：
 
@@ -378,7 +377,7 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### InfluxDB
+## InfluxDB
 
 **数据行：**
 - close
@@ -418,13 +417,13 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### MT4CSVData
+## MT4CSVData
 
 解析 Metatrader4 历史中心导出的 CSV 文件。
 
 **特定参数（或特定含义）：**
 - dataname: 要解析的文件名或类文件对象
-- 使用 GenericCSVData 并简单修改参数
+- 基于 GenericCSVData，只修改了参数
 
 **数据行：**
 - close
@@ -465,7 +464,7 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### OandaData
+## OandaData
 
 **参数：**
 - qcheck (默认: 0.5)
@@ -480,7 +479,7 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 - reconnections (默认: -1)
 - reconntimeout (默认: 5.0)
 
-支持的时间框架和压缩映射符合 OANDA API 开发者指南中的定义：
+时间框架和压缩映射符合 OANDA API 开发者指南中的定义：
 
 ```python
 (TimeFrame.Seconds, 5): 'S5',
@@ -542,12 +541,12 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### PandasData
+## PandasData
 
 使用 Pandas DataFrame 作为数据源。
 
 **参数：**
-- nocase (默认: True) 列名匹配不区分大小写
+- nocase (默认: True): 列名匹配不区分大小写
 
 **数据行：**
 - close
@@ -583,9 +582,9 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### PandasDirectData
+## PandasDirectData
 
-使用 Pandas DataFrame 作为数据源，直接迭代由 `itertuples` 返回的元组。
+使用 Pandas DataFrame 作为数据源，直接迭代 `itertuples` 返回的元组。
 
 **数据行：**
 - close
@@ -620,19 +619,19 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### Quandl
+## Quandl
 
-直接从 Quandl 服务器下载数据。
+从 Quandl 服务器下载数据。
 
 **特定参数（或特定含义）：**
-- dataname: 要下载的代码（例如 'YHOO'）
+- dataname: 要下载的代码（如 'YHOO'）
 - baseurl: 服务器 URL
-- proxies: 指示下载时使用的代理的字典，例如 {‘http’: ‘http://myproxy.com’}
-- buffered: 如果为 True，整个 socket 连接将在解析前缓存在本地
-- reverse: Quandl 返回的值按降序排列（最新的在前）。如果为 True，请求将告诉 Quandl 以升序（最旧的在前）格式返回
-- adjclose: 是否使用股息/拆股调整后的收盘价，并根据它调整所有值
-- apikey: 如果需要，使用的 API 密钥
-- dataset: 标识要查询的数据集的字符串。默认为 WIKI
+- proxies: 下载时使用的代理字典，如 `{'http': 'http://myproxy.com'}`
+- buffered: 若为 True，整个 socket 连接在解析前缓存在本地
+- reverse: Quandl 默认返回降序（最新的在前）。若为 True，请求升序（最旧的在前）
+- adjclose: 是否使用股息/拆股调整后的收盘价，并据此调整所有值
+- apikey: 使用的 API 密钥（如果需要）
+- dataset: 标识要查询的数据集，默认为 WIKI
 
 **数据行：**
 - close
@@ -671,16 +670,16 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### QuandlCSV
+## QuandlCSV
 
-解析预先下载的 Quandl CSV 数据源（或如果符合 Quandl 格式，本地生成的 CSV 文件）。
+解析预先下载的 Quandl CSV 数据源（或符合 Quandl 格式的本地 CSV 文件）。
 
 **特定参数：**
 - dataname: 要解析的文件名或类文件对象
-- reverse (默认: False): 假设本地存储的文件在下载过程中已被反向
-- adjclose (默认: True): 是否使用股息/拆股调整后的收盘价，并根据它调整所有值
-- round (默认: False): 是否在调整收盘价后将值四舍五入到特定的小数位数
-- decimals (默认: 2): 要四舍五入的小数位数
+- reverse (默认: False): 假设本地文件在下载过程中已被反转
+- adjclose (默认: True): 是否使用股息/拆股调整后的收盘价，并据此调整所有值
+- round (默认: False): 调整收盘价后是否四舍五入到指定小数位数
+- decimals (默认: 2): 四舍五入的小数位数
 
 **数据行：**
 -
@@ -716,9 +715,9 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 
 ---
 
-#### RollOver
+## RollOver
 
-在满足条件时切换到下一个期货合约。
+满足条件时切换到下一个期货合约。
 
 **参数：**
 - checkdate (默认: None): 必须是具有以下签名的可调用对象：
@@ -726,24 +725,24 @@ TICKER-OPT-EXCHANGE-CURRENCY-YYYYMMDD-STRIKE-RIGHT-MULT # 期权
 ```python
 checkdate(dt, d):
 ```
-- dt: datetime.datetime 对象
-- d: 当前活动期货的数据源
+- dt: `datetime.datetime` 对象
+- d: 当前活跃期货的数据源
 
 **返回值：**
-- True: 只要返回 True，就可以切换到下一个期货
-- False: 不能进行切换
+- True: 可以切换到下一个期货
+- False: 不能切换
 
-- checkcondition (默认: None): 注意：只有当 checkdate 返回 True 时才会调用此方法。如果为 None，将在内部评估为 True（执行切换）。否则，必须是具有以下签名的可调用对象：
+- checkcondition (默认: None): 仅当 `checkdate` 返回 `True` 时才会调用此方法。如果为 `None`，内部评估为 `True`（执行切换）。否则，必须是具有以下签名的可调用对象：
 
 ```python
 checkcondition(d0, d1):
 ```
-- d0: 当前活动期货的数据源
+- d0: 当前活跃期货的数据源
 - d1: 下一个到期的数据源
 
 **返回值：**
 - True: 切换到下一个期货
-- False: 不能进行切换
+- False: 不能切换
 
 **数据行：**
 - close
@@ -773,9 +772,9 @@ checkcondition(d0, d1):
 
 ---
 
-#### SierraChartCSVData
+## SierraChartCSVData
 
-解析 SierraChart 导出的 CSV 文件。
+解析 Sierra Chart 导出的 CSV 文件。
 
 **特定参数（或特定含义）：**
 - dataname: 要解析的文件名或类文件对象
@@ -819,22 +818,22 @@ checkcondition(d0, d1):
 
 ---
 
-#### VCData
+## VCData
 
 VisualChart 数据源。
 
 **参数：**
-- qcheck (默认: 0.5): 唤醒的默认超时，以让重新采样器/重放器知道当前条形图可以检查是否应交付
-- historical (默认: False): 如果未提供 `todate` 参数（在基类中定义），如果设置为 True，将强制仅进行历史下载。如果提供了 `todate` 参数，则效果相同。
-- milliseconds (默认: True): Visual Chart 构建的条形图具有以下方面：HH:MM:59.999000。如果此参数为 True，将添加一毫秒以使其看起来像：HH:MM + 1:00.000000
-- tradename (默认: None): 连续期货不能交易，但非常适合数据跟踪。如果提供此参数，它将是当前期货的名称，即交易资产。例如：
+- qcheck (默认: 0.5): 唤醒默认超时，通知重采样器/重放器当前 Bar 可检查是否应交付
+- historical (默认: False): 如果未提供 `todate` 且设置为 True，强制仅进行历史下载。提供 `todate` 时效果相同。
+- milliseconds (默认: True): Visual Chart 构建的 Bar 格式为 HH:MM:59.999000。若为 True，将添加一毫秒使其变为 HH:MM + 1:00.000000
+- tradename (默认: None): 连续期货本身不能交易，但适合数据跟踪。提供此参数时，指定当前期货名称作为交易资产。例如：
 
 ```txt
-001ES -> ES-Mini 连续期货作为 dataname 提供
-ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产。
+001ES -> ES-Mini 连续期货作为 dataname
+ESU16 -> ES-Mini 2016-09，作为 tradename 时为交易资产
 ```
 
-- usetimezones (默认: True): 对于大多数市场，Visual Chart 提供的时区信息允许将日期时间转换为市场时间（backtrader 选择的表示方法）。某些市场（096）需要特殊的内部覆盖和时区支持以显示为用户期望的市场时间。如果设置为 True，将尝试使用 `pytz` 进行时区转换（默认）。禁用它将删除时区使用（可能有助于减少负载）。
+- usetimezones (默认: True): Visual Chart 提供的时区信息可将日期时间转换为市场时间。某些市场（如 096）需要特殊的时区覆盖。若为 True，尝试使用 `pytz` 进行时区转换。禁用时移除时区处理（可能减少负载）。
 
 **数据行：**
 - close
@@ -866,7 +865,7 @@ ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产
 
 ---
 
-#### VChartCSVData
+## VChartCSVData
 
 解析 VisualChart 导出的 CSV 文件。
 
@@ -901,14 +900,14 @@ ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产
 
 ---
 
-#### VChartData
+## VChartData
 
 支持 Visual Chart 二进制磁盘文件的每日和日内格式。
 
 **注：**
 - dataname: 文件名或打开的类文件对象
 
-如果传递了一个类文件对象，将使用 `timeframe` 参数来确定实际的时间框架。否则将使用文件扩展名（.fd 表示每日，.min 表示日内）。
+如果传入类文件对象，使用 `timeframe` 参数确定时间框架；否则使用文件扩展名（.fd 为每日，.min 为日内）。
 
 **数据行：**
 - close
@@ -936,7 +935,7 @@ ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产
 
 ---
 
-#### VChartFile
+## VChartFile
 
 支持 Visual Chart 二进制磁盘文件的每日和日内格式。
 
@@ -969,19 +968,19 @@ ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产
 
 ---
 
-#### YahooFinanceCSVData
+## YahooFinanceCSVData
 
-解析预先下载的 Yahoo CSV 数据源（或符合 Yahoo 格式的本地生成的 CSV 文件）。
+解析预先下载的 Yahoo CSV 数据源（或符合 Yahoo 格式的本地 CSV 文件）。
 
 **特定参数：**
 - dataname: 要解析的文件名或类文件对象
-- reverse (默认: False): 假设本地存储的文件在下载过程中已被反向
-- adjclose (默认: True): 是否使用股息/拆股调整后的收盘价，并根据它调整所有值
-- adjvolume (默认: True): 如果 `adjclose` 也为 True，则也调整交易量
-- round (默认: True): 是否在调整收盘价后将值四舍五入到特定的小数位数
-- roundvolume (默认: 0): 在调整后将交易量四舍五入到给定的小数位数
-- decimals (默认: 2): 要四舍五入的小数位数
-- swapcloses (默认: False): [2018-11-16] 看起来关闭和调整后的关闭的顺序现在是固定的。保留该参数，以防需要再次交换列的顺序。
+- reverse (默认: False): 假设本地文件在下载过程中已被反转
+- adjclose (默认: True): 是否使用股息/拆股调整后的收盘价，并据此调整所有值
+- adjvolume (默认: True): 若 `adjclose` 也为 True，则调整交易量
+- round (默认: True): 调整收盘价后是否四舍五入到指定小数位数
+- roundvolume (默认: 0): 调整后将交易量四舍五入到指定小数位数
+- decimals (默认: 2): 四舍五入的小数位数
+- swapcloses (默认: False): [2018-11-16] 收盘价和调整后收盘价的顺序现已修复。保留此参数以防需要再次交换列的顺序。
 
 **数据行：**
 - close
@@ -1021,19 +1020,19 @@ ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产
 
 ---
 
-#### YahooFinanceData
+## YahooFinanceData
 
-直接从 Yahoo 服务器下载数据。
+从 Yahoo 服务器下载数据。
 
 **特定参数（或特定含义）：**
-- dataname: 要下载的代码（例如 'YHOO' 表示 Yahoo 自己的股票报价）
-- proxies: 指示下载时使用的代理的字典，例如 {‘http’: ‘http://myproxy.com’} 或 {‘http’: ‘http://127.0.0.1:8080’}
-- period: 要下载数据的时间框架。传递 'w' 表示每周，'m' 表示每月。
-- reverse: [2018-11-16] Yahoo 在线下载的最新版本返回的数据顺序正确。因此，在线下载的默认值为 False。
-- adjclose: 是否使用股息/拆股调整后的收盘价，并根据它调整所有值
-- urlhist: Yahoo Finance 中的历史报价 URL，用于获取下载的面包授权 cookie
+- dataname: 要下载的代码（如 'YHOO' 表示 Yahoo 自己的股票代码）
+- proxies: 下载时使用的代理字典，如 `{'http': 'http://myproxy.com'}`
+- period: 下载数据的时间框架，'w' 为每周，'m' 为每月
+- reverse: [2018-11-16] Yahoo 在线下载的最新版本已返回正确顺序，因此默认为 False
+- adjclose: 是否使用股息/拆股调整后的收盘价，并据此调整所有值
+- urlhist: Yahoo Finance 的历史报价 URL，用于获取下载所需的 cookie
 - urldown: 实际下载服务器的 URL
-- retries: 获取面包 cookie 和下载数据的次数
+- retries: 获取 cookie 和下载数据的重试次数
 
 **数据行：**
 - close
@@ -1076,9 +1075,9 @@ ESU16 -> ES-Mini 2016-09。如果在 tradename 中提供，它将是交易资产
 
 ---
 
-#### YahooLegacyCSV
+## YahooLegacyCSV
 
-此类旨在加载 Yahoo 在 2017 年 5 月停止提供原始服务之前下载的文件。
+加载 Yahoo 在 2017 年 5 月停止原始服务前下载的文件。
 
 **数据行：**
 - close

@@ -11,7 +11,7 @@ weight: 4
 class backtrader.analyzers.AnnualReturn()
 ```
 
-该分析器通过查看年的起点和终点来计算年度回报率。
+该分析器通过查看每年的起始和结束值来计算年度回报率。
 
 **参数：**
 - 无
@@ -31,7 +31,7 @@ class backtrader.analyzers.AnnualReturn()
 class backtrader.analyzers.Calmar()
 ```
 
-该分析器计算 Calmar 比率，时间框架可以与基础数据使用的不同。
+该分析器计算 Calmar 比率，时间框架可以与数据使用的不一致。
 
 **参数：**
 - `timeframe`（默认：无）：如果为 None，将使用系统中第一个数据的时间框架。
@@ -49,7 +49,7 @@ class backtrader.analyzers.Calmar()
 class backtrader.analyzers.DrawDown()
 ```
 
-该分析器计算交易系统的回撤统计数据，如百分比和美元的回撤值、最大回撤值、回撤长度和最大回撤长度。
+该分析器计算交易系统的回撤统计数据，包括百分比和货币单位的回撤值、最大回撤值、回撤长度和最大回撤长度。
 
 **参数：**
 - `fund`（默认：无）：如果为 None，将自动检测经纪人的实际模式（fundmode - True/False）来决定回报率是基于总净资产价值还是基金价值。见经纪人文档中的 `set_fundmode`。
@@ -71,7 +71,7 @@ class backtrader.analyzers.DrawDown()
 class backtrader.analyzers.TimeDrawDown()
 ```
 
-该分析器计算在选定时间框架上的交易系统回撤，可以与基础数据使用的时间框架不同。
+该分析器在选定时间框架上计算交易系统的回撤，时间框架可以与数据使用的不一致。
 
 **参数：**
 - `timeframe`（默认：无）：如果为 None，将使用系统中第一个数据的时间框架。
@@ -127,7 +127,7 @@ class backtrader.analyzers.PositionsValue()
 class backtrader.analyzers.PyFolio()
 ```
 
-该分析器使用 4 个子分析器收集数据，并将其转换为与 pyfolio 兼容的数据集。
+该分析器使用 4 个子分析器收集数据，并将其转换为 pyfolio 兼容的数据集。
 
 **子分析器：**
 - `TimeReturn`：用于计算全球投资组合价值的回报。
@@ -149,7 +149,7 @@ class backtrader.analyzers.PyFolio()
 
 - `returns`，`positions`，`transactions`，`gross_leverage`
 
-由于这些对象旨在作为 pyfolio 的直接输入，因此此方法会本地导入 pandas，将内部 backtrader 结果转换为 pandas DataFrames，这是例如 pyfolio.create_full_tear_sheet 预期的输入。如果未安装 pandas，该方法将失败。
+由于这些对象旨在作为 pyfolio 的直接输入，此方法会本地导入 pandas，将 backtrader 内部结果转换为 pandas DataFrames，这是 `pyfolio.create_full_tear_sheet` 等函数预期的输入。如果未安装 pandas，该方法将失败。
 
 ---
 
@@ -233,7 +233,7 @@ class backtrader.analyzers.Returns()
 class backtrader.analyzers.SharpeRatio()
 ```
 
-该分析器使用风险资产（即利率）计算策略的夏普比率。
+该分析器使用无风险资产（即利率）计算策略的夏普比率。
 
 **参数：**
 - `timeframe`（默认：TimeFrame.Years）
@@ -271,7 +271,7 @@ class backtrader.analyzers.SharpeRatio_A()
 class backtrader.analyzers.SQN()
 ```
 
-SQN 或系统质量数。由 Van K. Tharp 定义，用于分类交易系统。
+SQN（System Quality Number，系统质量数）。由 Van K. Tharp 定义，用于分类交易系统。
 
 1.6 - 1.9 低于平均水平
 2.0 - 2.4 平均水平
@@ -315,7 +315,7 @@ class backtrader.analyzers.TimeReturn()
 class backtrader.analyzers.TradeAnalyzer()
 ```
 
-提供已平仓交易的统计数据（还保持未平仓交易的计数）。
+提供已平仓交易的统计数据（同时也保持未平仓交易的计数）。
 
 - 总开仓/平仓交易
 - 连胜/连败 当前/最长
@@ -344,7 +344,7 @@ class backtrader.analyzers.Transactions()
 **参数：**
 - `headers`（默认：True）：在保存结果的字典中添加一个初始键，名称为数据的名称。
 
-该分析器旨在便于与 pyfolio 集成，并从用于它的样本中获取标题名称：
+该分析器旨在便于与 pyfolio 集成，标题名称取自用于它的样本：
 
 - 'date', 'amount', 'price', 'sid', 'symbol', 'value'
 
@@ -359,7 +359,7 @@ class backtrader.analyzers.Transactions()
 class backtrader.analyzers.VWR()
 ```
 
-可变性加权回报：使用对数回报的更好的夏普比率。
+可变性加权回报（Variability Weighted Return）：使用对数回报改进的夏普比率。
 
 **别名：**
 - VariabilityWeightedReturn

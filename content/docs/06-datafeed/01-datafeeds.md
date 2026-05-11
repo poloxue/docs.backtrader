@@ -3,23 +3,23 @@ title: "Data Feeds"
 weight: 1
 ---
 
-## 数据源
+# 数据源
 
-**Backtrader** 提供了一组数据源解析器（在撰写本文时都是基于 CSV 的）以便从不同来源加载数据。
+**Backtrader** 提供了一组数据源解析器（目前都是基于 CSV 的），用于从不同来源加载数据。
 
 - Yahoo（在线或已保存到文件）
 - VisualChart（参见 www.visualchart.com）
 - Backtrader CSV（自定义格式用于测试）
 - 通用 CSV 支持
 
-从快速入门指南中可以清楚地看到，您可以将数据源添加到 Cerebro 实例中。这些数据源稍后将在策略中可用：
+如快速入门指南所示，将数据源添加到 Cerebro 实例后，可在策略中通过以下方式访问：
 
 - `self.datas` 数组（按插入顺序）
-- 数组对象的别名：
+- 别名：
   - `self.data` 和 `self.data0` 指向第一个元素
   - `self.dataX` 指向数组中索引为 X 的元素
 
-以下是插入方式的快速提醒：
+快速提醒：
 
 ```python
 import backtrader as bt
@@ -33,7 +33,7 @@ cerebro.adddata(data)  # 可以传递一个 'name' 参数用于绘图
 
 ## 数据源通用参数
 
-这个数据源可以直接从 Yahoo 下载数据并将其输入系统。
+该数据源可直接从 Yahoo 下载数据并输入系统。
 
 **Backtrader** 数据源常用参数：
 
@@ -82,7 +82,7 @@ cerebro.adddata(data)  # 可以传递一个 'name' 参数用于绘图
 | `dtformat`       | `'%Y-%m-%d %H:%M:%S'`  | 用于解析日期时间 CSV 字段的格式。 |
 | `tmformat`       | `'%H:%M:%S'`           | 如果存在，用于解析时间 CSV 字段的格式（默认情况下时间 CSV 字段不存在）。 |
 
-这些参数允许用户根据其 CSV 文件的结构自定义数据解析方式，以便正确加载数据进行回测。  
+这些参数让你根据 CSV 文件的结构自定义数据解析方式，确保正确加载数据。  
 
 ## 示例使用
 
@@ -167,7 +167,7 @@ data = btfeeds.GenericCSVData(
 )
 ```
 
-这也可以通过子类化永久保存：
+也可以通过子类化永久保存：
 
 ```python
 import datetime
@@ -193,7 +193,7 @@ class MyHLOC(btfeeds.GenericCSVData):
 )
 ```
 
-现在可以通过提供 `dataname` 重用此新类：
+现在只需提供 `dataname` 即可使用此类：
 
 ```python
 data = btfeeds.MyHLOC(dataname='mydata.csv')

@@ -9,7 +9,7 @@ weight: 3
 
 ## MA_CrossOver
 
-别名：SMA_CrossOver，这是一个仅做多的策略，基于移动平均线交叉操作。
+别名：SMA_CrossOver。这是一个仅做多的策略，基于移动平均线交叉。
 
 ### 交易规则
 

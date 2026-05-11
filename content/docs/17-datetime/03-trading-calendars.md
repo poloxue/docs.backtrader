@@ -5,11 +5,11 @@ weight: 3
 
 # 交易日历
 
-版本 1.9.42.116 增加了对交易日历的支持。这在以下场景中的重采样时非常有用：
+版本 1.9.42.116 增加了对交易日历的支持，在以下重采样场景中非常有用：
 
-- 从每日到每周的重采样现在可以将每周的K线与本周的最后一根K线一起交付。
-- 这是因为交易日历可以识别下一个交易日，并且可以提前识别出本周的最后一个交易日。
-- 当交易会话的结束时间不是常规时间（可以通过数据源来指定）时，从子日内到每日的重采样。
+- 从每日到每周的重采样：每周 K 线可以与本周最后一根 K 线一起交付。
+- 交易日历能识别下一个交易日，从而提前判断本周的最后一个交易日。
+- 当交易会话结束时间非常规（可通过数据源指定）时，仍可正常进行日内到每日的重采样。
 
 ## 交易日历接口
 
@@ -35,7 +35,7 @@ class TradingCalendarBase(with_metaclass(MetaParams, object)):
 
 ### PandasMarketCalendar
 
-这个实现基于一个不错的包，这是从 Quantopian 的初始功能衍生出来的。包位于 `pandas_market_calendars`，可以很容易地安装：
+该实现基于 `pandas_market_calendars` 包（源自 Quantopian 的初始功能），安装方式如下：
 
 ```bash
 pip install pandas_market_calendars
@@ -74,7 +74,7 @@ class PandasMarketCalendar(TradingCalendarBase):
 
 ### TradingCalendar
 
-这个实现允许通过指定假期、早市天数、非交易工作日以及开盘和收盘时间来构建一个日历：
+该实现允许通过指定假期、早收天数、非交易日以及开盘/收盘时间来构建日历：
 
 ```python
 class TradingCalendar(TradingCalendarBase):
@@ -116,7 +116,7 @@ class TradingCalendar(TradingCalendarBase):
 
 ### 全局交易日历
 
-通过 `Cerebro`，可以添加一个全局日历，作为所有数据源的默认日历，除非为数据源指定了一个日历：
+通过 `Cerebro` 添加的全局日历将作为所有数据源的默认日历，除非数据源单独指定了日历：
 
 ```python
 def addcalendar(self, cal):
@@ -159,9 +159,9 @@ Strategy len 58 datetime 2016-03-28 Data0 len 58 datetime 2016-03-28 Data1 len 1
 
 在这个输出中，第一个日期是由策略计算的日期。第二个日期是每日数据的日期。
 
-如预期的那样，周在 2016-03-24（星期四）结束，但是由于没有交易日历，重采样代码无法知道这一点，并且会在 2016-03-18（前一周）的日期交付重采样条形图。当交易移至 2016-03-28（星期一）时，重采样器检测到周变化，并在 2016-03-24 交付一个重采样条形图。
+如预期，周在 2016-03-24（星期四）结束，但由于没有交易日历，重采样代码无法获知这点，在 2016-03-18（前一周）交付了重采样 K 线。当数据推进到 2016-03-28（星期一）时，重采样器才检测到周变化，并在 2016-03-24 交付了新的重采样 K 线。
 
-如果使用 NYSE 的 PandasMarketCalendar 并添加一个绘图，再次运行：
+如果使用 NYSE 的 PandasMarketCalendar 并添加绘图，再次运行：
 
 ```bash
 $ ./tcal.py --plot --pandascal NYSE
@@ -173,7 +173,7 @@ Strategy len 58 datetime 2016-03-28 Data0 len 58 datetime 2016-03-28 Data1 len 1
 ...
 ```
 
-有所变化！由于有日历，重采样器知道周在 2016-03-24 结束，并在同一天交付相应的每周重采样条形图。
+有变化！有了日历，重采样器知道周在 2016-03-24 结束，并在同一天交付了对应的每周重采样 K 线。
 
 绘图结果如下。
 
@@ -206,9 +206,7 @@ $ ./tcal.py --plot --owncal
 ...
 Strategy len 56 datetime 2016-03-23 Data0 len 56 datetime 2016-03-23 Data1 len 11 datetime 2016-03-18
 Strategy len 57 datetime 2016-03-24 Data0 len 57 datetime 2016-03-24 Data1 len 12 datetime 2016-03-24
-Strategy len 58 datetime 2016-03-28 Data0 len 58 datetime 2016-03-28 Data1 len 12 datetime 201
-
-6-03-24
+Strategy len 58 datetime 2016-03-28 Data0 len 58 datetime 2016-03-28 Data1 len 12 datetime 2016-03-24
 ...
 ```
 
@@ -216,11 +214,11 @@ Strategy len 58 datetime 2016-03-28 Data0 len 58 datetime 2016-03-28 Data1 len 1
 
 ### 从分钟到每日
 
-使用一些私有的日内数据，并且知道市场在 2016-11-25 提前收盘（感恩节后的第二天市场在美国东部时间 13:00 收盘），再进行一个测试运行，这次使用第二个示例。
+使用一些私有日内数据，2016-11-25 市场提前收盘（感恩节后第二天，美东时间 13:00 收盘）。使用第二个示例进行测试。
 
 注意
 
-源数据直接来自显示数据，并且在 CET 时区，即使标的资产 YHOO 在美国交易。代码中使用了 `tzinput='CET'` 和 `tz='US/Eastern'` 来让平台适当地转换输入并显示输出。
+源数据来自显示数据，时区为 CET，即使标的资产 YHOO 在美国交易。代码使用 `tzinput='CET'` 和 `tz='US/Eastern'` 进行输入转换和输出显示。
 
 首先，不使用交易日历：
 
@@ -229,23 +227,21 @@ $ ./tcal-intra.py
 
 ...
 Strategy len 6838 datetime 2016-11-25 18:00:00 Data0 len 6838 datetime 2016-11-25 13:00:00 Data1 len 21 datetime 2016-11-23 16:00:00
-Strategy len 6839 datetime 2016-11-25 18:01:00 Data0 len 6839 datetime 2016-11-25 13:01:00 Data1 len 21 datetime 20 16-11-23 16:00:00
+Strategy len 6839 datetime 2016-11-25 18:01:00 Data0 len 6839 datetime 2016-11-25 13:01:00 Data1 len 21 datetime 2016-11-23 16:00:00
 Strategy len 6840 datetime 2016-11-28 14:31:00 Data0 len 6840 datetime 2016-11-28 09:31:00 Data1 len 22 datetime 2016-11-25 16:00:00
 Strategy len 6841 datetime 2016-11-28 14:32:00 Data0 len 6841 datetime 2016-11-28 09:32:00 Data1 len 22 datetime 2016-11-25 16:00:00
 ...
 ```
 
-如预期的那样，这一天在 13:00 提前结束，但重采样器不知道这一点（官方会话在 16:00 结束），并继续交付前一天（2016-11-23）的重采样日线图，新重采样日线图首次在下一个交易日（2016-11-28）交付，日期为 2016-11-25。
+如预期，这一天在 13:00 提前结束，但重采样器不知道（官方会话在 16:00 结束），继续交付前一日（2016-11-23）的重采样日 K 线。新的日 K 线直到下一个交易日（2016-11-28）才首次交付，日期标记为 2016-11-25。
 
 注意
 
-数据在 13:01 有一个额外的分钟条，这可能是由于拍卖过程中在市场关闭时间后提供的最后价格。
+数据在 13:01 有一个额外的小时 K 线，这可能是收盘后拍卖过程中提供的最终价格。
 
-我们可以向流中添加一个过滤器，以过滤掉会话时间之外的条形图（过滤器将从交易日历中找出时间）。
+可以添加过滤器过滤掉非交易时段的 K 线（过滤器可从交易日历获取时间），但这不是本示例的重点。
 
-但这不是此示例的重点。
-
-使用 PandasMarketCalendar 实例再次运行：
+使用 PandasMarketCalendar 再次运行：
 
 ```bash
 $ ./tcal-intra.py --pandascal NYSE
@@ -258,7 +254,7 @@ Strategy len 6841 datetime 2016-11-28 14:32:00 Data0 len 6841 datetime 2016-11-2
 ...
 ```
 
-现在，当日线条在 2016-11-25 的 13:00 交付时（忽略 13:01 的条形图），重采样代码通过交易日历知道这一天结束了。
+现在，当日 K 线在 2016-11-25 的 13:00 交付时（忽略 13:01 的 K 线），重采样代码通过交易日历知道这一天结束了。
 
 让我们添加一个手动编写的定义。与前面的相同，但扩展了一些早市天数：
 
@@ -302,20 +298,20 @@ Strategy len 6841 datetime 2016-11-28 14:32:00 Data0 len 6841 datetime 2016-11-2
 
 现在 2016-11-25 的重采样日线条在 13:01 与 1 分钟条一起交付。
 
-## 策略的额外奖励
+## 策略的额外功能
 
-第一个日期时间，属于策略的，总是在不同的时区，实际上是 UTC。使用这个版本 1.9.42.116，这也可以同步。以下参数已添加到 `Cerebro`（在实例化期间使用或与 `cerebro.run` 一起使用：
+策略的日期时间始终在不同时区（实际为 UTC）。在 1.9.42.116 版本中，这也可以同步。以下参数已添加到 `Cerebro`（可在实例化或 `cerebro.run` 时使用）：
 
 - `tz`（默认：`None`）
 
-  添加策略的全局时区。参数 `tz` 可以是：
+  设置策略的全局时区。参数 `tz` 可以是：
   
-  - `None`：在这种情况下，策略显示的日期时间将是 UTC，这一直是标准行为。
-  - `pytz` 实例。它将用于将 UTC 时间转换为所选时区。
-  - `string`。尝试实例化一个 `pytz` 实例。
-  - `integer`。使用相应数据在 `self.datas` 可迭代对象中的相同时区（`0` 将使用 `data0` 的时区）。
+  - `None`：策略显示的日期时间为 UTC（标准行为）。
+  - `pytz` 实例：将 UTC 时间转换为所选时区。
+  - `string`：尝试实例化 `pytz` 实例。
+  - `integer`：使用 `self.datas` 中对应数据的时区（`0` 使用 `data0` 的时区）。
 
-也可以通过 `cerebro.addtz` 方法支持：
+也可通过 `cerebro.addtz` 方法添加：
 
 ```python
 def addtz(self, tz):
@@ -339,9 +335,7 @@ $ ./tcal-intra.py --owncal --cerebro tz=0
 ...
 Strategy len 6838 datetime 2016-11-25 13:00:00 Data0 len 6838 datetime 2016-11-25 13:00:00 Data1 len 15 datetime 2016-11-23 16:00:00
 Strategy len 6839 datetime 2016-11-25 13:01:00 Data0 len 6839 datetime 2016-11-25 13:01:00 Data1 len 16 datetime 2016-11-25 13:01:00
-Strategy len 6840 datetime 2016-11-28 09:31:00 Data0 len 6840 datetime 2016-11-28 09:31:00 Data
-
-1 len 16 datetime 2016-11-25 13:01:00
+Strategy len 6840 datetime 2016-11-28 09:31:00 Data0 len 6840 datetime 2016-11-28 09:31:00 Data1 len 16 datetime 2016-11-25 13:01:00
 Strategy len 6841 datetime 2016-11-28 09:32:00 Data0 len 6841 datetime 2016-11-28 09:32:00 Data1 len 16 datetime 2016-11-25 13:01:00
 ...
 ```
